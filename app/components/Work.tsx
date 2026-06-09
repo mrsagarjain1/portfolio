@@ -41,7 +41,7 @@ const stats = [
   { value: "100+", label: "Pro Coaches Consulted" },
 ];
 
-const techStack = ["Python", "FastAPI", "LangChain", "MongoDB", "Redis", "Vector DB"];
+const techStack = ["Python", "FastAPI", "LangChain", "MongoDB", "Redis", "Vector DB", "Next.js", "React", "Flutter"];
 
 export default function Work() {
   const [testUsername] = useState("venator#fear");
@@ -124,7 +124,7 @@ export default function Work() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
               whileHover={{ y: -4 }}
-              className="p-4 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] transition-colors hover:border-[#6ee7b7]/30"
+              className="p-4 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] transition-colors hover:border-[#6ee7b7]/30"
               style={{ transitionDuration: "300ms", transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
             >
               <div className="text-2xl font-semibold text-[#e8e8e8]">
@@ -144,7 +144,7 @@ export default function Work() {
 
         {/* Built with */}
         <motion.div
-          className="p-5 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] mb-4"
+          className="p-5 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] mb-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -159,7 +159,7 @@ export default function Work() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.04 }}
-                className="px-3 py-1 text-xs rounded-md border border-[#1f1f1f] bg-[#0a0a0a] text-white font-medium"
+                className="px-3 py-1 text-xs rounded-md border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-white font-medium"
               >
                 {t}
               </motion.span>
@@ -175,7 +175,7 @@ export default function Work() {
             rel="noopener noreferrer"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1f1f1f] bg-[#0c0c0c] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7C1.5 3.96 3.96 1.5 7 1.5C10.04 1.5 12.5 3.96 12.5 7C12.5 10.04 10.04 12.5 7 12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M5 7.5L7 9.5L9 7.5" stroke="#6ee7b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
             Web App
@@ -186,7 +186,7 @@ export default function Work() {
             rel="noopener noreferrer"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1f1f1f] bg-[#0c0c0c] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#6ee7b7]"><path d="M3.18 23.76c.37.21.8.24 1.2.07l12.15-6.93-2.84-2.85L3.18 23.76zM20.6 10.35l-2.94-1.68-3.18 3.18 3.18 3.18 2.97-1.7c.85-.48.85-1.5-.03-1.98zM2 1.96C1.97 2.15 2 2.34 2 2.55v18.88c0 .21.03.4.08.57l.1.1 10.57-10.58v-.24L2.1 1.86l-.1.1zM4.38.17L16.53 7.1l-2.84 2.84L3.18.24C3.58.07 4.01.1 4.38.17z"/></svg>
             Android App
@@ -200,7 +200,7 @@ export default function Work() {
           rel="noopener noreferrer"
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.99 }}
-          className="group block p-6 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] hover:border-[#6ee7b7]/30 transition-colors"
+          className="group block p-6 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] hover:border-[#6ee7b7]/30 transition-colors"
         >
           <div className="flex items-start justify-between gap-4">
             <div>

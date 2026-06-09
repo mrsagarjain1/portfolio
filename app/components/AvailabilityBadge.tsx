@@ -21,7 +21,7 @@ export function AvailabilityBadge() {
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#6ee7b7]/20 bg-[#0a0a0a]/70 backdrop-blur-sm">
+    <div className="fixed bottom-6 left-6 z-50 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
       <span className="relative flex h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34d399] opacity-75" />
         <span className="relative inline-flex rounded-full h-2 w-2 bg-[#34d399]" />

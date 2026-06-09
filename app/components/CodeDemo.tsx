@@ -13,7 +13,7 @@ export function CodeDemo() {
       onMouseLeave={() => setOutput(null)}
     >
       <motion.div
-        className="px-4 py-2 rounded-lg border border-[#6ee7b7]/20 bg-[#0c0c0c] font-mono text-xs"
+        className="px-4 py-2 rounded-lg border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] font-mono text-xs"
         whileHover={{ borderColor: "rgba(110,231,183,0.5)" }}
       >
         <span className="text-[#6ee7b7]">valocoach</span>

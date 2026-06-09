@@ -64,7 +64,7 @@ export default function Contact() {
             href="mailto:mrsagarjain1@gmail.com"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] hover:border-[#6ee7b7]/30 transition-colors mb-4"
+            className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] hover:border-[#6ee7b7]/30 transition-colors mb-4"
           >
             <div>
               <p className="text-xs text-white mb-1 font-medium uppercase tracking-wide">Email</p>
@@ -89,7 +89,7 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] text-white hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-white hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
               >
                 <span className="group-hover:text-[#6ee7b7] transition-colors">{s.icon}</span>
                 <span className="hidden sm:block">{s.label}</span>

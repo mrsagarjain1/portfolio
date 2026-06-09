@@ -104,7 +104,7 @@ export default function Story() {
               >
                 {/* Dot */}
                 <motion.div
-                  className="absolute left-4 top-6 w-4 h-4 rounded-full border-2 border-[#6ee7b7] bg-[#0a0a0a] hidden sm:flex items-center justify-center"
+                  className="absolute left-4 top-6 w-4 h-4 rounded-full border-2 border-[#6ee7b7] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md hidden sm:flex items-center justify-center"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
                   whileHover={{ scale: 1.3 }}
@@ -117,7 +117,7 @@ export default function Story() {
                 </motion.div>
 
                 <motion.div
-                  className={`py-8 px-4 sm:px-6 rounded-lg ${i < milestones.length - 1 ? "border-b border-[#1f1f1f]/50" : ""} group hover:bg-[#111]/50 hover:border-[#6ee7b7]/20 transition-all`}
+                  className={`py-8 px-4 sm:px-6 rounded-lg ${i < milestones.length - 1 ? "border-b border-[#222]/50" : ""} group hover:bg-gradient-to-br hover:from-[#111]/50 hover:to-[#050505]/50 hover:backdrop-blur-md hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] hover:border-[#6ee7b7]/20 transition-all`}
                   whileHover={{ x: 4 }}
                 >
                   <div className="flex items-start gap-6">

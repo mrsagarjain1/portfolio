@@ -68,7 +68,7 @@ export function HoverPreview() {
           className="fixed z-[10001] pointer-events-none w-64"
           style={{ left: preview.x, top: preview.y }}
         >
-          <div className="p-4 rounded-xl border border-[#6ee7b7]/30 bg-[#0c0c0c]/95 backdrop-blur-xl shadow-2xl">
+          <div className="p-4 rounded-xl border border-[#6ee7b7]/30 bg-gradient-to-br from-[#111]/95 to-[#050505]/95 backdrop-blur-xl shadow-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
             <p className="text-xs font-semibold text-[#6ee7b7] mb-2">{preview.data.title}</p>
             <p className="text-xs text-white mb-3 leading-relaxed">{preview.data.description}</p>
             <div className="flex flex-wrap gap-1.5">

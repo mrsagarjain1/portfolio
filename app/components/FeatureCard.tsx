@@ -19,17 +19,19 @@ export function FeatureCard({ title, description, index }: FeatureCardProps) {
         {/* Subtle top glow line */}
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#6ee7b7]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
-        <div className="relative w-2.5 h-2.5 mb-5">
-          <div className="absolute inset-0 rounded-full bg-[#6ee7b7] shadow-[0_0_10px_rgba(110,231,183,0.8)]" />
-          <motion.div
-            className="absolute inset-0 rounded-full bg-[#6ee7b7]"
-            animate={{ opacity: [0.6, 0, 0.6], scale: [1, 3.5, 1] }}
-            transition={{ duration: 3, repeat: Infinity, delay: index * 0.2 }}
-          />
+        <div className="flex items-center gap-3 mb-2.5">
+          <div className="relative w-2.5 h-2.5 flex-shrink-0">
+            <div className="absolute inset-0 rounded-full bg-[#6ee7b7] shadow-[0_0_10px_rgba(110,231,183,0.8)]" />
+            <motion.div
+              className="absolute inset-0 rounded-full bg-[#6ee7b7]"
+              animate={{ opacity: [0.6, 0, 0.6], scale: [1, 3.5, 1] }}
+              transition={{ duration: 3, repeat: Infinity, delay: index * 0.2 }}
+            />
+          </div>
+          <h3 className="text-base font-semibold text-white group-hover:text-[#6ee7b7] transition-colors duration-300 tracking-tight">
+            {title}
+          </h3>
         </div>
-        <h3 className="text-base font-semibold text-white mb-2.5 group-hover:text-[#6ee7b7] transition-colors duration-300 tracking-tight">
-          {title}
-        </h3>
         <p className="text-sm text-[#d4d4d4] leading-relaxed font-medium">
           {description}
         </p>
