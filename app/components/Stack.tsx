@@ -22,7 +22,7 @@ const stackItems = [
 const learning = ["Agentic AI", "Deep Learning", "LangGraph", "LangChain"];
 
 export default function Stack() {
-  const stackRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: stackRef,
     offset: ["start end", "end start"],
@@ -31,6 +31,7 @@ export default function Stack() {
   return (
     <ScrollAnimation>
       <motion.section 
+        ref={stackRef}
         id="stack" 
         className="py-6 px-6 border-t border-[#1f1f1f] relative"
         initial={{ opacity: 0, y: 40 }}
@@ -129,7 +130,6 @@ export default function Stack() {
               is chosen because it ships faster and holds up under load.
             </p>
             <motion.div
-              ref={stackRef}
               className="grid grid-cols-2 gap-3"
               style={{ x: stackX }}
             >
