@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { GeometryFigure } from "./GeometryFigure";
-import { CodeDemo } from "./CodeDemo";
+import { OrbitingRing, ProgressRing } from "./OrbitingRing";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -68,6 +68,16 @@ export default function Hero() {
   const headlineScale = useTransform(scrollY, [0, 250], [1, 0.92]);
   const headshotScale = useTransform(scrollY, [0, 400], [1, 0.7]);
   const headshotOpacity = useTransform(scrollY, [0, 400], [1, 0.3]);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(h > 0 ? (window.scrollY / h) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <section ref={sectionRef} className="min-h-screen flex items-center justify-center pt-20 pb-16 px-6 relative overflow-hidden" id="hero">
@@ -131,15 +141,6 @@ export default function Hero() {
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.0 }}
-              className="mb-8"
-            >
-              <CodeDemo />
-            </motion.div>
-
-            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
@@ -189,7 +190,14 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
             style={{ scale: headshotScale, opacity: headshotOpacity }}
           >
-            <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
+            <div className="relative">
+              <div className="absolute -inset-6">
+                <OrbitingRing />
+              </div>
+              <div className="absolute -inset-4">
+                <ProgressRing progress={progress} />
+              </div>
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
               <Image
                 src="/headshot.png"
                 alt="Sagar Jain"
@@ -201,6 +209,7 @@ export default function Hero() {
                 unoptimized={true}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent pointer-events-none" />
+            </div>
             </div>
           </motion.div>
         </div>

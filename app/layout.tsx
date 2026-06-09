@@ -17,6 +17,12 @@ import { ScrollVelocityBlur } from "./components/ScrollVelocityBlur";
 import { DotGrid } from "./components/DotGrid";
 import { HoverPreview } from "./components/HoverPreview";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
+import { RippleEffect } from "./components/RippleEffect";
+import { TimeOfDayTheme } from "./components/TimeOfDayTheme";
+import { ScrollStopBounce } from "./components/ScrollStopBounce";
+import { EdgeGlow } from "./components/EdgeGlow";
+import { SparkTrail } from "./components/SparkTrail";
+import { ContentBrightness } from "./components/ContentBrightness";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,6 +55,12 @@ export default function RootLayout({
         <DotGrid />
         <HoverPreview />
         <AvailabilityBadge />
+        <RippleEffect />
+        <TimeOfDayTheme />
+        <ScrollStopBounce />
+        <EdgeGlow />
+        <SparkTrail />
+        <ContentBrightness />
         <PageIntro />
         <ShaderBackground />
         <AmbientBackground />
