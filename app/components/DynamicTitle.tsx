@@ -3,17 +3,17 @@
 import { useEffect } from "react";
 
 const titles: Record<string, string> = {
-  hero: "Sagar Jain — Applied AI Engineer",
-  work: "Sagar Jain — valocoach.ai",
-  story: "Sagar Jain — Origin Story",
-  stack: "Sagar Jain — Tech Stack",
-  contact: "Sagar Jain — Let's Build",
+  hero: "Sagar Jain | Applied AI Engineer",
+  work: "Sagar Jain | valocoach.ai",
+  story: "Sagar Jain | Origin Story",
+  stack: "Sagar Jain | Tech Stack",
+  contact: "Sagar Jain | Let's Build",
 };
 
 export function DynamicTitle() {
   useEffect(() => {
     const sections = ["hero", "work", "story", "stack", "contact"];
-    const base = "Sagar Jain — Applied AI Engineer";
+    const base = "Sagar Jain | Applied AI Engineer";
     document.title = base;
 
     const obs = new IntersectionObserver(
