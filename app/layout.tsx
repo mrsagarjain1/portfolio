@@ -29,14 +29,33 @@ import { ContentBrightness } from "./components/ContentBrightness";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sagar Jain - Applied AI Engineer",
+  metadataBase: new URL("https://mrsagarjain.com"),
+  title: {
+    default: "Sagar Jain | Applied AI Engineer",
+    template: "%s | Sagar Jain"
+  },
   description:
-    "Founder of valocoach.ai - AI-powered coaching platform for competitive gamers. 20K+ users, 1M+ monthly impressions.",
+    "Portfolio of Sagar Jain, an Applied AI Engineer and Founder of valocoach.ai. Specializing in AI-powered applications, machine learning, and scalable platforms.",
+  keywords: ["Sagar Jain", "mrsagarjain", "Applied AI Engineer", "AI Developer", "valocoach.ai", "Software Engineer", "Machine Learning", "Portfolio"],
+  authors: [{ name: "Sagar Jain", url: "https://mrsagarjain.com" }],
+  creator: "Sagar Jain",
   openGraph: {
-    title: "Sagar Jain - Applied AI Engineer",
+    type: "website",
+    locale: "en_US",
+    url: "https://mrsagarjain.com",
+    title: "Sagar Jain | Applied AI Engineer",
     description:
       "Founder of valocoach.ai. 20K+ users, 1M+ monthly impressions. Building AI coaching infrastructure for competitive gaming.",
-    type: "website",
+    siteName: "Sagar Jain Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sagar Jain | Applied AI Engineer",
+    description: "Portfolio of Sagar Jain, an Applied AI Engineer and Founder of valocoach.ai.",
+    creator: "@mrsagarjain1",
+  },
+  alternates: {
+    canonical: "https://mrsagarjain.com",
   },
 };
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ScrambleText } from "./ScrambleText";
 
 const links = [
   { label: "Work", href: "#work" },
@@ -65,7 +64,7 @@ export default function Navbar() {
                 whileHover={{ y: -2 }}
                 className="text-lg text-white hover:text-[#6ee7b7] transition-colors relative group font-medium"
               >
-                <ScrambleText text={l.label} />
+                <span className="relative z-10">{l.label}</span>
                 <motion.span
                   className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6ee7b7] to-transparent group-hover:w-full transition-all"
                   layoutId={`underline-${l.label}`}
@@ -130,7 +129,7 @@ export default function Navbar() {
                   transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
                   className="text-2xl font-semibold text-white hover:text-[#6ee7b7] transition-colors tracking-tight"
                 >
-                  <ScrambleText text={l.label} />
+                  <span className="relative z-10">{l.label}</span>
                 </motion.a>
               ))}
 

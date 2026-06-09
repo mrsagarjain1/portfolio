@@ -36,41 +36,12 @@ const particles = Array.from({ length: 30 }, (_, i) => ({
 
 const nameLetters = "Sagar Jain".split("");
 
-const subtitleChars = "APPLIED AI ENGINEER";
-const scrambleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01!@#$";
-
 export function PageIntro() {
   const [visible, setVisible] = useState(true);
-  const [scrambledText, setScrambledText] = useState(
-    Array(subtitleChars.length).fill("").join("")
-  );
   const [progress, setProgress] = useState(0);
-
-  const scrambleReveal = useCallback(() => {
-    let iteration = 0;
-    const maxIterations = subtitleChars.length * 3;
-    const interval = setInterval(() => {
-      setScrambledText(
-        subtitleChars
-          .split("")
-          .map((char, idx) => {
-            if (char === " ") return " ";
-            if (idx < iteration / 3) return subtitleChars[idx];
-            return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-          })
-          .join("")
-      );
-      iteration++;
-      if (iteration > maxIterations) clearInterval(interval);
-    }, 30);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-
-    // Start scramble reveal after name appears
-    const scrambleTimer = setTimeout(scrambleReveal, 800);
 
     // Progress bar
     const progressInterval = setInterval(() => {
@@ -91,11 +62,10 @@ export function PageIntro() {
 
     return () => {
       clearTimeout(timer);
-      clearTimeout(scrambleTimer);
       clearInterval(progressInterval);
       document.body.style.overflow = "";
     };
-  }, [scrambleReveal]);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -219,14 +189,14 @@ export function PageIntro() {
               ))}
             </div>
 
-            {/* Subtitle - scramble text reveal */}
+            {/* Subtitle - elegant expansion reveal */}
             <motion.div
-              className="text-sm sm:text-base font-mono tracking-[0.3em] text-[#6ee7b7] h-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.3 }}
+              className="text-sm sm:text-base font-mono text-[#6ee7b7] h-6 uppercase"
+              initial={{ opacity: 0, letterSpacing: "0em", filter: "blur(8px)" }}
+              animate={{ opacity: 1, letterSpacing: "0.3em", filter: "blur(0px)" }}
+              transition={{ delay: 0.6, duration: 1.2, ease: "easeOut" }}
             >
-              {scrambledText}
+              Applied AI Engineer
             </motion.div>
 
             {/* Decorative divider */}

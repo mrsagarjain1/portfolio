@@ -1,31 +1,40 @@
 "use client";
 
-const data = [
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,2,3,3,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,3,3,4,4,5,5,5,5,5,5,5,4,4,4,3,3,3,2,2,2,1,1,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,5,5,5,4,4,4,3,3,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0],
-  [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,5,5,6,6,6,7,7,7,7,7,6,6,6,5,5,5,4,4,3,3,3,2,2,1,1,1,0,0,0,0,0,0,0,0,0],
-  [2,2,2,2,2,2,3,3,3,3,4,4,4,4,4,5,5,6,6,7,7,7,8,8,8,8,8,7,7,7,6,6,5,5,4,4,3,3,3,2,2,1,1,1,0,0,0,0,0,0,0,0],
-  [2,2,2,2,3,3,3,4,4,4,5,5,5,5,5,6,6,7,7,8,8,8,9,9,9,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1,1,0,0,0,0,0,0,0,0,0],
-];
-
-const colors = ["#0a0a0a", "#0f2618", "#143820", "#194a28", "#1e5c30", "#236e38", "#288040", "#2d9248"];
+import { useState, useEffect } from "react";
+import { GitHubCalendar } from 'react-github-calendar';
 
 export function GitHubHeatmap() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Custom theme to match the website's dark green aesthetics
+  const explicitTheme = {
+    light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
+    dark: ['#0a0a0a', '#0f2618', '#1e5c30', '#288040', '#6ee7b7'],
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full py-2">
+        {/* Simple skeleton loader for SSR */}
+        <div className="w-full h-[120px] rounded-sm bg-[#111] animate-pulse border border-[#222]"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex gap-1" aria-hidden="true">
-      {data.map((row, i) => (
-        <div key={i} className="flex flex-col gap-1">
-          {row.map((val, j) => (
-            <div
-              key={j}
-              className="w-2.5 h-2.5 rounded-sm transition-colors duration-500"
-              style={{ backgroundColor: colors[val] }}
-            />
-          ))}
-        </div>
-      ))}
+    <div className="w-full py-2">
+      <GitHubCalendar 
+        username="mrsagarjain1" 
+        colorScheme="dark"
+        theme={explicitTheme}
+        fontSize={12}
+        blockMargin={4}
+        blockSize={10}
+      />
     </div>
   );
 }
