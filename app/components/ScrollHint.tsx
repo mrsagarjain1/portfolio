@@ -29,89 +29,33 @@ export function ScrollHint() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[10000] pointer-events-none"
+          className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex flex-col items-center gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Pulsing glow behind pill */}
-          <motion.div
-            className="absolute inset-0 rounded-full opacity-50"
-            animate={{
-              boxShadow: [
-                "0 0 20px 4px rgba(110,231,183,0.08), 0 0 40px 8px rgba(110,231,183,0.04)",
-                "0 0 30px 8px rgba(110,231,183,0.15), 0 0 60px 16px rgba(110,231,183,0.06)",
-                "0 0 20px 4px rgba(110,231,183,0.08), 0 0 40px 8px rgba(110,231,183,0.04)",
-              ],
-            }}
+          {/* Subtle text */}
+          <motion.p 
+            className="text-lg font-bold text-[#6ee7b7]/80 uppercase tracking-widest drop-shadow-md"
+            animate={{ opacity: [0.6, 1, 0.6] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
+          >
+            Scroll to explore
+          </motion.p>
 
-          <div className="relative flex flex-col items-center gap-3 bg-[#0a0a0a]/80 backdrop-blur-md px-6 py-3.5 rounded-full border border-[#6ee7b7]/25">
-            {/* Mouse icon + text row */}
-            <div className="flex items-center gap-2.5">
-              {/* Mini mouse icon */}
-              <motion.svg
-                width="18"
-                height="22"
-                viewBox="0 0 14 20"
-                fill="none"
-                className="text-[#6ee7b7]"
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width="12"
-                  height="18"
-                  rx="6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <motion.line
-                  x1="7"
-                  y1="4"
-                  x2="7"
-                  y2="7"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  animate={{ y: [0, 3, 0], opacity: [1, 0.4, 1] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                />
-              </motion.svg>
-
-              <p className="text-sm text-[#6ee7b7] uppercase tracking-[0.25em] font-medium">
-                Scroll to explore
-              </p>
-            </div>
-
-            {/* Animated chevron */}
-            <motion.svg
-              width="28"
-              height="28"
-              viewBox="0 0 20 20"
-              fill="none"
-              animate={{ y: [0, 14, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-[#6ee7b7]"
-            >
-              <motion.path
-                d="M10 2V12"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <path
-                d="M6.5 8.5L10 12L13.5 8.5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </motion.svg>
+          {/* Minimalist animated line */}
+          <div className="relative w-[1px] h-16 bg-gradient-to-b from-[#6ee7b7]/20 to-transparent overflow-hidden rounded-full">
+            <motion.div
+              className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-[#6ee7b7] to-transparent"
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ 
+                duration: 1.5, 
+                repeat: Infinity, 
+                ease: "linear",
+                repeatDelay: 0.5
+              }}
+            />
           </div>
         </motion.div>
       )}

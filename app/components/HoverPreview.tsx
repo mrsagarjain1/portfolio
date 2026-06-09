@@ -70,7 +70,7 @@ export function HoverPreview() {
         >
           <div className="p-4 rounded-xl border border-[#6ee7b7]/30 bg-[#0c0c0c]/95 backdrop-blur-xl shadow-2xl">
             <p className="text-xs font-semibold text-[#6ee7b7] mb-2">{preview.data.title}</p>
-            <p className="text-xs text-[#777] mb-3 leading-relaxed">{preview.data.description}</p>
+            <p className="text-xs text-white mb-3 leading-relaxed">{preview.data.description}</p>
             <div className="flex flex-wrap gap-1.5">
               {preview.data.stats.map((s) => (
                 <span key={s} className="px-2 py-0.5 text-[10px] rounded-md border border-[#6ee7b7]/20 bg-[#6ee7b7]/5 text-[#6ee7b7]">

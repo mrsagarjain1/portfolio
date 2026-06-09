@@ -9,6 +9,7 @@ import { FeatureCard } from "./FeatureCard";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
+import { EncryptReveal } from "./EncryptReveal";
 
 const features = [
   {
@@ -77,7 +78,7 @@ export default function Work() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                Featured Work
+                <EncryptReveal text="Featured Work" />
               </span>
             </motion.div>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mt-3">
@@ -88,7 +89,7 @@ export default function Work() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight"
               >
-                <ClipReveal><BlurReveal text="valocoach.ai" /></ClipReveal>
+                <ClipReveal><EncryptReveal text="valocoach.ai" /></ClipReveal>
               </motion.h2>
               <AnimatedUnderline className="mt-2 max-w-xs" />
               <a
@@ -104,7 +105,7 @@ export default function Work() {
                 </svg>
               </a>
             </div>
-            <p className="text-[#888] mt-3 text-sm leading-relaxed max-w-xl">
+            <p className="text-white mt-3 text-sm leading-relaxed max-w-xl">
               <BlurReveal
                 text="AI-powered coaching platform that gives every competitive Valorant player access to personalized, data-driven improvement - the kind previously reserved for pro teams."
                 delay={0.3}
@@ -129,7 +130,7 @@ export default function Work() {
               <div className="text-2xl font-semibold text-[#e8e8e8]">
                 <AnimatedCounter value={s.value} duration={1.5} />
               </div>
-              <div className="text-xs text-[#666] mt-1">{s.label}</div>
+              <div className="text-xs text-white mt-1">{s.label}</div>
             </motion.div>
           ))}
         </div>
@@ -149,7 +150,7 @@ export default function Work() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="text-xs text-[#555] uppercase tracking-widest mb-3 font-medium">Built with</p>
+          <p className="text-xs text-white uppercase tracking-widest mb-3 font-medium">Built with</p>
           <div className="flex flex-wrap gap-2">
             {techStack.map((t, i) => (
               <motion.span
@@ -158,7 +159,7 @@ export default function Work() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.04 }}
-                className="px-3 py-1 text-xs rounded-md border border-[#1f1f1f] bg-[#0a0a0a] text-[#888] font-medium"
+                className="px-3 py-1 text-xs rounded-md border border-[#1f1f1f] bg-[#0a0a0a] text-white font-medium"
               >
                 {t}
               </motion.span>
@@ -204,7 +205,7 @@ export default function Work() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm text-[#e8e8e8] font-medium mb-1">Test it: search venator#fear on the website</p>
-              <p className="text-sm text-[#777] leading-relaxed">
+              <p className="text-sm text-white leading-relaxed">
                 See real coaching analysis with KDR, HS%, ACS, win rate, AI insights and personalized quests. No account needed.
               </p>
             </div>

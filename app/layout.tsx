@@ -10,6 +10,8 @@ import { SmoothScroll } from "./components/SmoothScroll";
 import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
 import { MouseTrail } from "./components/MouseTrail";
+import { PerspectiveScroll } from "./components/PerspectiveScroll";
+import { GlitchTransition } from "./components/GlitchTransition";
 
 import { DynamicTitle } from "./components/DynamicTitle";
 import { MagneticElements } from "./components/MagneticElements";
@@ -68,7 +70,10 @@ export default function RootLayout({
         <ScrollHint />
         <CursorGlow>
           <div className="relative z-10" role="main">
-            {children}
+            <PerspectiveScroll>
+              <GlitchTransition />
+              {children}
+            </PerspectiveScroll>
           </div>
         </CursorGlow>
       </body>

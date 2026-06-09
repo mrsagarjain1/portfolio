@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface InteractiveSpotlightProps {
   children: React.ReactNode;
@@ -12,12 +12,15 @@ export function InteractiveSpotlight({
   children,
   className = "",
 }: InteractiveSpotlightProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -26,6 +29,7 @@ export function InteractiveSpotlight({
 
   return (
     <div
+      ref={containerRef}
       className={`relative overflow-hidden ${className}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}

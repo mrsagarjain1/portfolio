@@ -26,7 +26,7 @@ export function CodeDemo() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="mt-3 pt-3 border-t border-[#1f1f1f] text-[#777] leading-relaxed overflow-hidden"
+            className="mt-3 pt-3 border-t border-[#1f1f1f] text-white leading-relaxed overflow-hidden"
           >
             {output}
           </motion.pre>

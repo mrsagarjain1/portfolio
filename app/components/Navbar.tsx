@@ -45,7 +45,7 @@ export default function Navbar() {
               <motion.a
                 href={l.href}
                 whileHover={{ y: -2 }}
-                className="text-lg text-[#888] hover:text-[#6ee7b7] transition-colors relative group font-medium"
+                className="text-lg text-white hover:text-[#6ee7b7] transition-colors relative group font-medium"
               >
                 <ScrambleText text={l.label} />
                 <motion.span

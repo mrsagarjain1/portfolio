@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
+import { EncryptReveal } from "./EncryptReveal";
 
 const milestones = [
   {
@@ -67,14 +68,14 @@ export default function Story() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                Origin
+                <EncryptReveal text="Origin" />
               </span>
             </motion.div>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3">
-              <ClipReveal>How it started.</ClipReveal>
+              <ClipReveal><EncryptReveal text="How it started." /></ClipReveal>
             </h2>
             <AnimatedUnderline className="mt-2 max-w-xs" />
-            <p className="text-[#888] mt-3 max-w-lg text-sm leading-relaxed">
+            <p className="text-white mt-3 max-w-lg text-sm leading-relaxed">
               The best products are built by people who lived the problem.
             </p>
           </div>
@@ -131,7 +132,7 @@ export default function Story() {
                         {m.title}
                       </motion.h3>
                       <motion.p
-                        className="text-sm text-[#888] leading-relaxed max-w-xl group-hover:text-[#6ee7b7] transition-colors"
+                        className="text-sm text-white leading-relaxed max-w-xl group-hover:text-[#6ee7b7] transition-colors"
                         animate={{ opacity: [1, 1, 1] }}
                       >
                         {m.body}

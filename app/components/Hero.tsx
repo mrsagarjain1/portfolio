@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { OrbitingRing, ProgressRing } from "./OrbitingRing";
+import { MouseParallax } from "./MouseParallax";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -54,7 +55,7 @@ function AnimatedMetric({ value, label, delay }: { value: string; label: string;
       className="text-center"
     >
       <div className="text-2xl font-semibold text-[#e8e8e8] tabular-nums">{displayValue}</div>
-      <div className="text-xs text-[#666] mt-0.5">{label}</div>
+      <div className="text-xs text-white mt-0.5">{label}</div>
     </motion.div>
   );
 }
@@ -132,7 +133,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
-              className="text-base text-[#777] leading-relaxed max-w-md mx-auto lg:mx-0 mb-8"
+              className="text-base text-white leading-relaxed max-w-md mx-auto lg:mx-0 mb-8"
             >
               Building the default AI coaching infrastructure for competitive gaming. Expanding valocoach.ai to mobile and new titles.
             </motion.p>
@@ -194,19 +195,21 @@ export default function Hero() {
               <div className="absolute -inset-4">
                 <ProgressRing progress={progress} />
               </div>
-              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
-              <Image
-                src="/headshot.png"
-                alt="Sagar Jain"
-                fill
-                sizes="(max-width: 1024px) 192px, 288px"
-                className="object-cover object-top"
-                priority
-                quality={100}
-                unoptimized={true}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent pointer-events-none" />
-            </div>
+              <MouseParallax strength={15}>
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
+                  <Image
+                    src="/headshot.png"
+                    alt="Sagar Jain"
+                    fill
+                    sizes="(max-width: 1024px) 192px, 288px"
+                    className="object-cover object-top"
+                    priority
+                    quality={100}
+                    unoptimized={true}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent pointer-events-none" />
+                </div>
+              </MouseParallax>
             </div>
           </motion.div>
         </div>

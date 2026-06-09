@@ -3,6 +3,7 @@
 import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ClipReveal } from "./ClipReveal";
+import { EncryptReveal } from "./EncryptReveal";
 
 const socials = [
   {
@@ -49,12 +50,12 @@ export default function Contact() {
       <div className="max-w-5xl mx-auto">
         <div className="max-w-xl">
           <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-            Contact
+            <EncryptReveal text="Contact" />
           </span>
           <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
-            <ClipReveal>Let's build something.</ClipReveal>
+            <ClipReveal><EncryptReveal text="Let's build something." /></ClipReveal>
           </h2>
-          <p className="text-sm text-[#777] leading-relaxed mb-10">
+          <p className="text-sm text-white leading-relaxed mb-10">
             Open to collaborating on AI products, gaming tech, and esports platforms.
           </p>
 
@@ -66,7 +67,7 @@ export default function Contact() {
             className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] hover:border-[#6ee7b7]/30 transition-colors mb-4"
           >
             <div>
-              <p className="text-xs text-[#555] mb-1 font-medium uppercase tracking-wide">Email</p>
+              <p className="text-xs text-white mb-1 font-medium uppercase tracking-wide">Email</p>
               <p className="text-sm font-medium text-[#e8e8e8] group-hover:text-[#6ee7b7] transition-colors">mrsagarjain1@gmail.com</p>
             </div>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[#6ee7b7]">
@@ -88,7 +89,7 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] text-[#888] hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] text-white hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
               >
                 <span className="group-hover:text-[#6ee7b7] transition-colors">{s.icon}</span>
                 <span className="hidden sm:block">{s.label}</span>
@@ -99,8 +100,8 @@ export default function Contact() {
 
         {/* Footer */}
         <div className="mt-24 pt-8 border-t border-[#1f1f1f] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-[#555]">Sagar Jain · 2026</p>
-          <p className="text-xs text-[#555] italic">Build fast. Learn faster. Play to win.</p>
+          <p className="text-xs text-white">Sagar Jain · 2026</p>
+          <p className="text-xs text-white italic">Build fast. Learn faster. Play to win.</p>
         </div>
       </div>
       </motion.section>

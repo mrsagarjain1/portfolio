@@ -26,7 +26,7 @@ export function AvailabilityBadge() {
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34d399] opacity-75" />
         <span className="relative inline-flex rounded-full h-2 w-2 bg-[#34d399]" />
       </span>
-      <span className="text-xs text-[#888]">
+      <span className="text-xs text-white">
         Available for projects · IST {time}
       </span>
     </div>

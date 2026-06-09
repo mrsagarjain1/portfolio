@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { StackItem } from "./StackItem";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
+import { EncryptReveal } from "./EncryptReveal";
 
 const stackItems = [
   { name: "Python", category: "Language" },
@@ -38,14 +39,14 @@ export default function Stack() {
           <ScrollReveal>
             <div>
             <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-              About
+              <EncryptReveal text="About" />
             </span>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-6">
               <ClipReveal>The person</ClipReveal>
               <br />
               <ClipReveal delay={0.1}>behind the product.</ClipReveal>
             </h2>
-            <div className="space-y-4 text-sm text-[#888] leading-relaxed">
+            <div className="space-y-4 text-sm text-white leading-relaxed">
               <p>
                 I'm an AI Engineer and founder who builds at the intersection of
                 artificial intelligence and competitive gaming. My edge: I'm not
@@ -98,7 +99,7 @@ export default function Stack() {
             </motion.div>
 
             <blockquote className="mt-3 pl-4 border-l-2 border-[#1f1f1f]">
-              <p className="text-sm text-[#888] italic leading-relaxed">
+              <p className="text-sm text-white italic leading-relaxed">
                 "Build fast. Learn faster. Play to win."
               </p>
             </blockquote>
@@ -108,12 +109,12 @@ export default function Stack() {
           {/* Stack */}
           <ScrollReveal>
             <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-              Tech Stack
+              <EncryptReveal text="Tech Stack" />
             </span>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
               How I build.
             </h2>
-            <p className="text-sm text-[#777] leading-relaxed mb-6">
+            <p className="text-sm text-white leading-relaxed mb-6">
               Focused on AI backends that power real products at scale. Every tool
               is chosen because it ships faster and holds up under load.
             </p>
