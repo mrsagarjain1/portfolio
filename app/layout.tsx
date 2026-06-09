@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { EnhancedAnimatedBackground } from "./components/EnhancedAnimatedBackground";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { ScrollHint } from "./components/ScrollHint";
 import { CursorGlow } from "./components/CursorGlow";
@@ -11,6 +10,9 @@ import { SmoothScroll } from "./components/SmoothScroll";
 import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
 import { GlitchTransition } from "./components/GlitchTransition";
+import { PerspectiveScroll } from "./components/PerspectiveScroll";
+import { MouseTrail } from "./components/MouseTrail";
+import { ShaderBackground } from "./components/ShaderBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,18 +38,21 @@ export default function RootLayout({
       <body className={`${inter.className} relative overflow-x-hidden`}>
         <SmoothScroll />
         <CustomCursor />
+        <MouseTrail />
         <PageIntro />
+        <ShaderBackground />
         <AmbientBackground />
         <SectionDots />
         <GlitchTransition />
         <ScrollProgress />
-        <EnhancedAnimatedBackground />
         <ScrollHint />
-        <CursorGlow>
-          <div className="relative z-10">
-            {children}
-          </div>
-        </CursorGlow>
+        <PerspectiveScroll>
+          <CursorGlow>
+            <div className="relative z-10">
+              {children}
+            </div>
+          </CursorGlow>
+        </PerspectiveScroll>
       </body>
     </html>
   );

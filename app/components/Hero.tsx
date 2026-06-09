@@ -11,6 +11,8 @@ import { ScrollReveal } from "./ScrollReveal";
 import { GlowingText } from "./GlowingText";
 import { MouseParallax } from "./MouseParallax";
 import { FloatingOrb } from "./FloatingOrb";
+import { ElasticReveal } from "./ElasticReveal";
+import { TerminalTyping } from "./TerminalTyping";
 import { useRef, useState, useEffect } from "react";
 
 const metrics = [
@@ -103,6 +105,17 @@ export default function Hero() {
                 delay={0.8}
               />
             </p>
+
+            <TerminalTyping
+              lines={[
+                "> founder @ valocoach.ai",
+                "> 20k+ users · 1M+ impressions/mo",
+                "> building AI coaching infra for competitive gaming",
+              ]}
+              className="mb-6"
+              startDelay={2}
+              typeSpeed={50}
+            />
 
             {/* Metrics */}
             <MouseParallax strength={25} className="flex flex-wrap gap-4 mb-6">
