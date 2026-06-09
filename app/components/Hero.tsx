@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { GeometryFigure } from "./GeometryFigure";
+import { CodeDemo } from "./CodeDemo";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -65,6 +66,8 @@ export default function Hero() {
   const contentY = useTransform(scrollY, [0, 500], [0, -60]);
   const headlineOpacity = useTransform(scrollY, [0, 250], [1, 0]);
   const headlineScale = useTransform(scrollY, [0, 250], [1, 0.92]);
+  const headshotScale = useTransform(scrollY, [0, 400], [1, 0.7]);
+  const headshotOpacity = useTransform(scrollY, [0, 400], [1, 0.3]);
 
   return (
     <section ref={sectionRef} className="min-h-screen flex items-center justify-center pt-20 pb-16 px-6 relative overflow-hidden" id="hero">
@@ -128,6 +131,15 @@ export default function Hero() {
             </motion.p>
 
             <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.0 }}
+              className="mb-8"
+            >
+              <CodeDemo />
+            </motion.div>
+
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
@@ -149,6 +161,7 @@ export default function Hero() {
                 href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-preview="valocoach"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="glass-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#e8e8e8] text-[#0a0a0a] text-sm font-semibold hover:bg-white transition-colors"
@@ -174,6 +187,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+            style={{ scale: headshotScale, opacity: headshotOpacity }}
           >
             <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
               <Image

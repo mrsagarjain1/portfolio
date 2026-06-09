@@ -5,6 +5,7 @@ import Story from "./components/Story";
 import Stack from "./components/Stack";
 import Contact from "./components/Contact";
 import { GeometryConnector } from "./components/GeometryConnector";
+import { MorphingBlob } from "./components/MorphingBlob";
 
 function SectionDivider() {
   return <GeometryConnector />;
@@ -15,6 +16,7 @@ export default function Home() {
     <main className="bg-[#0a0a0a] min-h-screen" role="main" aria-label="Portfolio content">
       <Navbar />
       <Hero />
+      <MorphingBlob />
       <SectionDivider />
       <Work />
       <SectionDivider />

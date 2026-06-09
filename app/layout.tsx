@@ -14,6 +14,9 @@ import { ShaderBackground } from "./components/ShaderBackground";
 import { DynamicTitle } from "./components/DynamicTitle";
 import { MagneticElements } from "./components/MagneticElements";
 import { ScrollVelocityBlur } from "./components/ScrollVelocityBlur";
+import { DotGrid } from "./components/DotGrid";
+import { HoverPreview } from "./components/HoverPreview";
+import { AvailabilityBadge } from "./components/AvailabilityBadge";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +46,9 @@ export default function RootLayout({
         <MouseTrail />
         <MagneticElements />
         <ScrollVelocityBlur />
+        <DotGrid />
+        <HoverPreview />
+        <AvailabilityBadge />
         <PageIntro />
         <ShaderBackground />
         <AmbientBackground />

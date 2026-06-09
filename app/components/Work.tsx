@@ -95,6 +95,7 @@ export default function Work() {
                 href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-preview="valocoach"
                 className="inline-flex items-center gap-1.5 text-sm text-[#6ee7b7] hover:text-[#34d399] transition-colors"
               >
                 Live demo
