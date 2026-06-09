@@ -168,7 +168,7 @@ export default function Work() {
         </motion.div>
 
         {/* Links */}
-        <div className="flex flex-wrap gap-3 mb-4">
+        <div className="flex flex-wrap gap-3 mb-4 relative z-50 pointer-events-auto">
           <motion.a
             href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
             target="_blank"

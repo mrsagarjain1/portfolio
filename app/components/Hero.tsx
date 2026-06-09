@@ -154,10 +154,10 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.2 }}
-              className="flex items-center justify-center lg:justify-start gap-3"
+              className="flex items-center justify-center lg:justify-start gap-3 relative z-50 pointer-events-auto"
             >
               <motion.a
-                href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
+                href="https://valocoach.ai/"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-preview="valocoach"
@@ -172,6 +172,10 @@ export default function Hero() {
               </motion.a>
               <motion.a
                 href="#work"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center px-5 py-2.5 rounded-lg border border-[#2a2a2a] text-[#aaa] text-sm font-medium hover:border-[#6ee7b7]/40 hover:text-[#e8e8e8] transition-all"
