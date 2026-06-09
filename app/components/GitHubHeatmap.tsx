@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { GitHubCalendar } from 'react-github-calendar';
+import { GitHubCalendar, type Activity } from 'react-github-calendar';
 
 export function GitHubHeatmap() {
   const [mounted, setMounted] = useState(false);
@@ -18,13 +18,11 @@ export function GitHubHeatmap() {
 
   useEffect(() => {
     if (!mounted) return;
-    // Keep scrolling to the right edge while the calendar fetches data
     const interval = setInterval(() => {
       if (scrollRef.current) {
         scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
       }
     }, 200);
-    // Stop trying after 3 seconds
     const timeout = setTimeout(() => clearInterval(interval), 3000);
     return () => {
       clearInterval(interval);
@@ -32,14 +30,12 @@ export function GitHubHeatmap() {
     };
   }, [mounted]);
 
-  // Custom theme to match the website's dark green aesthetics
   const explicitTheme = {
     light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
     dark: ['#0a0a0a', '#0f2618', '#1e5c30', '#288040', '#6ee7b7'],
   };
 
-  // On mobile, only show the last ~5 months so it fits
-  const selectLastMonths = (contributions: Array<{ date: string; count: number; level: number }>) => {
+  const selectLastMonths = (contributions: Activity[]): Activity[] => {
     if (!isMobile) return contributions;
     const cutoff = new Date();
     cutoff.setMonth(cutoff.getMonth() - 5);
