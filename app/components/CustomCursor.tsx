@@ -71,7 +71,7 @@ export function CustomCursor() {
     <>
       {/* Dot */}
       <div
-        className="fixed pointer-events-none z-[99999]"
+        className="hidden md:block fixed pointer-events-none z-[99999]"
         style={{
           left: pos.x,
           top: pos.y,
@@ -91,7 +91,7 @@ export function CustomCursor() {
 
       {/* Ring */}
       <div
-        className="fixed pointer-events-none z-[99998]"
+        className="hidden md:block fixed pointer-events-none z-[99998]"
         style={{
           left: ring.x,
           top: ring.y,

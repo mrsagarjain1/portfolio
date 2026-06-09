@@ -29,7 +29,7 @@ export function ScrollHint() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex flex-col items-center gap-4"
+          className="flex fixed bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex-col items-center gap-2 sm:gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
@@ -37,7 +37,7 @@ export function ScrollHint() {
         >
           {/* Subtle text */}
           <motion.p 
-            className="text-lg font-bold text-[#6ee7b7]/80 uppercase tracking-widest drop-shadow-md"
+            className="text-xs sm:text-lg font-bold text-[#6ee7b7]/80 uppercase tracking-widest drop-shadow-md"
             animate={{ opacity: [0.6, 1, 0.6] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >

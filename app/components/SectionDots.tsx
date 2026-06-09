@@ -43,7 +43,7 @@ export function SectionDots() {
 
   return (
     <motion.div
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3"
+      className="hidden md:flex fixed right-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-3"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : 20 }}
       transition={{ duration: 0.4 }}

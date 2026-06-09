@@ -142,7 +142,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
-              className="flex items-center justify-center lg:justify-start gap-8 mb-8"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-8 mb-8"
             >
               <div className="w-px h-10 bg-[#1f1f1f]" />
               {metrics.map((m, i) => (

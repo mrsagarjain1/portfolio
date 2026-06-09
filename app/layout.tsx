@@ -66,7 +66,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} relative overflow-x-hidden`} role="document" aria-label="Sagar Jain portfolio">
+      <body suppressHydrationWarning className={`${inter.className} relative overflow-x-hidden`} role="document" aria-label="Sagar Jain portfolio">
         <SmoothScroll />
         <DynamicTitle />
         <CustomCursor />

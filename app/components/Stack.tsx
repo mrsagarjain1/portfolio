@@ -115,11 +115,7 @@ export default function Stack() {
                 </svg>
                 <span className="text-xs font-medium text-white tracking-wide">GitHub Contributions</span>
               </div>
-              <div className="overflow-x-auto pb-2 scrollbar-hide" dir="rtl">
-                <div dir="ltr" className="w-max min-w-full">
-                  <GitHubHeatmap />
-                </div>
-              </div>
+              <GitHubHeatmap />
             </motion.div>
             </div>
           </ScrollReveal>
