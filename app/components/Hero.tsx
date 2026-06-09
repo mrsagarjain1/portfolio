@@ -2,249 +2,192 @@
 
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { AnimatedText } from "./AnimatedText";
-import { BlurReveal } from "./BlurReveal";
-import { FloatingElement } from "./FloatingElement";
-import { MagneticButton } from "./MagneticButton";
-import { ParallaxSection } from "./ParallaxSection";
-import { ScrollReveal } from "./ScrollReveal";
-import { GlowingText } from "./GlowingText";
-import { MouseParallax } from "./MouseParallax";
-import { FloatingOrb } from "./FloatingOrb";
-import { ElasticReveal } from "./ElasticReveal";
-import { TerminalTyping } from "./TerminalTyping";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const metrics = [
   { value: "20K+", label: "Users" },
-  { value: "1M+", label: "Monthly Impressions/mo" },
-  { value: "3K+", label: "App Downloads" },
+  { value: "1M+", label: "Impressions/mo" },
+  { value: "3K+", label: "Downloads" },
 ];
 
-export default function Hero() {
-  const buttonRef1 = useRef(null);
-  const buttonRef2 = useRef(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // Depth parallax: hero content scrolls up slower than the page
-  const { scrollY } = useScroll();
-  const textY = useTransform(scrollY, [0, 600], [0, -80]);
-  const imageY = useTransform(scrollY, [0, 600], [0, -40]);
-  // Scroll-linked headline reveal
-  const headlineOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const headlineScale = useTransform(scrollY, [0, 300], [1, 0.88]);
+function AnimatedMetric({ value, label, delay }: { value: string; label: string; delay: number }) {
+  const [displayValue, setDisplayValue] = useState("0");
+  const ref = useRef<HTMLDivElement>(null);
+  const numVal = parseInt(value.replace(/\D/g, "")) || 0;
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        let start = 0;
+        const duration = 1500;
+        const step = 16;
+        const total = Math.ceil(duration / step);
+        let count = 0;
+        const timer = setInterval(() => {
+          count++;
+          start = Math.round((count / total) * numVal);
+          setDisplayValue(start + value.replace(/[0-9]/g, ""));
+          if (count >= total) {
+            setDisplayValue(value);
+            clearInterval(timer);
+          }
+        }, step);
+        obs.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [value, numVal]);
 
   return (
-    <section ref={sectionRef} className="min-h-screen flex items-center pt-20 pb-12 px-6 relative overflow-hidden" id="hero">
-      {/* Animated gradient orbs with enhanced effects */}
-      <motion.div
-        className="absolute inset-0 -z-10 opacity-40"
-        animate={{
-          y: [0, 20, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-      >
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay }}
+      className="text-center"
+    >
+      <div className="text-2xl font-semibold text-[#e8e8e8] tabular-nums">{displayValue}</div>
+      <div className="text-xs text-[#666] mt-0.5">{label}</div>
+    </motion.div>
+  );
+}
+
+export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollY } = useScroll();
+  const contentY = useTransform(scrollY, [0, 500], [0, -60]);
+  const headlineOpacity = useTransform(scrollY, [0, 250], [1, 0]);
+  const headlineScale = useTransform(scrollY, [0, 250], [1, 0.92]);
+
+  return (
+    <section ref={sectionRef} className="min-h-screen flex items-center justify-center pt-20 pb-16 px-6 relative overflow-hidden" id="hero">
+      <div className="absolute inset-0 pointer-events-none">
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#6ee7b7]/8 rounded-full blur-3xl pointer-events-none"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{ duration: 5, repeat: Infinity }}
+          className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-[#6ee7b7]/4 rounded-full blur-[120px]"
+          animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#6ee7b7]/5 rounded-full blur-3xl pointer-events-none"
-          animate={{
-            y: [0, -20, 0],
-            scale: [1, 0.9, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+          className="absolute bottom-1/3 -right-20 w-[400px] h-[400px] bg-[#34d399]/3 rounded-full blur-[100px]"
+          animate={{ x: [0, -30, 0], y: [0, 20, 0], scale: [1, 0.95, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
-      </motion.div>
+      </div>
 
-      {/* Additional floating orbs */}
-      <FloatingOrb size={150} color="rgba(110, 231, 183, 0.05)" duration={7} className="top-1/3 right-10" />
-      <FloatingOrb size={200} color="rgba(52, 211, 153, 0.03)" duration={9} delay={1} className="bottom-1/3 left-5" />
-      <FloatingOrb size={120} color="rgba(110, 231, 183, 0.04)" duration={8} delay={2} className="top-1/2 right-1/4" />
-
-      <div className="max-w-5xl mx-auto w-full relative z-10">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-16">
-
-          {/* Text — depth parallax: moves faster on scroll */}
-          <motion.div
-            className="flex-1 order-2 lg:order-1"
-            style={{ y: textY }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+      <motion.div className="max-w-5xl mx-auto w-full relative z-10" style={{ y: contentY }}>
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#6ee7b7]/20 bg-[#6ee7b7]/5 mb-6"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7] animate-pulse" />
+              <span className="text-xs font-medium text-[#6ee7b7] tracking-wide">Founder and Applied AI Engineer</span>
+            </motion.div>
 
             <motion.h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#e8e8e8] tracking-tight leading-[1.1] mb-4"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#e8e8e8] tracking-tight leading-[1.08] mb-5"
               style={{ opacity: headlineOpacity, scale: headlineScale }}
             >
-              <AnimatedText text="I build AI" />
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+              >
+                I build AI
+              </motion.span>
               <br />
-              <GlowingText text="products at scale." className="text-[#999]" delay={0.5} />
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
+                className="text-[#6ee7b7]"
+              >
+                products at scale.
+              </motion.span>
             </motion.h1>
 
-            <p className="text-lg text-[#888] leading-relaxed max-w-lg mb-6">
-              <BlurReveal
-                text="AI Engineer and founder building the default coaching infrastructure for competitive gaming. Currently expanding valocoach.ai to mobile and new titles."
-                delay={0.8}
-              />
-            </p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
+              className="text-base text-[#777] leading-relaxed max-w-md mx-auto lg:mx-0 mb-8"
+            >
+              Building the default AI coaching infrastructure for competitive gaming. Expanding valocoach.ai to mobile and new titles.
+            </motion.p>
 
-            <TerminalTyping
-              lines={[
-                "> founder @ valocoach.ai",
-                "> 20k+ users · 1M+ impressions/mo",
-                "> building AI coaching infra for competitive gaming",
-              ]}
-              className="mb-6"
-              startDelay={2}
-              typeSpeed={50}
-            />
-
-            {/* Metrics */}
-            <MouseParallax strength={25} className="flex flex-wrap gap-4 mb-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.1 }}
+              className="flex items-center justify-center lg:justify-start gap-8 mb-8"
+            >
+              <div className="w-px h-10 bg-[#1f1f1f]" />
               {metrics.map((m, i) => (
-                <motion.div
-                  key={m.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 + i * 0.1, duration: 0.6 }}
-                  whileHover={{ scale: 1.08, y: -5 }}
-                  className="px-5 py-3 rounded-lg border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/70 to-[#0a0a0a]/50 backdrop-blur-sm hover:border-[#6ee7b7]/40 hover:from-[#111]/90 hover:to-[#0a0a0a]/70 transition-all cursor-pointer group relative overflow-hidden"
-                >
-                  {/* Animated background */}
-                  <motion.div
-                    className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                    animate={{
-                      background: [
-                        "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                        "radial-gradient(circle at 100% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                        "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                      ],
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  />
-                  <motion.div
-                    className="text-2xl font-semibold text-[#e8e8e8] group-hover:text-[#6ee7b7] transition-colors"
-                    animate={{ color: ["#e8e8e8", "#6ee7b7", "#e8e8e8"] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      delay: i * 0.3,
-                    }}
-                  >
-                    {m.value}
-                  </motion.div>
-                  <div className="text-sm text-[#888] mt-1 group-hover:text-[#6ee7b7] transition-colors">{m.label}</div>
-                </motion.div>
+                <AnimatedMetric key={m.label} value={m.value} label={m.label} delay={1.1 + i * 0.1} />
               ))}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.3, duration: 0.6 }}
-                whileHover={{ scale: 1.08, y: -5 }}
-                className="px-5 py-3 rounded-lg border border-[#6ee7b7]/30 bg-gradient-to-br from-[#6ee7b7]/15 to-[#34d399]/5 backdrop-blur-sm hover:border-[#6ee7b7]/50 hover:from-[#6ee7b7]/20 hover:to-[#34d399]/10 transition-all cursor-pointer group relative overflow-hidden"
-              >
-                {/* Animated background */}
-                <motion.div
-                  className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                  animate={{
-                    background: [
-                      "radial-gradient(circle at 50% 0%, rgba(52, 211, 153, 0.1) 0%, transparent 60%)",
-                      "radial-gradient(circle at 50% 100%, rgba(52, 211, 153, 0.1) 0%, transparent 60%)",
-                      "radial-gradient(circle at 50% 0%, rgba(52, 211, 153, 0.1) 0%, transparent 60%)",
-                    ],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                />
-                <div className="text-2xl font-semibold text-[#6ee7b7] group-hover:text-[#34d399] transition-colors">Revenue</div>
-                <div className="text-sm text-[#888] mt-1 group-hover:text-[#6ee7b7] transition-colors">Generating</div>
-              </motion.div>
-            </MouseParallax>
+            </motion.div>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
-              <MagneticButton
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.2 }}
+              className="flex items-center justify-center lg:justify-start gap-3"
+            >
+              <motion.a
                 href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#6ee7b7] text-[#0a0a0a] text-base font-medium hover:bg-[#34d399] transition-all shadow-lg hover:shadow-[#6ee7b7]/30"
-                strength={0.4}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#e8e8e8] text-[#0a0a0a] text-sm font-semibold hover:bg-white transition-colors"
               >
                 See it live
-                <motion.svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <path
-                    d="M2.5 7H11.5M7.5 3L11.5 7L7.5 11"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </motion.svg>
-              </MagneticButton>
-              <MagneticButton
-                href="#contact"
-                className="inline-flex items-center px-6 py-3 rounded-lg border border-[#1f1f1f] text-[#e8e8e8] text-base font-medium hover:border-[#6ee7b7]/50 hover:bg-[#6ee7b7]/5 transition-all"
-                strength={0.3}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2.5 7H11.5M7.5 3L11.5 7L7.5 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </motion.a>
+              <motion.a
+                href="#work"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg border border-[#2a2a2a] text-[#aaa] text-sm font-medium hover:border-[#6ee7b7]/40 hover:text-[#e8e8e8] transition-all"
               >
-                Work With Me
-              </MagneticButton>
+                View Work
+              </motion.a>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="order-1 lg:order-2 flex-shrink-0"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+          >
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border border-[#1f1f1f] shadow-2xl shadow-[#6ee7b7]/5">
+              <Image
+                src="/headshot.png"
+                alt="Sagar Jain"
+                fill
+                sizes="(max-width: 1024px) 192px, 288px"
+                className="object-cover object-top"
+                priority
+                quality={100}
+                unoptimized={true}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent pointer-events-none" />
             </div>
           </motion.div>
-
-          {/* Headshot — depth parallax */}
-          <FloatingElement intensity={15}>
-            <motion.div
-              className="order-1 lg:order-2 flex-shrink-0"
-              style={{ y: imageY }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            >
-              <motion.div
-                className="relative w-56 h-56 lg:w-80 lg:h-80"
-                whileHover={{ scale: 1.04 }}
-                transition={{ type: "spring", stiffness: 250, damping: 25 }}
-              >
-                <Image
-                  src="/headshot.png"
-                  alt="Sagar Jain"
-                  fill
-                  sizes="(max-width: 1024px) 192px, 256px"
-                  className="rounded-2xl object-cover object-top border border-[#1f1f1f]"
-                  priority
-                  quality={100}
-                  unoptimized={true}
-                />
-              </motion.div>
-            </motion.div>
-          </FloatingElement>
-
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

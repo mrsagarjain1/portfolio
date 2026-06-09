@@ -2,11 +2,11 @@
 
 @theme {
   --color-bg: #0a0a0a;
-  --color-surface: #111111;
+  --color-surface: #0c0c0c;
   --color-border: #1f1f1f;
-  --color-border-subtle: #161616;
+  --color-border-hover: #2a2a2a;
   --color-text: #e8e8e8;
-  --color-muted: #666666;
+  --color-muted: #777777;
   --color-accent: #6ee7b7;
   --color-accent-dim: #059669;
   --font-sans: "Inter", system-ui, sans-serif;
@@ -15,7 +15,6 @@
 html {
   scroll-behavior: smooth;
   background-color: #0a0a0a;
-  scroll-snap-type: y mandatory;
 }
 
 body {
@@ -28,8 +27,7 @@ body {
 }
 
 section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  position: relative;
 }
 
 ::selection {
@@ -54,6 +52,16 @@ section {
   background: #2a2a2a;
 }
 
+/* Motion reduction */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Film grain overlay */
 body::after {
   content: "";
@@ -67,50 +75,7 @@ body::after {
   mix-blend-mode: overlay;
 }
 
-/* Kinetic clip-path reveal animation */
-@keyframes clipReveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0% 0 0); }
-}
-
-.clip-reveal {
-  clip-path: inset(0 100% 0 0);
-  animation: clipReveal 0.9s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-/* Marquee */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.marquee-track {
-  animation: marquee 20s linear infinite;
-  will-change: transform;
-}
-
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Glass panel utility */
+.glass-panel {
+  @apply border border-[#1f1f1f] bg-[#0c0c0c]/70 backdrop-blur-xl;
 }

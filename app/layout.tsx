@@ -9,8 +9,6 @@ import { AmbientBackground } from "./components/AmbientBackground";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
-import { GlitchTransition } from "./components/GlitchTransition";
-import { PerspectiveScroll } from "./components/PerspectiveScroll";
 import { MouseTrail } from "./components/MouseTrail";
 import { ShaderBackground } from "./components/ShaderBackground";
 
@@ -35,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} relative overflow-x-hidden`}>
+      <body className={`${inter.className} relative overflow-x-hidden`} role="document" aria-label="Sagar Jain portfolio">
         <SmoothScroll />
         <CustomCursor />
         <MouseTrail />
@@ -43,16 +41,13 @@ export default function RootLayout({
         <ShaderBackground />
         <AmbientBackground />
         <SectionDots />
-        <GlitchTransition />
         <ScrollProgress />
         <ScrollHint />
-        <PerspectiveScroll>
-          <CursorGlow>
-            <div className="relative z-10">
-              {children}
-            </div>
-          </CursorGlow>
-        </PerspectiveScroll>
+        <CursorGlow>
+          <div className="relative z-10" role="main">
+            {children}
+          </div>
+        </CursorGlow>
       </body>
     </html>
   );

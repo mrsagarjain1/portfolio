@@ -2,9 +2,6 @@
 
 import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
-import { MagneticButton } from "./MagneticButton";
-import { ScrollReveal } from "./ScrollReveal";
-import { FloatingOrb } from "./FloatingOrb";
 import { ClipReveal } from "./ClipReveal";
 
 const socials = [
@@ -38,150 +35,73 @@ const socials = [
   },
 ];
 
-const contactItemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
-  }),
-};
-
 export default function Contact() {
   return (
     <ScrollAnimation>
       <motion.section 
         id="contact" 
-        className="py-6 px-6 border-t border-[#1f1f1f] relative"
+        className="py-16 px-6 border-t border-[#1f1f1f]"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-150px" }}
+        viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
       <div className="max-w-5xl mx-auto">
-        {/* Floating ambient elements */}
-        <FloatingOrb size={170} color="rgba(110, 231, 183, 0.04)" duration={9} className="absolute top-1/3 right-10" />
-        <FloatingOrb size={140} color="rgba(52, 211, 153, 0.03)" duration={7} delay={2} className="absolute bottom-1/3 -left-5" />
-
-        <ScrollReveal>
-          <div className="max-w-xl">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-              Contact
-            </span>
-          </motion.div>
+        <div className="max-w-xl">
+          <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
+            Contact
+          </span>
           <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
             <ClipReveal>Let's build something.</ClipReveal>
           </h2>
-          <p className="text-sm text-[#888] leading-relaxed mb-10">
-            Open to collaborating on AI products, gaming tech, and esports
-            platforms. If you're working on something interesting, reach out.
+          <p className="text-sm text-[#777] leading-relaxed mb-10">
+            Open to collaborating on AI products, gaming tech, and esports platforms.
           </p>
-          </div>
-        </ScrollReveal>
 
-        {/* Email */}
-        <div className="max-w-xl">
-          <MagneticButton
+          {/* Email CTA */}
+          <motion.a
             href="mailto:mrsagarjain1@gmail.com"
-            className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#6ee7b7]/20 bg-gradient-to-r from-[#111]/70 to-[#0a0a0a]/50 backdrop-blur-sm hover:border-[#6ee7b7]/50 hover:from-[#111]/90 hover:to-[#0a0a0a]/70 transition-all mb-4 relative overflow-hidden"
-            strength={0.2}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.99 }}
+            className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] hover:border-[#6ee7b7]/30 transition-colors mb-4"
           >
-            {/* Animated background */}
-            <motion.div
-              className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-              animate={{
-                background: [
-                  "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                  "radial-gradient(circle at 100% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                  "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.1) 0%, transparent 60%)",
-                ],
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
             <div>
-              <p className="text-xs text-[#6ee7b7] mb-1 font-semibold uppercase tracking-wide">Email</p>
+              <p className="text-xs text-[#555] mb-1 font-medium uppercase tracking-wide">Email</p>
               <p className="text-sm font-medium text-[#e8e8e8] group-hover:text-[#6ee7b7] transition-colors">mrsagarjain1@gmail.com</p>
             </div>
-            <motion.svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className="text-[#6ee7b7] transition-colors"
-              animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <path
-                d="M3 8H13M9 4L13 8L9 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </motion.svg>
-          </MagneticButton>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[#6ee7b7]">
+              <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </motion.a>
 
           {/* Social links */}
-          <motion.div
-            className="flex gap-3"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1,
-                  delayChildren: 0.3,
-                },
-              },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
-          >
+          <div className="flex gap-3">
             {socials.map((s, i) => (
-              <MagneticButton
+              <motion.a
                 key={s.label}
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/60 to-[#0a0a0a]/40 backdrop-blur-sm text-[#888] hover:text-[#e8e8e8] hover:border-[#6ee7b7]/50 hover:from-[#111]/80 hover:to-[#0a0a0a]/60 transition-all text-sm group relative overflow-hidden"
-                strength={0.25}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] text-[#888] hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
               >
-                {/* Hover glow */}
-                <motion.div
-                  className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                  animate={{
-                    background: [
-                      "radial-gradient(circle at 0% 0%, rgba(110, 231, 183, 0.1) 0%, transparent 50%)",
-                      "radial-gradient(circle at 100% 100%, rgba(110, 231, 183, 0.1) 0%, transparent 50%)",
-                      "radial-gradient(circle at 0% 0%, rgba(110, 231, 183, 0.1) 0%, transparent 50%)",
-                    ],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, delay: i * 0.1 }}
-                />
-                <motion.span className="group-hover:text-[#6ee7b7] transition-colors">
-                  {s.icon}
-                </motion.span>
-                <span className="hidden sm:block group-hover:text-[#6ee7b7] transition-colors">{s.label}</span>
-              </MagneticButton>
+                <span className="group-hover:text-[#6ee7b7] transition-colors">{s.icon}</span>
+                <span className="hidden sm:block">{s.label}</span>
+              </motion.a>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* Footer */}
         <div className="mt-24 pt-8 border-t border-[#1f1f1f] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-[#666]">Sagar Jain · 2026</p>
-          <p className="text-xs text-[#666] italic">
-            Build fast. Learn faster. Play to win.
-          </p>
+          <p className="text-xs text-[#555]">Sagar Jain · 2026</p>
+          <p className="text-xs text-[#555] italic">Build fast. Learn faster. Play to win.</p>
         </div>
-
       </div>
       </motion.section>
     </ScrollAnimation>

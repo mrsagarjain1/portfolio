@@ -3,7 +3,6 @@
 import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
-import { FloatingOrb } from "./FloatingOrb";
 import { ClipReveal } from "./ClipReveal";
 
 const milestones = [
@@ -76,10 +75,6 @@ export default function Story() {
             </p>
           </div>
         </ScrollReveal>
-
-        {/* Floating ambient elements */}
-        <FloatingOrb size={160} color="rgba(110, 231, 183, 0.04)" duration={9} className="absolute top-1/3 right-5" />
-        <FloatingOrb size={130} color="rgba(52, 211, 153, 0.03)" duration={7} delay={1.5} className="absolute bottom-1/3 -left-10" />
 
         <div className="relative">
           {/* Vertical line */}

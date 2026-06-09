@@ -4,7 +4,6 @@ import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { StackItem } from "./StackItem";
 import { ScrollReveal } from "./ScrollReveal";
-import { FloatingOrb } from "./FloatingOrb";
 import { ClipReveal } from "./ClipReveal";
 
 const stackItems = [
@@ -32,9 +31,6 @@ export default function Stack() {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
       <div className="max-w-5xl mx-auto">
-        {/* Floating ambient elements */}
-        <FloatingOrb size={200} color="rgba(110, 231, 183, 0.04)" duration={10} className="absolute top-1/4 -right-20" />
-        <FloatingOrb size={150} color="rgba(52, 211, 153, 0.03)" duration={8} delay={1} className="absolute bottom-1/4 -left-20" />
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
 
@@ -117,11 +113,25 @@ export default function Stack() {
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
               How I build.
             </h2>
-            <p className="text-sm text-[#888] leading-relaxed mb-6">
+            <p className="text-sm text-[#777] leading-relaxed mb-6">
               Focused on AI backends that power real products at scale. Every tool
               is chosen because it ships faster and holds up under load.
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            {/* Connected ecosystem grid */}
+            <div className="relative grid grid-cols-2 gap-3">
+              {/* Subtle connecting lines between categories */}
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                <svg className="w-full h-full" viewBox="0 0 200 200" fill="none">
+                  <motion.line x1="50" y1="0" x2="50" y2="50" stroke="#6ee7b7" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.15"
+                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.3 }} />
+                  <motion.line x1="150" y1="50" x2="150" y2="100" stroke="#34d399" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.15"
+                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.5 }} />
+                  <motion.line x1="50" y1="100" x2="50" y2="150" stroke="#6ee7b7" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.15"
+                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.7 }} />
+                  <motion.line x1="150" y1="150" x2="150" y2="200" stroke="#34d399" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.15"
+                    initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.9 }} />
+                </svg>
+              </div>
               {stackItems.map((s, idx) => (
                 <StackItem key={s.name} name={s.name} category={s.category} index={idx} />
               ))}
