@@ -62,6 +62,16 @@ section {
   }
 }
 
+/* Atmospheric vignette */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.45) 100%);
+}
+
 /* Film grain overlay */
 body::after {
   content: "";
@@ -78,4 +88,56 @@ body::after {
 /* Glass panel utility */
 .glass-panel {
   @apply border border-[#1f1f1f] bg-[#0c0c0c]/70 backdrop-blur-xl;
+}
+
+/* Liquid glass button — glossy highlight tracking cursor */
+.glass-btn {
+  position: relative;
+  overflow: hidden;
+}
+.glass-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(110,231,183,0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.glass-btn:hover::after {
+  opacity: 1;
+}
+
+/* Text gradient flow */
+@keyframes gradientFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.text-gradient-flow {
+  background: linear-gradient(90deg, #6ee7b7, #34d399, #6ee7b7);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 4s ease infinite;
+}
+
+/* Scroll velocity blur */
+@media (prefers-reduced-motion: no-preference) {
+  .scrolling-fast section {
+    filter: blur(1px);
+    transition: filter 0.4s ease;
+  }
+  section {
+    transition: filter 0.4s ease;
+  }
+}
+
+/* Geometry connector dots */
+@keyframes connectorPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.4); }
+}
+.connector-dot {
+  animation: connectorPulse 3s ease-in-out infinite;
 }

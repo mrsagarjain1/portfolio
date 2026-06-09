@@ -8,6 +8,7 @@ import { AnimatedCounter } from "./AnimatedCounter";
 import { FeatureCard } from "./FeatureCard";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
+import { AnimatedUnderline } from "./AnimatedUnderline";
 
 const features = [
   {
@@ -89,6 +90,7 @@ export default function Work() {
               >
                 <ClipReveal><BlurReveal text="valocoach.ai" /></ClipReveal>
               </motion.h2>
+              <AnimatedUnderline className="mt-2 max-w-xs" />
               <a
                 href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
                 target="_blank"

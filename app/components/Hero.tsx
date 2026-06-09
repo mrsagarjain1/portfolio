@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { GeometryFigure } from "./GeometryFigure";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -80,6 +81,8 @@ export default function Hero() {
         />
       </div>
 
+      <GeometryFigure />
+
       <motion.div className="max-w-5xl mx-auto w-full relative z-10" style={{ y: contentY }}>
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
           <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
@@ -109,7 +112,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-                className="text-[#6ee7b7]"
+                className="text-gradient-flow"
               >
                 products at scale.
               </motion.span>
@@ -148,7 +151,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#e8e8e8] text-[#0a0a0a] text-sm font-semibold hover:bg-white transition-colors"
+                className="glass-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#e8e8e8] text-[#0a0a0a] text-sm font-semibold hover:bg-white transition-colors"
               >
                 See it live
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

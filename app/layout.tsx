@@ -11,6 +11,9 @@ import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
 import { MouseTrail } from "./components/MouseTrail";
 import { ShaderBackground } from "./components/ShaderBackground";
+import { DynamicTitle } from "./components/DynamicTitle";
+import { MagneticElements } from "./components/MagneticElements";
+import { ScrollVelocityBlur } from "./components/ScrollVelocityBlur";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,8 +38,11 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} relative overflow-x-hidden`} role="document" aria-label="Sagar Jain portfolio">
         <SmoothScroll />
+        <DynamicTitle />
         <CustomCursor />
         <MouseTrail />
+        <MagneticElements />
+        <ScrollVelocityBlur />
         <PageIntro />
         <ShaderBackground />
         <AmbientBackground />

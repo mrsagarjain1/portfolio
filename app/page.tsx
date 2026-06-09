@@ -4,9 +4,10 @@ import Work from "./components/Work";
 import Story from "./components/Story";
 import Stack from "./components/Stack";
 import Contact from "./components/Contact";
+import { GeometryConnector } from "./components/GeometryConnector";
 
 function SectionDivider() {
-  return <div className="max-w-5xl mx-auto px-6" aria-hidden="true"><div className="border-t border-[#1f1f1f]" /></div>;
+  return <GeometryConnector />;
 }
 
 export default function Home() {

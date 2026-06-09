@@ -4,6 +4,7 @@ import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
+import { AnimatedUnderline } from "./AnimatedUnderline";
 
 const milestones = [
   {
@@ -70,6 +71,7 @@ export default function Story() {
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3">
               <ClipReveal>How it started.</ClipReveal>
             </h2>
+            <AnimatedUnderline className="mt-2 max-w-xs" />
             <p className="text-[#888] mt-3 max-w-lg text-sm leading-relaxed">
               The best products are built by people who lived the problem.
             </p>
