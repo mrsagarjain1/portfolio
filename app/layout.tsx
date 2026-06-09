@@ -5,6 +5,8 @@ import { EnhancedAnimatedBackground } from "./components/EnhancedAnimatedBackgro
 import { ScrollProgress } from "./components/ScrollProgress";
 import { ScrollHint } from "./components/ScrollHint";
 import { CursorGlow } from "./components/CursorGlow";
+import { PageIntro } from "./components/PageIntro";
+import { AmbientBackground } from "./components/AmbientBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} relative overflow-x-hidden`}>
+        <PageIntro />
+        <AmbientBackground />
         <ScrollProgress />
         <EnhancedAnimatedBackground />
         <ScrollHint />

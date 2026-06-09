@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { StackItem } from "./StackItem";
 import { ScrollReveal } from "./ScrollReveal";
 import { FloatingOrb } from "./FloatingOrb";
+import { ClipReveal } from "./ClipReveal";
 
 const stackItems = [
   { name: "Python", category: "Language" },
@@ -22,7 +23,14 @@ const learning = ["Agentic AI", "Deep Learning", "LangGraph", "LangChain"];
 export default function Stack() {
   return (
     <ScrollAnimation>
-      <section id="stack" className="py-6 px-6 border-t border-[#1f1f1f] relative">
+      <motion.section 
+        id="stack" 
+        className="py-6 px-6 border-t border-[#1f1f1f] relative"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-150px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
       <div className="max-w-5xl mx-auto">
         {/* Floating ambient elements */}
         <FloatingOrb size={200} color="rgba(110, 231, 183, 0.04)" duration={10} className="absolute top-1/4 -right-20" />
@@ -37,9 +45,9 @@ export default function Stack() {
               About
             </span>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-6">
-              The person
+              <ClipReveal>The person</ClipReveal>
               <br />
-              behind the product.
+              <ClipReveal delay={0.1}>behind the product.</ClipReveal>
             </h2>
             <div className="space-y-4 text-sm text-[#888] leading-relaxed">
               <p>
@@ -122,7 +130,7 @@ export default function Stack() {
 
         </div>
       </div>
-      </section>
+      </motion.section>
     </ScrollAnimation>
   );
 }

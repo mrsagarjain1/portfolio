@@ -25,15 +25,15 @@ export default function Navbar() {
         scrolled ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#1f1f1f]" : ""
       }`}
     >
-      <nav className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="max-w-5xl mx-auto px-6 py-8 flex items-center justify-between">
         <motion.a
           href="#"
-          whileHover={{ scale: 1.05 }}
-          className="text-sm font-medium text-[#e8e8e8] tracking-tight hover:text-[#6ee7b7] transition-colors"
+          whileHover={{ scale: 1.08 }}
+          className="text-2xl font-semibold text-[#e8e8e8] tracking-tight hover:text-[#6ee7b7] transition-colors"
         >
           Sagar Jain
         </motion.a>
-        <ul className="flex items-center gap-8">
+        <ul className="flex items-center gap-12">
           {links.map((l, i) => (
             <motion.li
               key={l.label}
@@ -44,7 +44,7 @@ export default function Navbar() {
               <motion.a
                 href={l.href}
                 whileHover={{ y: -2 }}
-                className="text-sm text-[#888] hover:text-[#6ee7b7] transition-colors relative group"
+                className="text-lg text-[#888] hover:text-[#6ee7b7] transition-colors relative group font-medium"
               >
                 {l.label}
                 <motion.span

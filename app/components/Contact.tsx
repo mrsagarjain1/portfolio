@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { MagneticButton } from "./MagneticButton";
 import { ScrollReveal } from "./ScrollReveal";
 import { FloatingOrb } from "./FloatingOrb";
+import { ClipReveal } from "./ClipReveal";
 
 const socials = [
   {
@@ -49,7 +50,14 @@ const contactItemVariants = {
 export default function Contact() {
   return (
     <ScrollAnimation>
-      <section id="contact" className="py-6 px-6 border-t border-[#1f1f1f] relative">
+      <motion.section 
+        id="contact" 
+        className="py-6 px-6 border-t border-[#1f1f1f] relative"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-150px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
       <div className="max-w-5xl mx-auto">
         {/* Floating ambient elements */}
         <FloatingOrb size={170} color="rgba(110, 231, 183, 0.04)" duration={9} className="absolute top-1/3 right-10" />
@@ -68,7 +76,7 @@ export default function Contact() {
             </span>
           </motion.div>
           <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
-            Let's build something.
+            <ClipReveal>Let's build something.</ClipReveal>
           </h2>
           <p className="text-sm text-[#888] leading-relaxed mb-10">
             Open to collaborating on AI products, gaming tech, and esports
@@ -175,7 +183,7 @@ export default function Contact() {
         </div>
 
       </div>
-      </section>
+      </motion.section>
     </ScrollAnimation>
   );
 }

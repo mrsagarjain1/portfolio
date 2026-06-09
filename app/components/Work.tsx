@@ -10,6 +10,7 @@ import { InteractiveSpotlight } from "./InteractiveSpotlight";
 import { FeatureCard } from "./FeatureCard";
 import { ScrollReveal } from "./ScrollReveal";
 import { FloatingOrb } from "./FloatingOrb";
+import { ClipReveal } from "./ClipReveal";
 
 const features = [
   {
@@ -68,7 +69,14 @@ export default function Work() {
 
   return (
     <ScrollAnimation>
-      <section id="work" className="py-6 px-6 border-t border-[#1f1f1f] relative">
+      <motion.section 
+        id="work" 
+        className="py-6 px-6 border-t border-[#1f1f1f] relative"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-150px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
         <motion.div
@@ -104,7 +112,7 @@ export default function Work() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight"
               >
-                <BlurReveal text="valocoach.ai" />
+                <ClipReveal><BlurReveal text="valocoach.ai" /></ClipReveal>
               </motion.h2>
               <a
                 href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
@@ -267,7 +275,7 @@ export default function Work() {
         </a>
 
       </div>
-    </section>
+    </motion.section>
     </ScrollAnimation>
   );
 }

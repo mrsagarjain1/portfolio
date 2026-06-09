@@ -15,6 +15,7 @@
 html {
   scroll-behavior: smooth;
   background-color: #0a0a0a;
+  scroll-snap-type: y mandatory;
 }
 
 body {
@@ -23,6 +24,11 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 ::selection {
@@ -45,6 +51,41 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #2a2a2a;
+}
+
+/* Film grain overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  mix-blend-mode: overlay;
+}
+
+/* Kinetic clip-path reveal animation */
+@keyframes clipReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+.clip-reveal {
+  clip-path: inset(0 100% 0 0);
+  animation: clipReveal 0.9s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 20s linear infinite;
+  will-change: transform;
 }
 
 

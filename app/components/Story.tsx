@@ -4,6 +4,7 @@ import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 import { FloatingOrb } from "./FloatingOrb";
+import { ClipReveal } from "./ClipReveal";
 
 const milestones = [
   {
@@ -45,7 +46,14 @@ const milestoneVariants = {
 export default function Story() {
   return (
     <ScrollAnimation>
-      <section id="story" className="py-6 px-6 border-t border-[#1f1f1f]">
+      <motion.section 
+        id="story" 
+        className="py-6 px-6 border-t border-[#1f1f1f]"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-150px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
       <div className="max-w-5xl mx-auto">
 
         <ScrollReveal>
@@ -61,7 +69,7 @@ export default function Story() {
               </span>
             </motion.div>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3">
-              How it started.
+              <ClipReveal>How it started.</ClipReveal>
             </h2>
             <p className="text-[#888] mt-3 max-w-lg text-sm leading-relaxed">
               The best products are built by people who lived the problem.
@@ -137,7 +145,7 @@ export default function Story() {
           </div>
         </div>
       </div>
-      </section>
+      </motion.section>
     </ScrollAnimation>
   );
 }
