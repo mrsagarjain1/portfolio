@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { GeometryFigure } from "./GeometryFigure";
 import { OrbitingRing, ProgressRing } from "./OrbitingRing";
 
 const metrics = [
@@ -93,8 +92,6 @@ export default function Hero() {
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
       </div>
-
-      <GeometryFigure />
 
       <motion.div className="max-w-5xl mx-auto w-full relative z-10" style={{ y: contentY }}>
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-20">

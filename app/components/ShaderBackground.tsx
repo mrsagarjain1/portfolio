@@ -77,5 +77,5 @@ export function ShaderBackground() {
     raf = requestAnimationFrame(tick);
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(raf); r.dispose(); if (c.contains(r.domElement)) c.removeChild(r.domElement); };
   }, []);
-  return <div ref={ref} className="fixed inset-0 pointer-events-none z-0" style={{ opacity: 0.6 }} />;
+  return <div ref={ref} className="fixed inset-0 pointer-events-none z-0" style={{ opacity: 0.35 }} />;
 }
