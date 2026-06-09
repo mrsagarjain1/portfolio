@@ -180,18 +180,12 @@ export default function Work() {
           ))}
         </motion.div>
 
-        {/* Features grid with 3D transforms */}
-        <motion.div
-          className="grid sm:grid-cols-2 gap-4 mb-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-        >
+        {/* Features grid */}
+        <div className="grid sm:grid-cols-2 gap-4 mb-6">
           {features.map((f, idx) => (
             <FeatureCard key={f.title} title={f.title} description={f.description} index={idx} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Tech stack */}
         <motion.div

@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef } from "react";
 import { motion } from "framer-motion";
-import { useCard3D } from "@/app/hooks/useMouseEffects";
 
 interface StackItemProps {
   name: string;
@@ -11,43 +9,26 @@ interface StackItemProps {
 }
 
 export function StackItem({ name, category, index }: StackItemProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const rotation = useCard3D(cardRef);
-
   return (
     <motion.div
-      ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ delay: index * 0.05 }}
-      className="p-4 rounded-xl border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/60 to-[#0a0a0a]/40 backdrop-blur-sm hover:border-[#6ee7b7]/50 hover:from-[#111]/80 hover:to-[#0a0a0a]/60 transition-all group relative overflow-hidden"
-      whileHover={{ y: -4, scale: 1.05 }}
-      style={{
-        perspective: "1000px",
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{
+        duration: 0.4,
+        delay: index * 0.06,
+        ease: [0.25, 0.46, 0.45, 0.94],
       }}
-      animate={{
-        rotateX: rotation.x,
-        rotateY: rotation.y,
-      }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      className="group p-4 rounded-xl border border-[#1f1f1f] bg-[#0c0c0c] transition-colors hover:border-[#6ee7b7]/40"
+      style={{ willChange: "transform", transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
     >
-      {/* Hover glow */}
-      <motion.div
-        className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.08) 0%, transparent 50%)",
-            "radial-gradient(circle at 100% 50%, rgba(110, 231, 183, 0.08) 0%, transparent 50%)",
-            "radial-gradient(circle at 0% 50%, rgba(110, 231, 183, 0.08) 0%, transparent 50%)",
-          ],
-        }}
-        transition={{ duration: 3, repeat: Infinity }}
-      />
-      <p className="text-xs text-[#888] group-hover:text-[#6ee7b7] transition-colors mb-1 font-semibold uppercase tracking-wide">
+      <p className="text-[10px] text-[#555] tracking-widest uppercase mb-1 font-medium">
         {category}
       </p>
-      <p className="text-sm font-medium text-[#e8e8e8] group-hover:text-[#34d399] transition-colors">{name}</p>
+      <p className="text-sm font-semibold text-[#e8e8e8] group-hover:text-[#6ee7b7] transition-colors duration-300">
+        {name}
+      </p>
     </motion.div>
   );
 }
