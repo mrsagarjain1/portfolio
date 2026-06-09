@@ -1,7 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import { ScrollAnimation } from "./ScrollAnimation";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { StackItem } from "./StackItem";
 import { ScrollReveal } from "./ScrollReveal";
 import { FloatingOrb } from "./FloatingOrb";
@@ -21,6 +22,12 @@ const stackItems = [
 const learning = ["Agentic AI", "Deep Learning", "LangGraph", "LangChain"];
 
 export default function Stack() {
+  const stackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: stackRef,
+    offset: ["start end", "end start"],
+  });
+  const stackX = useTransform(scrollYProgress, [0, 1], [80, -80]);
   return (
     <ScrollAnimation>
       <motion.section 
@@ -121,11 +128,15 @@ export default function Stack() {
               Focused on AI backends that power real products at scale. Every tool
               is chosen because it ships faster and holds up under load.
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <motion.div
+              ref={stackRef}
+              className="grid grid-cols-2 gap-3"
+              style={{ x: stackX }}
+            >
               {stackItems.map((s, idx) => (
                 <StackItem key={s.name} name={s.name} category={s.category} index={idx} />
               ))}
-            </div>
+            </motion.div>
           </ScrollReveal>
 
         </div>

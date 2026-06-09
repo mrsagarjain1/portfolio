@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { ScrambleText } from "./ScrambleText";
 
 const links = [
   { label: "Work", href: "#work" },
@@ -46,7 +47,7 @@ export default function Navbar() {
                 whileHover={{ y: -2 }}
                 className="text-lg text-[#888] hover:text-[#6ee7b7] transition-colors relative group font-medium"
               >
-                {l.label}
+                <ScrambleText text={l.label} />
                 <motion.span
                   className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6ee7b7] to-transparent group-hover:w-full transition-all"
                   layoutId={`underline-${l.label}`}

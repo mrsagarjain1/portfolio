@@ -12,7 +12,6 @@ import { GlowingText } from "./GlowingText";
 import { MouseParallax } from "./MouseParallax";
 import { FloatingOrb } from "./FloatingOrb";
 import { useRef, useState, useEffect } from "react";
-import { useCard3D } from "../hooks/useMouseEffects";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -23,15 +22,16 @@ const metrics = [
 export default function Hero() {
   const buttonRef1 = useRef(null);
   const buttonRef2 = useRef(null);
-  const headshotRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const headshot3D = useCard3D(headshotRef as React.RefObject<HTMLElement>);
 
   // Depth parallax: hero content scrolls up slower than the page
   const { scrollY } = useScroll();
   const textY = useTransform(scrollY, [0, 600], [0, -80]);
   const imageY = useTransform(scrollY, [0, 600], [0, -40]);
+  // Scroll-linked headline reveal
+  const headlineOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const headlineScale = useTransform(scrollY, [0, 300], [1, 0.88]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -88,11 +88,14 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#e8e8e8] tracking-tight leading-[1.1] mb-4">
+            <motion.h1
+              className="text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#e8e8e8] tracking-tight leading-[1.1] mb-4"
+              style={{ opacity: headlineOpacity, scale: headlineScale }}
+            >
               <AnimatedText text="I build AI" />
               <br />
               <GlowingText text="products at scale." className="text-[#999]" delay={0.5} />
-            </h1>
+            </motion.h1>
 
             <p className="text-lg text-[#888] leading-relaxed max-w-lg mb-6">
               <BlurReveal
@@ -199,7 +202,7 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Headshot — depth parallax: moves slower on scroll + 3D tilt */}
+          {/* Headshot — depth parallax */}
           <FloatingElement intensity={15}>
             <motion.div
               className="order-1 lg:order-2 flex-shrink-0"
@@ -209,24 +212,10 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
               <motion.div
-                ref={headshotRef}
                 className="relative w-56 h-56 lg:w-80 lg:h-80"
-                style={{
-                  perspective: "1000px",
-                  rotateX: headshot3D.x,
-                  rotateY: headshot3D.y,
-                  transformStyle: "preserve-3d",
-                }}
                 whileHover={{ scale: 1.04 }}
                 transition={{ type: "spring", stiffness: 250, damping: 25 }}
               >
-                {/* Tilt glow */}
-                <motion.div
-                  className="absolute inset-0 rounded-2xl pointer-events-none z-10"
-                  style={{
-                    background: `radial-gradient(circle at ${50 + headshot3D.y * 3}% ${50 - headshot3D.x * 3}%, rgba(110,231,183,0.12) 0%, transparent 70%)`,
-                  }}
-                />
                 <Image
                   src="/headshot.png"
                   alt="Sagar Jain"

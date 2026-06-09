@@ -7,6 +7,10 @@ import { ScrollHint } from "./components/ScrollHint";
 import { CursorGlow } from "./components/CursorGlow";
 import { PageIntro } from "./components/PageIntro";
 import { AmbientBackground } from "./components/AmbientBackground";
+import { SmoothScroll } from "./components/SmoothScroll";
+import { CustomCursor } from "./components/CustomCursor";
+import { SectionDots } from "./components/SectionDots";
+import { GlitchTransition } from "./components/GlitchTransition";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,8 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} relative overflow-x-hidden`}>
+        <SmoothScroll />
+        <CustomCursor />
         <PageIntro />
         <AmbientBackground />
+        <SectionDots />
+        <GlitchTransition />
         <ScrollProgress />
         <EnhancedAnimatedBackground />
         <ScrollHint />
