@@ -30,11 +30,11 @@ export function GlowingText({ text, className = "", delay = 0 }: GlowingTextProp
               "0 0 10px rgba(110, 231, 183, 0.6)",
               "0 0 0px rgba(110, 231, 183, 0)",
             ],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            delay: idx * 0.05,
+            transition: {
+              duration: 2,
+              repeat: Infinity,
+              delay: idx * 0.05,
+            },
           }}
         >
           {char === " " ? "\u00A0" : char}

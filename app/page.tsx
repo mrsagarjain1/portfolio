@@ -13,7 +13,7 @@ function SectionDivider() {
 
 export default function Home() {
   return (
-    <main className="bg-[#0a0a0a] min-h-screen" role="main" aria-label="Portfolio content">
+    <main className="bg-transparent min-h-screen" role="main" aria-label="Portfolio content">
       <Navbar />
       <Hero />
       <MorphingBlob />

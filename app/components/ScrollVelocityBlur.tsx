@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 export function ScrollVelocityBlur() {
   const lastY = useRef(0);
   const lastTime = useRef(0);
-  const fastTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const fastTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: no-preference)");
@@ -20,7 +20,7 @@ export function ScrollVelocityBlur() {
       // If scrolling fast, add blur class
       if (velocity > 1.2) {
         document.body.classList.add("scrolling-fast");
-        clearTimeout(fastTimeout.current);
+        if (fastTimeout.current) clearTimeout(fastTimeout.current);
         fastTimeout.current = setTimeout(() => {
           document.body.classList.remove("scrolling-fast");
         }, 300);
@@ -33,7 +33,7 @@ export function ScrollVelocityBlur() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      clearTimeout(fastTimeout.current);
+      if (fastTimeout.current) clearTimeout(fastTimeout.current);
       document.body.classList.remove("scrolling-fast");
     };
   }, []);

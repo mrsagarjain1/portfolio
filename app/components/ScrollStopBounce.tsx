@@ -3,13 +3,15 @@
 import { useEffect, useRef } from "react";
 
 export function ScrollStopBounce() {
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
       document.body.classList.add("scrolling");
       document.body.classList.remove("scroll-stopped");
-      clearTimeout(timeout.current);
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
       timeout.current = setTimeout(() => {
         document.body.classList.remove("scrolling");
         document.body.classList.add("scroll-stopped");
@@ -17,7 +19,7 @@ export function ScrollStopBounce() {
       }, 150);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); clearTimeout(timeout.current); };
+    return () => { window.removeEventListener("scroll", onScroll); if (timeout.current) clearTimeout(timeout.current); };
   }, []);
 
   return null;

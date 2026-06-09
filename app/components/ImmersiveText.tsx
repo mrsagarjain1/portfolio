@@ -1,7 +1,7 @@
 "use client";
 
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 
 interface ImmersiveTextProps {
   text: string;
@@ -16,14 +16,21 @@ export function ImmersiveText({
   as = "div",
   delay = 0,
 }: ImmersiveTextProps) {
-  const { ref, inView } = useInView({
-    threshold: 0.5,
-    triggerOnce: true,
-    margin: "-50px",
-  });
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.5, rootMargin: "-50px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const characters = text.split("");
-  const Element = motion[as as keyof typeof motion] || motion.div;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,25 +44,17 @@ export function ImmersiveText({
   };
 
   const charVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-      rotateZ: -10,
-    },
+    hidden: { opacity: 0, y: 20, rotateZ: -10 },
     visible: {
       opacity: 1,
       y: 0,
       rotateZ: 0,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-      },
+      transition: { type: "spring" as const, stiffness: 200, damping: 20 },
     },
   };
 
   return (
-    <Element
+    <motion.div
       ref={ref}
       className={className}
       variants={containerVariants}
@@ -67,6 +66,6 @@ export function ImmersiveText({
           {char === " " ? "\u00A0" : char}
         </motion.span>
       ))}
-    </Element>
+    </motion.div>
   );
 }

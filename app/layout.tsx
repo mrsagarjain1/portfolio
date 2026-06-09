@@ -5,16 +5,16 @@ import { ScrollProgress } from "./components/ScrollProgress";
 import { ScrollHint } from "./components/ScrollHint";
 import { CursorGlow } from "./components/CursorGlow";
 import { PageIntro } from "./components/PageIntro";
-import { AmbientBackground } from "./components/AmbientBackground";
+import { NeuralMeshBackground } from "./components/NeuralMeshBackground";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
 import { MouseTrail } from "./components/MouseTrail";
-import { ShaderBackground } from "./components/ShaderBackground";
+
 import { DynamicTitle } from "./components/DynamicTitle";
 import { MagneticElements } from "./components/MagneticElements";
 import { ScrollVelocityBlur } from "./components/ScrollVelocityBlur";
-import { DotGrid } from "./components/DotGrid";
+
 import { HoverPreview } from "./components/HoverPreview";
 import { AvailabilityBadge } from "./components/AvailabilityBadge";
 import { RippleEffect } from "./components/RippleEffect";
@@ -52,7 +52,7 @@ export default function RootLayout({
         <MouseTrail />
         <MagneticElements />
         <ScrollVelocityBlur />
-        <DotGrid />
+
         <HoverPreview />
         <AvailabilityBadge />
         <RippleEffect />
@@ -62,8 +62,7 @@ export default function RootLayout({
         <SparkTrail />
         <ContentBrightness />
         <PageIntro />
-        <ShaderBackground />
-        <AmbientBackground />
+        <NeuralMeshBackground />
         <SectionDots />
         <ScrollProgress />
         <ScrollHint />

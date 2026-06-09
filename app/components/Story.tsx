@@ -34,7 +34,9 @@ const milestones = [
   },
 ];
 
-const milestoneVariants = {
+import { Variants } from "framer-motion";
+
+const milestoneVariants: Variants = {
   hidden: { opacity: 0, x: -20 },
   visible: (i: number) => ({
     opacity: 1,
