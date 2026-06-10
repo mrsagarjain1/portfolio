@@ -96,7 +96,7 @@ export default function Hero() {
 
       <motion.div className="max-w-5xl mx-auto w-full relative z-10" style={{ y: contentY }}>
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
-          <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
+          <div className="flex-1 text-center lg:text-left order-2 lg:order-1 relative z-50">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

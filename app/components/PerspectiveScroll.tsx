@@ -18,10 +18,10 @@ export function PerspectiveScroll({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      className="perspective-container"
+      className="perspective-container h-full w-full"
       animate={{ rotateX: tilt.x, rotateY: tilt.y }}
       transition={{ type: "spring", stiffness: 100, damping: 40 }}
-      style={{ perspective: "2000px", transformStyle: "preserve-3d" }}
+      style={{ perspective: "2000px" }}
     >
       {children}
     </motion.div>
