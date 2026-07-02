@@ -13,9 +13,11 @@ export function WaveSection({ children, className = "" }: WaveSectionProps) {
     <div className={`relative ${className}`}>
       {children}
       
-      {/* Wave divider */}
+      {/* Wave divider (purely decorative: hidden from a11y tree and never
+          intercepts pointer/keyboard input directed at underlying content). */}
       <svg
-        className="absolute -bottom-1 left-0 w-full h-16 text-[#0a0a0a]"
+        aria-hidden="true"
+        className="absolute -bottom-1 left-0 w-full h-16 text-[#0a0a0a] pointer-events-none"
         viewBox="0 0 1200 120"
         preserveAspectRatio="none"
       >

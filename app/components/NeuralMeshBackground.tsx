@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
+import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useTabVisibility } from "../hooks/useTabVisibility";
+import { usePerformanceTier } from "../hooks/usePerformanceTier";
+import { computeElementCount } from "../lib/immersive/performance";
+import type { Tier } from "../lib/immersive/types";
+
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const NODE_COUNT_FULL = 500;
-const NODE_COUNT_MOBILE = 80;
-const NODE_COUNT_REDUCED = 50;
+const NODE_COUNT_FULL = 700;
 const PARTICLE_COUNT = 150;
 const K_NEIGHBORS = 3;
 const CONNECTION_RECALC_INTERVAL = 10;
@@ -23,64 +27,51 @@ const VOLUME = { x: 900, y: 600, z: 400 };
 
 type TopologyFn = (i: number, total: number, time: number) => THREE.Vector3;
 
+/**
+ * Build a 3-arm spiral-galaxy topology. Every section of the page now uses a
+ * galaxy so the spiral is a continuous full-page backdrop; the per-section
+ * `windings`/`radiusMax`/`tilt` variations let it gently reshape as the visitor
+ * scrolls instead of sitting perfectly still.
+ */
+function makeGalaxy(opts: {
+  windings: number;
+  radiusMax: number;
+  tilt: number;
+}): TopologyFn {
+  const ARMS = 3;
+  return (i, total, time) => {
+    const arm = i % ARMS;
+    // Fraction along this arm (0 at the core, 1 at the outer tip).
+    const perArm = Math.max(1, Math.floor(total / ARMS));
+    const t = Math.floor(i / ARMS) / perArm;
+    const baseAngle = (arm / ARMS) * Math.PI * 2;
+    const angle = baseAngle + t * opts.windings * Math.PI * 2 + time * 0.15;
+    const radius = 30 + t * opts.radiusMax; // compact enough to stay dense + near-camera
+    // Arm scatter (thicker near the core) + gentle breathing.
+    const scatter = (1 - t) * 8 + Math.sin(i * 0.7 + time * 0.3) * 6;
+
+    const x = Math.cos(angle) * radius + Math.cos(i * 1.3) * scatter;
+    const flat = Math.sin(angle) * radius * 0.85 + Math.sin(i * 1.7) * scatter;
+    const thick = Math.sin(i * 0.9 + time * 0.2) * 40 + Math.sin(t * Math.PI) * 20;
+
+    // Tilt the disk around the X axis so each section views the galaxy at a
+    // slightly different angle.
+    const cos = Math.cos(opts.tilt);
+    const sin = Math.sin(opts.tilt);
+    return new THREE.Vector3(x, flat * cos - thick * sin, flat * sin + thick * cos);
+  };
+}
+
+// Every section is a spiral galaxy; scrolling blends between these variants so
+// the backdrop stays a galaxy the whole way down the page — but each section
+// views it at a distinct orientation (face-on → tilted → near edge-on) so the
+// scroll feels like orbiting the galaxy.
 const topologies: Record<string, TopologyFn> = {
-  // Hero: dense central cluster
-  hero: (i, total, time) => {
-    const phi = Math.acos(1 - (2 * (i + 0.5)) / total);
-    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-    const r = 180 + Math.sin(i * 0.7 + time * 0.3) * 30;
-    return new THREE.Vector3(
-      r * Math.sin(phi) * Math.cos(theta),
-      r * Math.cos(phi) * 0.8,
-      r * Math.sin(phi) * Math.sin(theta) * 0.6
-    );
-  },
-  // Work: expanded distributed network
-  work: (i, total, time) => {
-    const row = Math.floor(i / 14);
-    const col = i % 14;
-    const jitter = Math.sin(i * 3.7 + time * 0.2) * 25;
-    return new THREE.Vector3(
-      (col - 7) * 65 + jitter,
-      (row - total / 28) * 55 + Math.cos(i * 2.1 + time * 0.15) * 20,
-      Math.sin(i * 1.3 + time * 0.1) * 120
-    );
-  },
-  // Story: organic flowing rivers
-  story: (i, total, time) => {
-    const t = i / total;
-    const stream = Math.floor(Math.random() * 1000 + i) % 5;
-    const streamOffset = (stream - 2) * 100;
-    return new THREE.Vector3(
-      (t - 0.5) * 800 + Math.sin(t * 6 + time * 0.2 + stream) * 60,
-      streamOffset + Math.sin(t * 4 + time * 0.3) * 80,
-      Math.cos(t * 3 + time * 0.15 + stream * 0.5) * 150
-    );
-  },
-  // Stack: crystalline lattice
-  stack: (i, total, time) => {
-    const gridSize = Math.ceil(Math.cbrt(total));
-    const x = (i % gridSize) - gridSize / 2;
-    const y = (Math.floor(i / gridSize) % gridSize) - gridSize / 2;
-    const z = Math.floor(i / (gridSize * gridSize)) - gridSize / 2;
-    const breathe = Math.sin(time * 0.2 + i * 0.1) * 5;
-    return new THREE.Vector3(
-      x * 75 + breathe,
-      y * 75 + breathe,
-      z * 75 + breathe
-    );
-  },
-  // Contact: converge to focal point
-  contact: (i, total, time) => {
-    const phi = Math.acos(1 - (2 * (i + 0.5)) / total);
-    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-    const r = 60 + Math.sin(i * 1.2 + time * 0.5) * 30;
-    return new THREE.Vector3(
-      r * Math.sin(phi) * Math.cos(theta),
-      r * Math.cos(phi),
-      r * Math.sin(phi) * Math.sin(theta)
-    );
-  },
+  hero: makeGalaxy({ windings: 1.15, radiusMax: 180, tilt: 0.0 }),
+  work: makeGalaxy({ windings: 1.45, radiusMax: 205, tilt: 0.6 }),
+  story: makeGalaxy({ windings: 1.75, radiusMax: 190, tilt: -0.95 }),
+  stack: makeGalaxy({ windings: 1.05, radiusMax: 215, tilt: 1.15 }),
+  contact: makeGalaxy({ windings: 2.0, radiusMax: 170, tilt: -0.55 }),
 };
 
 // ─── Neuron shader ───────────────────────────────────────────────────────────
@@ -193,20 +184,16 @@ function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
 
-function getNodeCount(): number {
-  if (typeof window === "undefined") return NODE_COUNT_FULL;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reducedMotion) return NODE_COUNT_REDUCED;
-  const isMobile = window.innerWidth < 768 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-  if (isMobile) return NODE_COUNT_MOBILE;
-  return NODE_COUNT_FULL;
-}
-
-function shouldEnableBloom(): boolean {
+/**
+ * Whether the bloom post-processing pass should run. Delegates the capability
+ * decision to the coordination layer's performance tier (which already folds in
+ * `navigator.hardwareConcurrency`) and disables bloom entirely under reduced
+ * motion. A narrow-viewport check is kept to spare small screens the extra pass.
+ */
+function shouldEnableBloom(reducedMotion: boolean, tier: Tier): boolean {
   if (typeof window === "undefined") return false;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reducedMotion) return false;
-  const isMobile = window.innerWidth < 768 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  const isMobile = window.innerWidth < 768 || tier === "minimal";
   return !isMobile;
 }
 
@@ -216,26 +203,96 @@ export function NeuralMeshBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, ndcX: 0, ndcY: 0 });
   const scrollRef = useRef(0);
-  const cleanupRef = useRef<(() => void) | null>(null);
 
-  const init = useCallback(() => {
+  // Coordination-layer signals. The visual pipeline below is unchanged; these
+  // only drive the numeric decisions (element count), the loop lifecycle
+  // (visibility pause/resume, reduced-motion static frame), and the init
+  // fallback.
+  const reducedMotion = useReducedMotion();
+  const tabVisible = useTabVisibility();
+  const performanceTier = usePerformanceTier();
+
+  // Whether WebGL/canvas init failed; when true we render an empty aria-hidden
+  // container so the rest of the page stays fully interactive.
+  const [initFailed, setInitFailed] = useState(false);
+
+  // Live handles into the running scene so the visibility effect can pause and
+  // resume the shared render loop without tearing down and rebuilding the scene.
+  const pauseLoopRef = useRef<(() => void) | null>(null);
+  const resumeLoopRef = useRef<(() => void) | null>(null);
+  // Kept current so the running loop can read the latest visibility each frame.
+  const tabVisibleRef = useRef(tabVisible);
+  tabVisibleRef.current = tabVisible;
+
+  // -------------------------------------------------------------------------
+  // Build (and rebuild) the scene when the element count or motion preference
+  // changes. Visibility is handled separately so it never rebuilds the scene.
+  // -------------------------------------------------------------------------
+  useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // ── Config ──
-    const nodeCount = getNodeCount();
-    const enableBloom = shouldEnableBloom();
-    const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const pixelRatio = Math.min(window.devicePixelRatio, enableBloom ? 1.5 : 1.0);
+    // ── Config (numeric decisions delegated to the coordination layer) ──
+    const cores =
+      typeof navigator !== "undefined"
+        ? navigator.hardwareConcurrency ?? 0
+        : 0;
+    const nodeCount = computeElementCount(
+      performanceTier,
+      cores,
+      NODE_COUNT_FULL,
+    );
+    const enableBloom = shouldEnableBloom(reducedMotion, performanceTier);
+
+    // Resources are tracked as they are created so a failure mid-setup can
+    // dispose only what actually got allocated (Req 7.5).
+    const partial: {
+      renderer: THREE.WebGLRenderer | null;
+      composer: EffectComposer | null;
+      scene: THREE.Scene | null;
+    } = { renderer: null, composer: null, scene: null };
+
+    const disposePartial = () => {
+      partial.scene?.traverse((obj) => {
+        if (
+          obj instanceof THREE.Mesh ||
+          obj instanceof THREE.LineSegments ||
+          obj instanceof THREE.Points
+        ) {
+          obj.geometry.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach((m) => m.dispose());
+          } else {
+            obj.material.dispose();
+          }
+        }
+      });
+      partial.composer?.dispose();
+      partial.renderer?.dispose();
+      if (
+        partial.renderer &&
+        container.contains(partial.renderer.domElement)
+      ) {
+        container.removeChild(partial.renderer.domElement);
+      }
+    };
+
+    // Assigned inside the try so React can register it as the effect cleanup.
+    let cleanup: (() => void) | null = null;
+
+    try {
+      const pixelRatio = Math.min(window.devicePixelRatio, enableBloom ? 1.5 : 1.0);
 
     // ── Scene setup ──
     const scene = new THREE.Scene();
+    partial.scene = scene;
     scene.fog = new THREE.FogExp2(0x050508, 0.0018);
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
     camera.position.set(0, 0, 500);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "high-performance" });
+    partial.renderer = renderer;
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x050508, 1);
@@ -244,6 +301,8 @@ export function NeuralMeshBackground() {
     // ── Post-processing ──
     let composer: EffectComposer | null = null;
     if (enableBloom) {
+      composer = new EffectComposer(renderer);
+      partial.composer = composer;
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
       const bloomPass = new UnrealBloomPass(
@@ -434,7 +493,7 @@ export function NeuralMeshBackground() {
 
     // ── Animation loop ──
     let frameCount = 0;
-    let rafId: number;
+    let rafId: number | null = null;
 
     const tick = (time: number) => {
       const t = time * 0.001; // seconds
@@ -582,11 +641,21 @@ export function NeuralMeshBackground() {
       (particleGeo.attributes.aParticleAlpha as THREE.BufferAttribute).needsUpdate = true;
       (particleGeo.attributes.aParticleSize as THREE.BufferAttribute).needsUpdate = true;
 
-      // ── Camera parallax ──
-      const camTargetX = mouseRef.current.ndcX * 30;
-      const camTargetY = mouseRef.current.ndcY * 20;
-      camera.position.x = lerp(camera.position.x, camTargetX, 0.02);
-      camera.position.y = lerp(camera.position.y, camTargetY, 0.02);
+      // ── Camera: mouse parallax + scroll-driven fly-through ──
+      // Dolly inward and drift laterally as the visitor scrolls, with a gentle
+      // roll, so the galaxy feels like a 3D space being travelled through rather
+      // than a flat backdrop.
+      const camTargetX =
+        mouseRef.current.ndcX * 30 + Math.sin(smoothScroll * Math.PI * 2) * 70;
+      const camTargetY = mouseRef.current.ndcY * 20 + smoothScroll * 40;
+      const camTargetZ = 520 - smoothScroll * 200; // pull closer down the page
+      camera.position.x = lerp(camera.position.x, camTargetX, 0.03);
+      camera.position.y = lerp(camera.position.y, camTargetY, 0.03);
+      camera.position.z = lerp(camera.position.z, camTargetZ, 0.03);
+
+      // Gentle roll of the horizon as you descend the page.
+      const roll = smoothScroll * 0.5;
+      camera.up.set(Math.sin(roll), Math.cos(roll), 0);
       camera.lookAt(0, 0, 0);
 
       // ── Uniforms ──
@@ -600,60 +669,78 @@ export function NeuralMeshBackground() {
         renderer.render(scene, camera);
       }
 
-      if (!reducedMotion) {
+      // Reschedule only while motion is allowed and the tab is visible. Under
+      // reduced motion this renders exactly one static frame (no reschedule);
+      // when the tab is hidden the loop stops within a frame (~16ms << 500ms).
+      if (!reducedMotion && tabVisibleRef.current) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = null;
+      }
+    };
+
+    // Start/stop helpers exposed to the visibility effect so it can pause and
+    // resume the shared loop without tearing down and rebuilding the scene.
+    const startLoop = () => {
+      if (rafId === null && !reducedMotion && tabVisibleRef.current) {
         rafId = requestAnimationFrame(tick);
       }
     };
+    const stopLoop = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
+    pauseLoopRef.current = stopLoop;
+    resumeLoopRef.current = startLoop;
 
+    // Kick off. Under reduced motion the single frame above draws once and does
+    // not schedule further frames; otherwise the continuous loop begins.
     rafId = requestAnimationFrame(tick);
 
-    // If reduced motion, render one frame then stop
-    if (reducedMotion) {
-      // The first RAF will fire, render once, and not schedule another
-    }
-
     // ── Cleanup ──
-    const cleanup = () => {
-      cancelAnimationFrame(rafId);
+    cleanup = () => {
+      stopLoop();
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      pauseLoopRef.current = null;
+      resumeLoopRef.current = null;
+      disposePartial();
+    };
 
-      scene.traverse((obj) => {
-        if (obj instanceof THREE.Mesh || obj instanceof THREE.LineSegments || obj instanceof THREE.Points) {
-          obj.geometry.dispose();
-          if (Array.isArray(obj.material)) {
-            obj.material.forEach((m) => m.dispose());
-          } else {
-            obj.material.dispose();
-          }
-        }
-      });
-
-      renderer.dispose();
-      if (composer) composer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      return cleanup;
+    } catch (error) {
+      // WebGL/canvas init failed: dispose whatever was allocated and fall back
+      // to an empty aria-hidden container so the page stays fully interactive.
+      disposePartial();
+      pauseLoopRef.current = null;
+      resumeLoopRef.current = null;
+      if (process.env.NODE_ENV !== "production") {
+        console.error("NeuralMeshBackground: WebGL init failed", error);
       }
-    };
+      setInitFailed(true);
+      return;
+    }
+  }, [reducedMotion, performanceTier]);
 
-    cleanupRef.current = cleanup;
-    return cleanup;
-  }, []);
-
+  // Pause/resume the running loop on tab-visibility changes without rebuilding
+  // the scene. Under reduced motion there is no continuous loop to control.
   useEffect(() => {
-    const cleanup = init();
-    return () => {
-      if (cleanup) cleanup();
-      else if (cleanupRef.current) cleanupRef.current();
-    };
-  }, [init]);
+    if (reducedMotion) return;
+    if (tabVisible) {
+      resumeLoopRef.current?.();
+    } else {
+      pauseLoopRef.current?.();
+    }
+  }, [tabVisible, reducedMotion]);
 
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.35 }}
+      style={{ zIndex: 0, opacity: initFailed ? 0 : 0.35 }}
       aria-hidden="true"
     />
   );

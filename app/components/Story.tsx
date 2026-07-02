@@ -3,9 +3,9 @@
 import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
-import { ClipReveal } from "./ClipReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
-import { EncryptReveal } from "./EncryptReveal";
+import { ScrambleText } from "./ScrambleText";
+import { ImmersiveText } from "./ImmersiveText";
 
 const milestones = [
   {
@@ -68,11 +68,11 @@ export default function Story() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                <EncryptReveal text="Origin" />
+                <ScrambleText text="Origin" />
               </span>
             </motion.div>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3">
-              <ClipReveal><EncryptReveal text="How it started." /></ClipReveal>
+              <ImmersiveText text="How it started." />
             </h2>
             <AnimatedUnderline className="mt-2 max-w-xs" />
             <p className="text-white mt-3 max-w-lg text-sm leading-relaxed">

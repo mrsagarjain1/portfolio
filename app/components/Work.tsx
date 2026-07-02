@@ -10,6 +10,7 @@ import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
 import { EncryptReveal } from "./EncryptReveal";
+import { ScrambleText } from "./ScrambleText";
 
 const features = [
   {
@@ -78,7 +79,7 @@ export default function Work() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                <EncryptReveal text="Featured Work" />
+                <ScrambleText text="Featured Work" />
               </span>
             </motion.div>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mt-3">
@@ -190,6 +191,17 @@ export default function Work() {
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#6ee7b7]"><path d="M3.18 23.76c.37.21.8.24 1.2.07l12.15-6.93-2.84-2.85L3.18 23.76zM20.6 10.35l-2.94-1.68-3.18 3.18 3.18 3.18 2.97-1.7c.85-.48.85-1.5-.03-1.98zM2 1.96C1.97 2.15 2 2.34 2 2.55v18.88c0 .21.03.4.08.57l.1.1 10.57-10.58v-.24L2.1 1.86l-.1.1zM4.38.17L16.53 7.1l-2.84 2.84L3.18.24C3.58.07 4.01.1 4.38.17z"/></svg>
             Android App
+          </motion.a>
+          <motion.a
+            href="https://apps.apple.com/us/app/valocoach-ai/id6781956574"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#6ee7b7]"><path d="M17.05 12.54c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.81 0-2.07-.92-3.4-.9-1.75.03-3.36 1.02-4.26 2.58-1.82 3.16-.47 7.84 1.3 10.41.86 1.26 1.89 2.67 3.24 2.62 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.28 3.15-2.55.99-1.46 1.4-2.87 1.42-2.94-.03-.01-2.73-1.05-2.76-4.15zM14.63 4.84c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 2-1.09 3.18 1.15.09 2.32-.58 3.04-1.45z"/></svg>
+            iOS App
           </motion.a>
         </div>
 

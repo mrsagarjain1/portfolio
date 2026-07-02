@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { OrbitingRing, ProgressRing } from "./OrbitingRing";
 import { MouseParallax } from "./MouseParallax";
+import { ScrambleText } from "./ScrambleText";
 
 const metrics = [
   { value: "20K+", label: "Users" },
@@ -104,7 +105,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#6ee7b7]/20 bg-[#6ee7b7]/5 mb-6"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7] animate-pulse" />
-              <span className="text-xs font-medium text-[#6ee7b7] tracking-wide">Founder and Applied AI Engineer</span>
+              <ScrambleText text="Founder and Applied AI Engineer" className="text-xs font-medium text-[#6ee7b7] tracking-wide" />
             </motion.div>
 
             <motion.h1

@@ -4,6 +4,8 @@ import { ScrollAnimation } from "./ScrollAnimation";
 import { motion } from "framer-motion";
 import { ClipReveal } from "./ClipReveal";
 import { EncryptReveal } from "./EncryptReveal";
+import { ScrambleText } from "./ScrambleText";
+import { WaveformBars } from "./WaveformBars";
 
 const socials = [
   {
@@ -50,7 +52,7 @@ export default function Contact() {
       <div className="max-w-5xl mx-auto">
         <div className="max-w-xl">
           <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-            <EncryptReveal text="Contact" />
+            <ScrambleText text="Contact" />
           </span>
           <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
             <ClipReveal><EncryptReveal text="Let's build something." /></ClipReveal>
@@ -58,6 +60,13 @@ export default function Contact() {
           <p className="text-sm text-white leading-relaxed mb-10">
             Open to collaborating on AI products, gaming tech, and esports platforms.
           </p>
+
+          {/* Availability accent — decorative "signal alive" indicator */}
+          <div className="flex items-center gap-3 mb-10" aria-hidden="true">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7] animate-pulse" />
+            <span className="text-xs font-medium text-[#6ee7b7] tracking-wide">Available for new projects</span>
+            <WaveformBars count={16} />
+          </div>
 
           {/* Email CTA */}
           <motion.a

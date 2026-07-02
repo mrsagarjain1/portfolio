@@ -23,8 +23,16 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: none;
 }
+
+/*
+ * The native cursor is hidden only while the custom cursor is actually active
+ * (CustomCursor sets `body { cursor: none }` inline when it renders and clears
+ * it on teardown). Keeping this out of the base `body` rule guarantees a
+ * visible pointer indication whenever the custom cursor is not rendered — on a
+ * coarse pointer, under reduced motion, or when the effect is capped out on a
+ * low-performance tier (Req 4.8).
+ */
 
 section {
   position: relative;
@@ -33,6 +41,26 @@ section {
 ::selection {
   background-color: #6ee7b760;
   color: #e8e8e8;
+}
+
+/*
+ * Visible keyboard focus indicator (Req 8.4).
+ *
+ * The immersive layer paints decorative overlays (vignette, film grain) and a
+ * custom cursor at very high z-indexes, but all of them are `pointer-events:
+ * none` and effectively transparent, so a solid, offset outline on the focused
+ * control stays visible above them. Shown only for keyboard focus so pointer
+ * interaction is unaffected, and never suppressed by the immersive layer.
+ */
+:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Avoid a lingering ring on mouse/touch activation while keeping it for keyboard. */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 ::-webkit-scrollbar {

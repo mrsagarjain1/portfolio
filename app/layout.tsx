@@ -25,6 +25,8 @@ import { ScrollStopBounce } from "./components/ScrollStopBounce";
 import { EdgeGlow } from "./components/EdgeGlow";
 import { SparkTrail } from "./components/SparkTrail";
 import { ContentBrightness } from "./components/ContentBrightness";
+import { ImmersiveProvider } from "./components/immersive/ImmersiveProvider";
+import { PerformanceGovernor } from "./components/immersive/PerformanceGovernor";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -129,34 +131,37 @@ export default function RootLayout({
             }),
           }}
         />
-        <SmoothScroll />
-        <DynamicTitle />
-        <CustomCursor />
-        <MouseTrail />
-        <MagneticElements />
-        <ScrollVelocityBlur />
+        <ImmersiveProvider>
+          <PerformanceGovernor />
+          <SmoothScroll />
+          <DynamicTitle />
+          <CustomCursor />
+          <MouseTrail />
+          <MagneticElements />
+          <ScrollVelocityBlur />
 
-        <HoverPreview />
-        <AvailabilityBadge />
-        <RippleEffect />
-        <TimeOfDayTheme />
-        <ScrollStopBounce />
-        <EdgeGlow />
-        <SparkTrail />
-        <ContentBrightness />
-        <PageIntro />
-        <NeuralMeshBackground />
-        <SectionDots />
-        <ScrollProgress />
-        <ScrollHint />
-        <CursorGlow>
-          <div className="relative z-10" role="main">
-            <PerspectiveScroll>
-              <GlitchTransition />
-              {children}
-            </PerspectiveScroll>
-          </div>
-        </CursorGlow>
+          <HoverPreview />
+          <AvailabilityBadge />
+          <RippleEffect />
+          <TimeOfDayTheme />
+          <ScrollStopBounce />
+          <EdgeGlow />
+          <SparkTrail />
+          <ContentBrightness />
+          <PageIntro />
+          <NeuralMeshBackground />
+          <SectionDots />
+          <ScrollProgress />
+          <ScrollHint />
+          <CursorGlow>
+            <div className="relative z-10" role="main">
+              <PerspectiveScroll>
+                <GlitchTransition />
+                {children}
+              </PerspectiveScroll>
+            </div>
+          </CursorGlow>
+        </ImmersiveProvider>
       </body>
     </html>
   );

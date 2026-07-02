@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { StackItem } from "./StackItem";
 import { ScrollReveal } from "./ScrollReveal";
 import { ClipReveal } from "./ClipReveal";
-import { EncryptReveal } from "./EncryptReveal";
+import { ScrambleText } from "./ScrambleText";
 import { GitHubHeatmap } from "./GitHubHeatmap";
 
 const stackItems = [
@@ -40,7 +40,7 @@ export default function Stack() {
           <ScrollReveal>
             <div>
             <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-              <EncryptReveal text="About" />
+              <ScrambleText text="About" />
             </span>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-6">
               <ClipReveal>The person</ClipReveal>
@@ -123,7 +123,7 @@ export default function Stack() {
           {/* Stack */}
           <ScrollReveal>
             <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-              <EncryptReveal text="Tech Stack" />
+              <ScrambleText text="Tech Stack" />
             </span>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
               How I build.
