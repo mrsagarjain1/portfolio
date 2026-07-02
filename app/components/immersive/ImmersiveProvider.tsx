@@ -102,7 +102,18 @@ export interface ImmersiveContextValue extends ImmersiveState {
    * — or recover — the immersive layer's fidelity).
    */
   setPerformanceTier: (tier: Tier) => void;
+  /**
+   * The visitor's manual motion preference: `auto` follows the OS
+   * `prefers-reduced-motion` setting, while `on`/`off` explicitly force the
+   * immersive motion layer regardless of the OS setting.
+   */
+  motionOverride: MotionOverride;
+  /** Set the manual motion preference (see {@link ImmersiveContextValue.motionOverride}). */
+  setMotionOverride: (override: MotionOverride) => void;
 }
+
+/** Manual override for the motion layer, on top of the OS preference. */
+export type MotionOverride = "auto" | "on" | "off";
 
 /** Safe SSR defaults per design.md "Error Handling". */
 const SSR_DEFAULTS: ImmersiveState = {
@@ -128,7 +139,14 @@ function queryMatches(query: string): boolean {
 
 export function ImmersiveProvider({ children }: { children: ReactNode }) {
   // --- Reactive capability signals (SSR-safe defaults, hydrated on mount) ---
-  const [motionEnabled, setMotionEnabled] = useState(SSR_DEFAULTS.motionEnabled);
+  // `osMotionEnabled` reflects the OS `prefers-reduced-motion` setting; the
+  // effective `motionEnabled` below folds in the visitor's manual override.
+  const [osMotionEnabled, setOsMotionEnabled] = useState(
+    SSR_DEFAULTS.motionEnabled,
+  );
+  const [motionOverride, setMotionOverride] = useState<MotionOverride>("auto");
+  const motionEnabled =
+    motionOverride === "auto" ? osMotionEnabled : motionOverride === "on";
   const [pointerType, setPointerType] = useState<PointerType>(
     SSR_DEFAULTS.pointerType,
   );
@@ -161,7 +179,7 @@ export function ImmersiveProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return;
 
     // Resolve the true initial values now that we are on the client.
-    setMotionEnabled(!queryMatches(MOTION_QUERY));
+    setOsMotionEnabled(!queryMatches(MOTION_QUERY));
     setPointerType(
       queryMatches(POINTER_FINE_QUERY) || queryMatches(HOVER_QUERY)
         ? "fine"
@@ -183,7 +201,7 @@ export function ImmersiveProvider({ children }: { children: ReactNode }) {
     const hoverMql = supportsMatchMedia ? window.matchMedia(HOVER_QUERY) : null;
 
     const onMotionChange = (event: MediaQueryListEvent) => {
-      setMotionEnabled(!event.matches);
+      setOsMotionEnabled(!event.matches);
     };
     const onPointerChange = () => {
       setPointerType(
@@ -352,6 +370,8 @@ export function ImmersiveProvider({ children }: { children: ReactNode }) {
       activePointerEffects,
       isPointerEffectActive,
       setPerformanceTier,
+      motionOverride,
+      setMotionOverride,
     }),
     [
       motionEnabled,
@@ -364,6 +384,7 @@ export function ImmersiveProvider({ children }: { children: ReactNode }) {
       activePointerEffects,
       isPointerEffectActive,
       setPerformanceTier,
+      motionOverride,
     ],
   );
 

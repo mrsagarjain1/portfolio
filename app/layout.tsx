@@ -5,7 +5,7 @@ import { ScrollProgress } from "./components/ScrollProgress";
 import { ScrollHint } from "./components/ScrollHint";
 import { CursorGlow } from "./components/CursorGlow";
 import { PageIntro } from "./components/PageIntro";
-import { NeuralMeshBackground } from "./components/NeuralMeshBackground";
+import { NeuralMeshBackgroundLazy } from "./components/NeuralMeshBackgroundLazy";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { CustomCursor } from "./components/CustomCursor";
 import { SectionDots } from "./components/SectionDots";
@@ -25,6 +25,7 @@ import { ScrollStopBounce } from "./components/ScrollStopBounce";
 import { EdgeGlow } from "./components/EdgeGlow";
 import { SparkTrail } from "./components/SparkTrail";
 import { ContentBrightness } from "./components/ContentBrightness";
+import { MotionToggle } from "./components/MotionToggle";
 import { ImmersiveProvider } from "./components/immersive/ImmersiveProvider";
 import { PerformanceGovernor } from "./components/immersive/PerformanceGovernor";
 
@@ -149,10 +150,11 @@ export default function RootLayout({
           <SparkTrail />
           <ContentBrightness />
           <PageIntro />
-          <NeuralMeshBackground />
+          <NeuralMeshBackgroundLazy />
           <SectionDots />
           <ScrollProgress />
           <ScrollHint />
+          <MotionToggle />
           <CursorGlow>
             <div className="relative z-10" role="main">
               <PerspectiveScroll>

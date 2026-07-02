@@ -8,13 +8,13 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useTabVisibility } from "../hooks/useTabVisibility";
-import { usePerformanceTier } from "../hooks/usePerformanceTier";
-import { computeElementCount } from "../lib/immersive/performance";
+import { usePointerBroadcast } from "../hooks/usePointerBroadcast";
+import { computeElementCount, tierFor } from "../lib/immersive/performance";
 import type { Tier } from "../lib/immersive/types";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const NODE_COUNT_FULL = 700;
+const NODE_COUNT_FULL = 500;
 const PARTICLE_COUNT = 150;
 const K_NEIGHBORS = 3;
 const CONNECTION_RECALC_INTERVAL = 10;
@@ -27,51 +27,70 @@ const VOLUME = { x: 900, y: 600, z: 400 };
 
 type TopologyFn = (i: number, total: number, time: number) => THREE.Vector3;
 
-/**
- * Build a 3-arm spiral-galaxy topology. Every section of the page now uses a
- * galaxy so the spiral is a continuous full-page backdrop; the per-section
- * `windings`/`radiusMax`/`tilt` variations let it gently reshape as the visitor
- * scrolls instead of sitting perfectly still.
- */
-function makeGalaxy(opts: {
-  windings: number;
-  radiusMax: number;
-  tilt: number;
-}): TopologyFn {
-  const ARMS = 3;
-  return (i, total, time) => {
-    const arm = i % ARMS;
-    // Fraction along this arm (0 at the core, 1 at the outer tip).
-    const perArm = Math.max(1, Math.floor(total / ARMS));
-    const t = Math.floor(i / ARMS) / perArm;
-    const baseAngle = (arm / ARMS) * Math.PI * 2;
-    const angle = baseAngle + t * opts.windings * Math.PI * 2 + time * 0.15;
-    const radius = 30 + t * opts.radiusMax; // compact enough to stay dense + near-camera
-    // Arm scatter (thicker near the core) + gentle breathing.
-    const scatter = (1 - t) * 8 + Math.sin(i * 0.7 + time * 0.3) * 6;
-
-    const x = Math.cos(angle) * radius + Math.cos(i * 1.3) * scatter;
-    const flat = Math.sin(angle) * radius * 0.85 + Math.sin(i * 1.7) * scatter;
-    const thick = Math.sin(i * 0.9 + time * 0.2) * 40 + Math.sin(t * Math.PI) * 20;
-
-    // Tilt the disk around the X axis so each section views the galaxy at a
-    // slightly different angle.
-    const cos = Math.cos(opts.tilt);
-    const sin = Math.sin(opts.tilt);
-    return new THREE.Vector3(x, flat * cos - thick * sin, flat * sin + thick * cos);
-  };
-}
-
-// Every section is a spiral galaxy; scrolling blends between these variants so
-// the backdrop stays a galaxy the whole way down the page — but each section
-// views it at a distinct orientation (face-on → tilted → near edge-on) so the
-// scroll feels like orbiting the galaxy.
+// Scroll-driven topologies: the background morphs through a distinct shape per
+// section as the visitor scrolls, rather than a single rotating form.
 const topologies: Record<string, TopologyFn> = {
-  hero: makeGalaxy({ windings: 1.15, radiusMax: 180, tilt: 0.0 }),
-  work: makeGalaxy({ windings: 1.45, radiusMax: 205, tilt: 0.6 }),
-  story: makeGalaxy({ windings: 1.75, radiusMax: 190, tilt: -0.95 }),
-  stack: makeGalaxy({ windings: 1.05, radiusMax: 215, tilt: 1.15 }),
-  contact: makeGalaxy({ windings: 2.0, radiusMax: 170, tilt: -0.55 }),
+  // Hero: dense central cluster (Fibonacci-sphere distribution)
+  hero: (i, total, time) => {
+    const phi = Math.acos(1 - (2 * (i + 0.5)) / total);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+    const r = 180 + Math.sin(i * 0.7 + time * 0.3) * 30;
+    return new THREE.Vector3(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.cos(phi) * 0.8,
+      r * Math.sin(phi) * Math.sin(theta) * 0.6
+    );
+  },
+  // Work: expanded distributed network
+  work: (i, total, time) => {
+    const row = Math.floor(i / 14);
+    const col = i % 14;
+    const jitter = Math.sin(i * 3.7 + time * 0.2) * 25;
+    return new THREE.Vector3(
+      (col - 7) * 65 + jitter,
+      (row - total / 28) * 55 + Math.cos(i * 2.1 + time * 0.15) * 20,
+      Math.sin(i * 1.3 + time * 0.1) * 120
+    );
+  },
+  // Story: smooth horizontal flowing streams (deterministic — no per-frame
+  // randomness, so the ribbons flow cleanly instead of shimmering)
+  story: (i, total, time) => {
+    const STREAMS = 6;
+    const stream = i % STREAMS;
+    // Fraction along this stream, left → right.
+    const perStream = Math.max(1, Math.floor(total / STREAMS));
+    const t = Math.floor(i / STREAMS) / perStream;
+    const x = (t - 0.5) * 900;
+    const streamBase = (stream - (STREAMS - 1) / 2) * 90;
+    const y =
+      streamBase + Math.sin(t * Math.PI * 4 + time * 0.5 + stream) * 35;
+    const z = Math.cos(t * Math.PI * 3 + time * 0.3 + stream * 0.7) * 120;
+    return new THREE.Vector3(x, y, z);
+  },
+  // Stack: crystalline lattice
+  stack: (i, total, time) => {
+    const gridSize = Math.ceil(Math.cbrt(total));
+    const x = (i % gridSize) - gridSize / 2;
+    const y = (Math.floor(i / gridSize) % gridSize) - gridSize / 2;
+    const z = Math.floor(i / (gridSize * gridSize)) - gridSize / 2;
+    const breathe = Math.sin(time * 0.2 + i * 0.1) * 5;
+    return new THREE.Vector3(
+      x * 75 + breathe,
+      y * 75 + breathe,
+      z * 75 + breathe
+    );
+  },
+  // Contact: converge to a focal point
+  contact: (i, total, time) => {
+    const phi = Math.acos(1 - (2 * (i + 0.5)) / total);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+    const r = 60 + Math.sin(i * 1.2 + time * 0.5) * 30;
+    return new THREE.Vector3(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.cos(phi),
+      r * Math.sin(phi) * Math.sin(theta)
+    );
+  },
 };
 
 // ─── Neuron shader ───────────────────────────────────────────────────────────
@@ -197,6 +216,17 @@ function shouldEnableBloom(reducedMotion: boolean, tier: Tier): boolean {
   return !isMobile;
 }
 
+/**
+ * Whether the visitor's device/connection asks us to conserve power or data
+ * (e.g. Data Saver enabled). In that case the galaxy renders a single static
+ * frame instead of a continuous loop, saving battery on constrained devices.
+ */
+function prefersLowPower(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const conn = (navigator as { connection?: { saveData?: boolean } }).connection;
+  return !!conn?.saveData;
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function NeuralMeshBackground() {
@@ -210,7 +240,25 @@ export function NeuralMeshBackground() {
   // fallback.
   const reducedMotion = useReducedMotion();
   const tabVisible = useTabVisibility();
-  const performanceTier = usePerformanceTier();
+
+  // The scene is built for the device's initial capability tier, captured once,
+  // so live performance-governor tier changes never trigger a full three.js
+  // scene rebuild (which would stutter exactly when the device is struggling).
+  const [buildTier] = useState<Tier>(() =>
+    typeof navigator !== "undefined"
+      ? tierFor(navigator.hardwareConcurrency ?? 8)
+      : "full",
+  );
+
+  // Drive the mouse ref from the coordination layer's shared, throttled pointer
+  // broadcaster instead of a private `mousemove` listener.
+  usePointerBroadcast(({ x, y }) => {
+    if (typeof window === "undefined") return;
+    mouseRef.current.x = x;
+    mouseRef.current.y = y;
+    mouseRef.current.ndcX = (x / window.innerWidth) * 2 - 1;
+    mouseRef.current.ndcY = -(y / window.innerHeight) * 2 + 1;
+  });
 
   // Whether WebGL/canvas init failed; when true we render an empty aria-hidden
   // container so the rest of the page stays fully interactive.
@@ -238,11 +286,12 @@ export function NeuralMeshBackground() {
         ? navigator.hardwareConcurrency ?? 0
         : 0;
     const nodeCount = computeElementCount(
-      performanceTier,
+      buildTier,
       cores,
       NODE_COUNT_FULL,
     );
-    const enableBloom = shouldEnableBloom(reducedMotion, performanceTier);
+    const staticMode = reducedMotion || prefersLowPower();
+    const enableBloom = shouldEnableBloom(staticMode, buildTier);
 
     // Resources are tracked as they are created so a failure mid-setup can
     // dispose only what actually got allocated (Req 7.5).
@@ -303,7 +352,6 @@ export function NeuralMeshBackground() {
     if (enableBloom) {
       composer = new EffectComposer(renderer);
       partial.composer = composer;
-      composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
       const bloomPass = new UnrealBloomPass(
         new THREE.Vector2(window.innerWidth * 0.5, window.innerHeight * 0.5),
@@ -379,23 +427,55 @@ export function NeuralMeshBackground() {
     const lines = new THREE.LineSegments(lineGeo, lineMaterial);
     scene.add(lines);
 
-    // Connection index pairs (recalculated periodically)
+    // Connection index pairs (recalculated periodically). A uniform spatial
+    // hash grid keeps this near-linear instead of O(n^2): each node only
+    // compares against nodes in its own and adjacent grid cells.
     let connections: [number, number][] = [];
+    const GRID_CELL = 90; // ≈ neighbor search window; a node scans a 3×3×3 block
 
     function recalcConnections() {
       connections = [];
+
+      // Bucket every node into a grid cell keyed by quantized position.
+      const grid = new Map<string, number[]>();
+      const cellKey = (x: number, y: number, z: number) =>
+        `${Math.floor(x / GRID_CELL)},${Math.floor(y / GRID_CELL)},${Math.floor(z / GRID_CELL)}`;
       for (let i = 0; i < nodeCount; i++) {
-        // Find k nearest neighbors
-        const distances: { idx: number; dist: number }[] = [];
-        for (let j = 0; j < nodeCount; j++) {
-          if (i === j) continue;
-          const dist = nodePositions[i].distanceToSquared(nodePositions[j]);
-          distances.push({ idx: j, dist });
+        const p = nodePositions[i];
+        const k = cellKey(p.x, p.y, p.z);
+        const bucket = grid.get(k);
+        if (bucket) bucket.push(i);
+        else grid.set(k, [i]);
+      }
+
+      for (let i = 0; i < nodeCount; i++) {
+        const p = nodePositions[i];
+        const cx = Math.floor(p.x / GRID_CELL);
+        const cy = Math.floor(p.y / GRID_CELL);
+        const cz = Math.floor(p.z / GRID_CELL);
+
+        // Gather candidates from the 27 neighbouring cells.
+        const candidates: { idx: number; dist: number }[] = [];
+        for (let ox = -1; ox <= 1; ox++) {
+          for (let oy = -1; oy <= 1; oy++) {
+            for (let oz = -1; oz <= 1; oz++) {
+              const bucket = grid.get(`${cx + ox},${cy + oy},${cz + oz}`);
+              if (!bucket) continue;
+              for (const j of bucket) {
+                if (j === i) continue;
+                candidates.push({
+                  idx: j,
+                  dist: p.distanceToSquared(nodePositions[j]),
+                });
+              }
+            }
+          }
         }
-        distances.sort((a, b) => a.dist - b.dist);
-        for (let k = 0; k < Math.min(K_NEIGHBORS, distances.length); k++) {
-          const j = distances[k].idx;
-          // Avoid duplicate pairs
+
+        candidates.sort((a, b) => a.dist - b.dist);
+        for (let k = 0; k < Math.min(K_NEIGHBORS, candidates.length); k++) {
+          const j = candidates[k].idx;
+          // Avoid duplicate pairs (same semantics as the previous O(n^2) pass).
           if (j > i) {
             connections.push([i, j]);
           }
@@ -465,13 +545,6 @@ export function NeuralMeshBackground() {
     }
 
     // ── Event handlers ──
-    const onMouseMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX;
-      mouseRef.current.y = e.clientY;
-      mouseRef.current.ndcX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseRef.current.ndcY = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-
     const onScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       scrollRef.current = maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -486,7 +559,6 @@ export function NeuralMeshBackground() {
       }
     };
 
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     onScroll(); // initial
@@ -641,21 +713,11 @@ export function NeuralMeshBackground() {
       (particleGeo.attributes.aParticleAlpha as THREE.BufferAttribute).needsUpdate = true;
       (particleGeo.attributes.aParticleSize as THREE.BufferAttribute).needsUpdate = true;
 
-      // ── Camera: mouse parallax + scroll-driven fly-through ──
-      // Dolly inward and drift laterally as the visitor scrolls, with a gentle
-      // roll, so the galaxy feels like a 3D space being travelled through rather
-      // than a flat backdrop.
-      const camTargetX =
-        mouseRef.current.ndcX * 30 + Math.sin(smoothScroll * Math.PI * 2) * 70;
-      const camTargetY = mouseRef.current.ndcY * 20 + smoothScroll * 40;
-      const camTargetZ = 520 - smoothScroll * 200; // pull closer down the page
-      camera.position.x = lerp(camera.position.x, camTargetX, 0.03);
-      camera.position.y = lerp(camera.position.y, camTargetY, 0.03);
-      camera.position.z = lerp(camera.position.z, camTargetZ, 0.03);
-
-      // Gentle roll of the horizon as you descend the page.
-      const roll = smoothScroll * 0.5;
-      camera.up.set(Math.sin(roll), Math.cos(roll), 0);
+      // ── Camera parallax ──
+      const camTargetX = mouseRef.current.ndcX * 30;
+      const camTargetY = mouseRef.current.ndcY * 20;
+      camera.position.x = lerp(camera.position.x, camTargetX, 0.02);
+      camera.position.y = lerp(camera.position.y, camTargetY, 0.02);
       camera.lookAt(0, 0, 0);
 
       // ── Uniforms ──
@@ -670,9 +732,9 @@ export function NeuralMeshBackground() {
       }
 
       // Reschedule only while motion is allowed and the tab is visible. Under
-      // reduced motion this renders exactly one static frame (no reschedule);
-      // when the tab is hidden the loop stops within a frame (~16ms << 500ms).
-      if (!reducedMotion && tabVisibleRef.current) {
+      // reduced motion or low-power mode this renders exactly one static frame
+      // (no reschedule); when the tab is hidden the loop stops within a frame.
+      if (!staticMode && tabVisibleRef.current) {
         rafId = requestAnimationFrame(tick);
       } else {
         rafId = null;
@@ -682,7 +744,7 @@ export function NeuralMeshBackground() {
     // Start/stop helpers exposed to the visibility effect so it can pause and
     // resume the shared loop without tearing down and rebuilding the scene.
     const startLoop = () => {
-      if (rafId === null && !reducedMotion && tabVisibleRef.current) {
+      if (rafId === null && !staticMode && tabVisibleRef.current) {
         rafId = requestAnimationFrame(tick);
       }
     };
@@ -702,7 +764,6 @@ export function NeuralMeshBackground() {
     // ── Cleanup ──
     cleanup = () => {
       stopLoop();
-      window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       pauseLoopRef.current = null;
@@ -723,12 +784,12 @@ export function NeuralMeshBackground() {
       setInitFailed(true);
       return;
     }
-  }, [reducedMotion, performanceTier]);
+  }, [reducedMotion, buildTier]);
 
   // Pause/resume the running loop on tab-visibility changes without rebuilding
-  // the scene. Under reduced motion there is no continuous loop to control.
+  // the scene. Under reduced motion / low-power there is no continuous loop.
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || prefersLowPower()) return;
     if (tabVisible) {
       resumeLoopRef.current?.();
     } else {
