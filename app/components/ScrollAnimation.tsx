@@ -10,7 +10,15 @@ interface ScrollAnimationProps {
 
 export function ScrollAnimation({ children, delay = 0 }: ScrollAnimationProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  // Reveal as soon as the top of the block is inside the upper 80% of the
+  // viewport. A percentage-of-height threshold would never fire for a block
+  // taller than the screen allows (a long section on a short window), leaving
+  // it invisible.
+  const isInView = useInView(ref, {
+    once: true,
+    amount: "some",
+    margin: "0px 0px -20% 0px",
+  });
 
   return (
     <motion.div

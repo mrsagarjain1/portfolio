@@ -20,7 +20,7 @@
  */
 
 /** A top-level content region on the home page. */
-export type Section = "Hero" | "Work" | "Story" | "Stack" | "Contact";
+export type Section = "Hero" | "Work" | "Story" | "Journey" | "Stack" | "Contact";
 
 /** The visual-effect categories that are mutually exclusive per Section (Req 2.4). */
 export type EffectCategory = "parallax-depth" | "reveal" | "transition";
@@ -70,10 +70,10 @@ export interface ValidationResult {
  * The idle-component activation matrix, encoded exactly as specified in
  * design.md's "Idle Component Activation Plan" table.
  *
- * `WaveSection` sits at the Story → Stack boundary; it is anchored to `Story`
- * (the Section it follows) as a transition/divider accent. Because `Story`'s
- * only other assignment is a reveal (`ImmersiveText`), the two categories do
- * not collide.
+ * `WaveSection` sits at the Journey → Stack boundary; it is anchored to
+ * `Journey` (the Section it follows) as a transition/divider accent. `Journey`
+ * has no other categorized effect, so nothing collides. (It used to follow
+ * `Story`, before the Journey Section was added between Story and Stack.)
  */
 export const EFFECT_ASSIGNMENT: EffectAssignmentConfig = {
   assignments: [
@@ -103,9 +103,9 @@ export const EFFECT_ASSIGNMENT: EffectAssignmentConfig = {
     },
     {
       component: "WaveSection",
-      section: "Story",
+      section: "Journey",
       category: "transition",
-      note: "Animated wave divider at the Story → Stack boundary, complementing GeometryConnector.",
+      note: "Animated wave divider at the Journey → Stack boundary, complementing GeometryConnector.",
     },
     {
       component: "ScrambleText",

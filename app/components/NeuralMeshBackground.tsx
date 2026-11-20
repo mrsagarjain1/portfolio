@@ -67,6 +67,23 @@ const topologies: Record<string, TopologyFn> = {
     const z = Math.cos(t * Math.PI * 3 + time * 0.3 + stream * 0.7) * 120;
     return new THREE.Vector3(x, y, z);
   },
+  // Journey: a chain of five router-like clusters (one per role on the career
+  // timeline) strung left to right and touching at the edges, like a mesh
+  // network. Deterministic, so the clusters hold their shape.
+  journey: (i, total, time) => {
+    const HUBS = 5;
+    const hub = i % HUBS;
+    const k = Math.floor(i / HUBS); // position inside the cluster
+    const hubX = (hub - (HUBS - 1) / 2) * 190;
+    const hubY = Math.sin(hub * 1.3 + time * 0.2) * 70;
+    const angle = k * 2.399963 + hub; // golden-angle spiral fills the cluster evenly
+    const radius = 14 + Math.sqrt(k) * 8.5;
+    return new THREE.Vector3(
+      hubX + Math.cos(angle) * radius,
+      hubY + Math.sin(angle) * radius * 0.8,
+      Math.sin(k * 1.7 + hub) * 45
+    );
+  },
   // Stack: crystalline lattice
   stack: (i, total, time) => {
     const gridSize = Math.ceil(Math.cbrt(total));
@@ -530,7 +547,7 @@ export function NeuralMeshBackground() {
 
     // ── Scroll / section detection ──
     let smoothScroll = 0;
-    const sectionKeys = ["hero", "work", "story", "stack", "contact"];
+    const sectionKeys = ["hero", "work", "story", "journey", "stack", "contact"];
 
     function getCurrentTopologyBlend(): { from: string; to: string; t: number } {
       const s = smoothScroll;

@@ -1,41 +1,14 @@
 "use client";
 
 import { ScrollAnimation } from "./ScrollAnimation";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
 import { ScrambleText } from "./ScrambleText";
 import { ImmersiveText } from "./ImmersiveText";
+import { story } from "../lib/content";
 
-const milestones = [
-  {
-    number: "01",
-    title: "The Problem, Live",
-    body: "Started as an Iron 2 player with no structured path to improve. Existing content was generic and rarely actionable.",
-  },
-  {
-    number: "02",
-    title: "Proving the Pattern",
-    body: "Reached Immortal within a year. Improvement follows clear, repeatable patterns - but no product delivered this in a personalized way.",
-  },
-  {
-    number: "03",
-    title: "30-Day MVP Launch",
-    body: "While learning LangChain, saw the opportunity to build an AI coaching layer for competitive gaming. Launched the MVP fast. Validated strong early demand.",
-  },
-  {
-    number: "04",
-    title: "Expert Refinement",
-    body: "Worked with 100+ professional coaches to refine the system and introduced a reward-driven engagement loop to improve retention.",
-  },
-  {
-    number: "05",
-    title: "The Platform Vision",
-    body: "Valocoach.ai is building the default AI coaching infrastructure for competitive gamers.",
-  },
-];
-
-import { Variants } from "framer-motion";
+const milestones = story.milestones;
 
 const milestoneVariants: Variants = {
   hidden: { opacity: 0, x: -20 },
@@ -50,7 +23,7 @@ export default function Story() {
   return (
     <ScrollAnimation>
       <motion.section 
-        id="story" 
+        id={story.id}
         className="py-6 px-6 border-t border-[#1f1f1f]"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -68,15 +41,15 @@ export default function Story() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                <ScrambleText text="Origin" />
+                <ScrambleText text={story.eyebrow} />
               </span>
             </motion.div>
             <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3">
-              <ImmersiveText text="How it started." />
+              <ImmersiveText text={story.title} />
             </h2>
             <AnimatedUnderline className="mt-2 max-w-xs" />
             <p className="text-white mt-3 max-w-lg text-sm leading-relaxed">
-              The best products are built by people who lived the problem.
+              {story.lead}
             </p>
           </div>
         </ScrollReveal>

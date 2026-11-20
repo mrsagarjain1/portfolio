@@ -10,7 +10,7 @@ import {
   type Section,
 } from "./effectAssignment";
 
-const sections: Section[] = ["Hero", "Work", "Story", "Stack", "Contact"];
+const sections: Section[] = ["Hero", "Work", "Story", "Journey", "Stack", "Contact"];
 const categories: EffectCategory[] = ["parallax-depth", "reveal", "transition"];
 
 /**
@@ -48,6 +48,12 @@ describe("validateEffectAssignment", () => {
     expect(result.valid).toBe(true);
     expect(result.violations).toEqual([]);
     expect(maxCategoryCountPerSection(EFFECT_ASSIGNMENT)).toBeLessThanOrEqual(1);
+  });
+
+  it("anchors the wave divider to Journey, the Section that now sits just before Stack", () => {
+    const wave = EFFECT_ASSIGNMENT.assignments.find((a) => a.component === "WaveSection");
+    expect(wave?.section).toBe("Journey");
+    expect(wave?.category).toBe("transition");
   });
 
   it("flags a Section that receives two components of the same category", () => {

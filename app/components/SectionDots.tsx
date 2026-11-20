@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const sections = [
-  { id: "hero", label: "Home" },
-  { id: "work", label: "Work" },
-  { id: "story", label: "Story" },
-  { id: "stack", label: "Stack" },
-  { id: "contact", label: "Contact" },
-];
+import { sections } from "../lib/content";
 
 export function SectionDots() {
   const [active, setActive] = useState("hero");
@@ -21,11 +15,14 @@ export function SectionDots() {
     sections.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (!el) return;
+      // Active while the section crosses the middle of the viewport, so tall
+      // sections still register.
       const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(id);
+        (entries) => {
+          // One target per observer: the last entry is its latest state.
+          if (entries[entries.length - 1]?.isIntersecting) setActive(id);
         },
-        { threshold: 0.45 }
+        { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
       );
       obs.observe(el);
       observers.push(obs);

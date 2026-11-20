@@ -2,6 +2,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Work from "./components/Work";
 import Story from "./components/Story";
+import Journey from "./components/Journey";
 import Stack from "./components/Stack";
 import Contact from "./components/Contact";
 import { GeometryConnector } from "./components/GeometryConnector";
@@ -29,7 +30,10 @@ export default function Home() {
       <SectionDivider />
       {/* Story: heading reveal is applied inside Story via ImmersiveText */}
       <Story />
-      {/* Story -> Stack boundary: animated wave divider complementing the connector */}
+      <SectionDivider />
+      {/* Journey: career timeline, from router firmware to AI products */}
+      <Journey />
+      {/* Journey -> Stack boundary: animated wave divider complementing the connector */}
       <WaveSection>
         <SectionDivider />
       </WaveSection>

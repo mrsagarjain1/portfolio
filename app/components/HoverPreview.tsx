@@ -3,19 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface PreviewData {
-  title: string;
-  description: string;
-  stats: string[];
-}
-
-const previews: Record<string, PreviewData> = {
-  valocoach: {
-    title: "valocoach.ai",
-    description: "AI coaching dashboard with real-time match analysis, personalized quests, and agent-specific insights.",
-    stats: ["20K+ Users", "1M+ Impressions/mo", "3K+ App Downloads", "100+ Coaches"],
-  },
-};
+import { previews, type PreviewData } from "../lib/content";
 
 export function HoverPreview() {
   const [preview, setPreview] = useState<{ data: PreviewData; x: number; y: number } | null>(null);

@@ -29,7 +29,7 @@ export function ScrollHint() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="flex fixed bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex-col items-center gap-2 sm:gap-4"
+          className="scroll-hint fixed bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-[100] pointer-events-none flex-col items-center gap-2 sm:gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}

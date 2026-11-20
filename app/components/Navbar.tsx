@@ -3,12 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const links = [
-  { label: "Work", href: "#work" },
-  { label: "Story", href: "#story" },
-  { label: "Stack", href: "#stack" },
-  { label: "Contact", href: "#contact" },
-];
+import { navLinks as links, site } from "../lib/content";
+import { RankMeter } from "./RankMeter";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -42,16 +38,19 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-5xl mx-auto px-6 py-4 md:py-8 flex items-center justify-between">
-        <motion.a
-          href="#"
-          whileHover={{ scale: 1.08 }}
-          className="text-lg md:text-2xl font-semibold text-[#e8e8e8] tracking-tight hover:text-[#6ee7b7] transition-colors"
-        >
-          Sagar Jain
-        </motion.a>
+        <div className="flex items-center gap-3 md:gap-4 lg:gap-5">
+          <motion.a
+            href="#"
+            whileHover={{ scale: 1.08 }}
+            className="text-lg md:text-xl lg:text-2xl font-semibold text-[#e8e8e8] tracking-tight hover:text-[#6ee7b7] transition-colors"
+          >
+            {site.name}
+          </motion.a>
+          <RankMeter />
+        </div>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-12">
+        <ul className="hidden md:flex items-center gap-6 lg:gap-12">
           {links.map((l, i) => (
             <motion.li
               key={l.label}
@@ -62,7 +61,7 @@ export default function Navbar() {
               <motion.a
                 href={l.href}
                 whileHover={{ y: -2 }}
-                className="text-lg text-white hover:text-[#6ee7b7] transition-colors relative group font-medium"
+                className="text-base lg:text-lg text-white hover:text-[#6ee7b7] transition-colors relative group font-medium"
               >
                 <span className="relative z-10">{l.label}</span>
                 <motion.span

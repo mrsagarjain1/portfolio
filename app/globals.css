@@ -150,6 +150,20 @@ body::after {
   animation: gradientFlow 4s ease infinite;
 }
 
+/*
+ * "Scroll to explore" hint. Shown only where it cannot land on the hero buttons:
+ * not on phones, and not on short windows. Display is set here, not with a
+ * utility class, so the two conditions stay in one place.
+ */
+.scroll-hint {
+  display: none;
+}
+@media (min-width: 640px) and (min-height: 860px) {
+  .scroll-hint {
+    display: flex;
+  }
+}
+
 /* Scroll velocity blur */
 @media (prefers-reduced-motion: no-preference) {
   .scrolling-fast section {

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { ScrollAnimation } from "./ScrollAnimation";
 import { BlurReveal } from "./BlurReveal";
@@ -11,46 +10,17 @@ import { ClipReveal } from "./ClipReveal";
 import { AnimatedUnderline } from "./AnimatedUnderline";
 import { EncryptReveal } from "./EncryptReveal";
 import { ScrambleText } from "./ScrambleText";
-
-const features = [
-  {
-    title: "Match Analysis",
-    description:
-      "AI parses every match and surfaces the exact patterns holding your rank back - not generic tips.",
-  },
-  {
-    title: "Personalized Coaching",
-    description:
-      "Coaching that adapts to your playstyle. Built with insights from 100+ professional coaches.",
-  },
-  {
-    title: "Progression Systems",
-    description:
-      "Reward-driven loops keep players engaged and making consistent, measurable progress.",
-  },
-  {
-    title: "Agent & Role Intelligence",
-    description:
-      "Deep role-specific insights. Know exactly what to do on your agent at your rank.",
-  },
-];
-
-const stats = [
-  { value: "20K+", label: "Users" },
-  { value: "1M+", label: "Monthly Impressions" },
-  { value: "3K+", label: "App Downloads" },
-  { value: "100+", label: "Pro Coaches Consulted" },
-];
-
-const techStack = ["Python", "FastAPI", "LangChain", "MongoDB", "Redis", "Vector DB", "Next.js", "React", "Flutter"];
+import { ProductShowcase } from "./ProductShowcase";
+import { Platforms } from "./Platforms";
+import { CoachDemo } from "./CoachDemo";
+import { NeuroWRTCard } from "./NeuroWRTCard";
+import { work } from "../lib/content";
 
 export default function Work() {
-  const [testUsername] = useState("venator#fear");
-
   return (
     <ScrollAnimation>
       <motion.section 
-        id="work" 
+        id={work.id}
         className="py-6 px-6 border-t border-[#1f1f1f] relative"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -79,7 +49,7 @@ export default function Work() {
               transition={{ duration: 0.6 }}
             >
               <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-                <ScrambleText text="Featured Work" />
+                <ScrambleText text={work.eyebrow} />
               </span>
             </motion.div>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mt-3">
@@ -90,34 +60,31 @@ export default function Work() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight"
               >
-                <ClipReveal><EncryptReveal text="valocoach.ai" /></ClipReveal>
+                <ClipReveal><EncryptReveal text={work.title} /></ClipReveal>
               </motion.h2>
               <AnimatedUnderline className="mt-2 max-w-xs" />
               <a
-                href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
+                href={work.liveDemo.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-preview="valocoach"
                 className="inline-flex items-center gap-1.5 text-sm text-[#6ee7b7] hover:text-[#34d399] transition-colors"
               >
-                Live demo
+                {work.liveDemo.label}
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </a>
             </div>
             <p className="text-white mt-3 text-sm leading-relaxed max-w-xl">
-              <BlurReveal
-                text="AI-powered coaching platform that gives every competitive Valorant player access to personalized, data-driven improvement - the kind previously reserved for pro teams."
-                delay={0.3}
-              />
+              <BlurReveal text={work.description} delay={0.3} />
             </p>
           </div>
         </ScrollReveal>
 
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-          {stats.map((s, idx) => (
+          {work.stats.map((s, idx) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 20 }}
@@ -136,24 +103,33 @@ export default function Work() {
           ))}
         </div>
 
-        {/* Features grid */}
-        <div className="grid sm:grid-cols-2 gap-4 mb-6">
-          {features.map((f, idx) => (
-            <FeatureCard key={f.title} title={f.title} description={f.description} index={idx} />
-          ))}
+        {/* The product on screen: web app and phones */}
+        <ProductShowcase />
+
+        {/* Where it runs: web, mobile, Windows */}
+        <Platforms />
+
+        {/* What it does, next to a dated snapshot of the public stats page */}
+        <div className="mb-6 grid gap-4 lg:grid-cols-2 lg:items-stretch">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {work.features.map((f, idx) => (
+              <FeatureCard key={f.title} title={f.title} description={f.description} index={idx} />
+            ))}
+          </div>
+          <CoachDemo />
         </div>
 
         {/* Built with */}
         <motion.div
-          className="p-5 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] mb-4"
+          className="p-5 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] mb-6"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="text-xs text-white uppercase tracking-widest mb-3 font-medium">Built with</p>
+          <p className="text-xs text-white uppercase tracking-widest mb-3 font-medium">{work.builtWithLabel}</p>
           <div className="flex flex-wrap gap-2">
-            {techStack.map((t, i) => (
+            {work.techStack.map((t, i) => (
               <motion.span
                 key={t}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -168,70 +144,8 @@ export default function Work() {
           </div>
         </motion.div>
 
-        {/* Links */}
-        <div className="flex flex-wrap gap-3 mb-4 relative z-50 pointer-events-auto">
-          <motion.a
-            href="https://www.valocoach.ai/statistics?region=ap&name=venator%23fear"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7C1.5 3.96 3.96 1.5 7 1.5C10.04 1.5 12.5 3.96 12.5 7C12.5 10.04 10.04 12.5 7 12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M5 7.5L7 9.5L9 7.5" stroke="#6ee7b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            Web App
-          </motion.a>
-          <motion.a
-            href="https://play.google.com/store/apps/details?id=com.valocoachai"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#6ee7b7]"><path d="M3.18 23.76c.37.21.8.24 1.2.07l12.15-6.93-2.84-2.85L3.18 23.76zM20.6 10.35l-2.94-1.68-3.18 3.18 3.18 3.18 2.97-1.7c.85-.48.85-1.5-.03-1.98zM2 1.96C1.97 2.15 2 2.34 2 2.55v18.88c0 .21.03.4.08.57l.1.1 10.57-10.58v-.24L2.1 1.86l-.1.1zM4.38.17L16.53 7.1l-2.84 2.84L3.18.24C3.58.07 4.01.1 4.38.17z"/></svg>
-            Android App
-          </motion.a>
-          <motion.a
-            href="https://apps.apple.com/us/app/valocoach-ai/id6781956574"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-sm text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#6ee7b7]"><path d="M17.05 12.54c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.81 0-2.07-.92-3.4-.9-1.75.03-3.36 1.02-4.26 2.58-1.82 3.16-.47 7.84 1.3 10.41.86 1.26 1.89 2.67 3.24 2.62 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.28 3.15-2.55.99-1.46 1.4-2.87 1.42-2.94-.03-.01-2.73-1.05-2.76-4.15zM14.63 4.84c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 2-1.09 3.18 1.15.09 2.32-.58 3.04-1.45z"/></svg>
-            iOS App
-          </motion.a>
-        </div>
-
-        {/* Try it callout */}
-        <motion.a
-          href={`https://www.valocoach.ai/statistics?region=ap&name=${encodeURIComponent(testUsername)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.99 }}
-          className="group block p-6 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] hover:border-[#6ee7b7]/30 transition-colors"
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm text-[#e8e8e8] font-medium mb-1">Test it: search venator#fear on the website</p>
-              <p className="text-sm text-white leading-relaxed">
-                See real coaching analysis with KDR, HS%, ACS, win rate, AI insights and personalized quests. No account needed.
-              </p>
-            </div>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 12 12"
-              fill="none"
-              className="text-[#6ee7b7] flex-shrink-0 mt-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-            >
-              <path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </motion.a>
+        {/* A second project: where router firmware meets LLMs */}
+        <NeuroWRTCard />
 
       </div>
     </motion.section>

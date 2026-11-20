@@ -2,27 +2,26 @@
 
 import { useEffect } from "react";
 
-const titles: Record<string, string> = {
-  hero: "Sagar Jain | Applied AI Engineer",
-  work: "Sagar Jain | valocoach.ai",
-  story: "Sagar Jain | Origin Story",
-  stack: "Sagar Jain | Tech Stack",
-  contact: "Sagar Jain | Let's Build",
-};
+import { sectionTitles } from "../lib/content";
 
 export function DynamicTitle() {
   useEffect(() => {
-    const sections = ["hero", "work", "story", "stack", "contact"];
-    const base = "Sagar Jain | Applied AI Engineer";
+    const sections = Object.keys(sectionTitles);
+    const base = sectionTitles.hero;
     document.title = base;
 
+    // A section is "current" while it crosses the middle of the viewport. A
+    // visible-percentage threshold would never fire for a section taller than
+    // the screen allows.
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          document.title = titles[entry.target.id] ?? base;
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            document.title = sectionTitles[entry.target.id] ?? base;
+          }
         }
       },
-      { threshold: 0.5 }
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
     );
 
     sections.forEach((id) => {
