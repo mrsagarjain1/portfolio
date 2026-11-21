@@ -30,9 +30,17 @@ describe("content: one source of truth for numbers", () => {
     expect(projects.featured.stats.map((s) => s.value)).toEqual([
       metrics.users,
       metrics.impressions,
-      metrics.downloads,
+      metrics.androidDownloads,
+      metrics.iosDownloads,
       metrics.coaches,
     ]);
+  });
+
+  it("gives Android and iOS downloads their own numbers, not one combined total", () => {
+    const labels = projects.featured.stats.map((s) => s.label);
+    expect(labels).toContain("Android downloads");
+    expect(labels).toContain("iOS downloads");
+    expect(labels).not.toContain("App downloads");
   });
 
   it("uses the same user count in the search text and the share text", () => {
@@ -43,6 +51,8 @@ describe("content: one source of truth for numbers", () => {
 
   it("carries no stale number from before the update", () => {
     expect(JSON.stringify(content)).not.toContain("20K+");
+    // The old combined download count, quoted so it cannot match inside a longer number like 13K+.
+    expect(JSON.stringify(content)).not.toContain('"3K+"');
   });
 });
 

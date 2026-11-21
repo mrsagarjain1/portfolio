@@ -29,7 +29,8 @@ export function renderShareCard(): ImageResponse {
   const stats = [
     { value: metrics.users, label: "users" },
     { value: metrics.impressions, label: "monthly impressions" },
-    { value: metrics.downloads, label: "app downloads" },
+    { value: metrics.androidDownloads, label: "android downloads" },
+    { value: metrics.iosDownloads, label: "iOS downloads" },
   ];
 
   return new ImageResponse(
@@ -139,14 +140,26 @@ export function renderShareCard(): ImageResponse {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  marginRight: 52,
+                  marginRight: 44,
                 }}
               >
                 <div style={{ display: "flex", fontSize: 50, color: "#e8e8e8" }}>
                   {stat.value}
                 </div>
-                <div style={{ display: "flex", fontSize: 22, color: "#8a8a8a" }}>
-                  {stat.label}
+                {/* One word per line, so four stats fit in the row beside the network. */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    fontSize: 22,
+                    color: "#8a8a8a",
+                  }}
+                >
+                  {stat.label.split(" ").map((word) => (
+                    <div key={word} style={{ display: "flex" }}>
+                      {word}
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}

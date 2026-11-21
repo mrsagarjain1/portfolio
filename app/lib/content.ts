@@ -26,7 +26,8 @@ export const site = {
 export const metrics = {
   users: "25K+",
   impressions: "1M+",
-  downloads: "3K+",
+  androidDownloads: "5K+",
+  iosDownloads: "1K+",
   coaches: "100+",
 } as const;
 
@@ -310,7 +311,8 @@ export const projects = {
     stats: [
       { value: metrics.users, label: "Users" },
       { value: metrics.impressions, label: "Monthly impressions" },
-      { value: metrics.downloads, label: "App downloads" },
+      { value: metrics.androidDownloads, label: "Android downloads" },
+      { value: metrics.iosDownloads, label: "iOS downloads" },
       { value: metrics.coaches, label: "Pro coaches consulted" },
     ] as Metric[],
     tags: ["Python", "FastAPI", "LangChain", "MongoDB", "Redis", "Vector DB", "Next.js", "Flutter"],

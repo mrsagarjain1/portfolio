@@ -25,8 +25,14 @@ function FeaturedProject() {
           <p className="mt-4 text-base leading-relaxed text-body">{featured.description}</p>
 
           <dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-5">
-            {featured.stats.map((stat) => (
-              <div key={stat.label} className="border-t border-text pt-3">
+            {featured.stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                // With an odd number of stats the last one takes a full row instead of leaving a gap.
+                className={`border-t border-text pt-3 ${
+                  i === featured.stats.length - 1 && featured.stats.length % 2 === 1 ? "col-span-2" : ""
+                }`}
+              >
                 <dd className="display text-3xl tracking-[-0.05em] text-text tabular-nums">
                   <AnimatedCounter value={stat.value} duration={1.2} />
                 </dd>

@@ -47,7 +47,7 @@ Everything visitors read lives in one file, [`app/lib/content.ts`](app/lib/conte
 
 | To change | Edit in `app/lib/content.ts` |
 | :-- | :-- |
-| Users, impressions, downloads, coaches | `metrics` |
+| Users, impressions, Android and iOS downloads, coaches | `metrics` |
 | Hero text and the roles held today | `hero`, `now` |
 | A career entry | `journey.entries` |
 | About text, tech stack, credentials | `about`, `stack`, `credentials` |
