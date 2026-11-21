@@ -1,18 +1,26 @@
 import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 
 import { ImmersiveProvider } from "./immersive/ImmersiveProvider";
 import { AnimatedCounter } from "./AnimatedCounter";
-import { metrics, sections } from "../lib/content";
 import {
-  mockIntersectionObserver,
-  mockMatchMedia,
-  mockRequestAnimationFrame,
-} from "../../vitest.setup";
+  about,
+  contact,
+  experience,
+  hero,
+  links,
+  metrics,
+  navLinks,
+  now,
+  projects,
+  sections,
+  site,
+} from "../lib/content";
+import { mockIntersectionObserver, mockMatchMedia } from "../../vitest.setup";
 
-// The contribution heatmap fetches on mount; stub it so the render stays
-// network-free and deterministic (as the other home-page tests do).
+// The contribution calendar fetches from GitHub. Stub it so the render stays
+// network-free and deterministic.
 vi.mock("./GitHubHeatmap", () => ({
   GitHubHeatmap: () => <div data-testid="github-heatmap" />,
 }));
@@ -31,7 +39,6 @@ function renderHome() {
 beforeEach(() => {
   mockMatchMedia({ matches: false });
   mockIntersectionObserver();
-  mockRequestAnimationFrame();
 });
 
 describe("home page content", () => {
@@ -54,35 +61,128 @@ describe("home page content", () => {
       .map((a) => a.getAttribute("href") ?? "")
       .filter((href) => href.length > 1);
 
-    expect(hrefs.length).toBeGreaterThanOrEqual(5);
+    // The header links plus the two hero buttons.
+    expect(hrefs.length).toBeGreaterThanOrEqual(navLinks.length + 2);
     for (const href of hrefs) {
       expect(document.getElementById(href.slice(1)), href).not.toBeNull();
     }
   });
 
-  it("shows the real hero numbers on first render, never a placeholder zero", () => {
-    const { container } = renderHome();
-    const hero = container.querySelector<HTMLElement>("#hero");
-    expect(hero).not.toBeNull();
-    for (const value of [metrics.users, metrics.impressions, metrics.downloads]) {
-      expect(within(hero as HTMLElement).getByText(value)).toBeInTheDocument();
-    }
-  });
-
-  it("names both current roles in the hero", () => {
-    const { container } = renderHome();
-    const hero = container.querySelector<HTMLElement>("#hero") as HTMLElement;
-    expect(hero).toHaveTextContent("Neural Stats");
-    expect(hero).toHaveTextContent("Aadvik TekLabs");
-  });
-
   it("does not float the availability badge over the page", () => {
     const { container } = renderHome();
     const badge = Array.from(container.querySelectorAll("div")).find((el) =>
-      el.textContent?.startsWith("Open to collaborations"),
+      el.textContent?.startsWith(now.status),
     );
     expect(badge).toBeDefined();
     expect(badge?.className).not.toContain("fixed");
+  });
+});
+
+describe("hero", () => {
+  function renderHero() {
+    const { container } = renderHome();
+    return container.querySelector<HTMLElement>("#hero") as HTMLElement;
+  }
+
+  it("has one main heading with the headline", () => {
+    renderHome();
+    const headings = screen.getAllByRole("heading", { level: 1 });
+    expect(headings).toHaveLength(1);
+    expect(headings[0]).toHaveTextContent(hero.headline.line1);
+    expect(headings[0]).toHaveTextContent(hero.headline.line2);
+  });
+
+  it("shows the photo with a description", () => {
+    const view = within(renderHero());
+    expect(view.getByAltText(hero.photo.alt)).toBeInTheDocument();
+  });
+
+  it("names both current roles", () => {
+    const section = renderHero();
+    for (const role of now.roles) {
+      expect(section).toHaveTextContent(role.org);
+      expect(section).toHaveTextContent(role.title);
+    }
+  });
+
+  it("sends the two buttons to the projects and the contact section", () => {
+    const view = within(renderHero());
+    expect(view.getByRole("link", { name: hero.primaryCta.label })).toHaveAttribute(
+      "href",
+      `#${hero.primaryCta.sectionId}`,
+    );
+    expect(view.getByRole("link", { name: hero.secondaryCta.label })).toHaveAttribute(
+      "href",
+      `#${hero.secondaryCta.sectionId}`,
+    );
+  });
+
+  it("gives the icon-only links a name", () => {
+    const view = within(renderHero());
+    for (const name of ["LinkedIn", "GitHub", "X", "Email"]) {
+      expect(view.getByRole("link", { name })).toBeInTheDocument();
+    }
+    expect(view.getByRole("link", { name: "Email" })).toHaveAttribute(
+      "href",
+      `mailto:${site.email}`,
+    );
+  });
+});
+
+describe("contact", () => {
+  it("offers the email address and each social profile by name", () => {
+    const { container } = renderHome();
+    const section = within(container.querySelector<HTMLElement>(`#${contact.id}`) as HTMLElement);
+
+    expect(section.getByRole("link", { name: new RegExp(site.email) })).toHaveAttribute(
+      "href",
+      `mailto:${site.email}`,
+    );
+    for (const social of contact.socials) {
+      expect(section.getByRole("link", { name: social.label })).toHaveAttribute(
+        "href",
+        social.href,
+      );
+    }
+  });
+});
+
+describe("server-rendered page", () => {
+  it("contains the whole page as plain HTML, so search engines and link previews see it", () => {
+    mockMatchMedia({ matches: false });
+    const html = renderToString(
+      <ImmersiveProvider>
+        <Home />
+      </ImmersiveProvider>,
+    );
+    // Decode entities such as the apostrophe in "Let's".
+    const text = new DOMParser().parseFromString(html, "text/html").body.textContent ?? "";
+
+    const expected = [
+      hero.headline.line1,
+      hero.headline.line2,
+      about.title,
+      projects.title,
+      projects.featured.title,
+      ...projects.items.map((p) => p.title),
+      experience.title,
+      ...experience.entries.map((e) => e.org),
+      contact.title,
+      site.email,
+      metrics.users,
+      metrics.impressions,
+    ];
+    for (const needle of expected) expect(text, needle).toContain(needle);
+  });
+
+  it("links to the live product from the server HTML", () => {
+    mockMatchMedia({ matches: false });
+    const html = renderToString(
+      <ImmersiveProvider>
+        <Home />
+      </ImmersiveProvider>,
+    );
+    expect(html).toContain(`href="${links.web}"`);
   });
 });
 

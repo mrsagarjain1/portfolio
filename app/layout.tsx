@@ -1,33 +1,28 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
-import { ScrollProgress } from "./components/ScrollProgress";
-import { ScrollHint } from "./components/ScrollHint";
-import { CursorGlow } from "./components/CursorGlow";
-import { PageIntro } from "./components/PageIntro";
-import { NeuralMeshBackgroundLazy } from "./components/NeuralMeshBackgroundLazy";
-import { SmoothScroll } from "./components/SmoothScroll";
-import { CustomCursor } from "./components/CustomCursor";
-import { SectionDots } from "./components/SectionDots";
-import { MouseTrail } from "./components/MouseTrail";
-import { PerspectiveScroll } from "./components/PerspectiveScroll";
-import { GlitchTransition } from "./components/GlitchTransition";
-
 import { DynamicTitle } from "./components/DynamicTitle";
-import { MagneticElements } from "./components/MagneticElements";
-import { ScrollVelocityBlur } from "./components/ScrollVelocityBlur";
-
-import { HoverPreview } from "./components/HoverPreview";
-import { RippleEffect } from "./components/RippleEffect";
-import { ScrollStopBounce } from "./components/ScrollStopBounce";
-import { EdgeGlow } from "./components/EdgeGlow";
-import { SparkTrail } from "./components/SparkTrail";
+import { MotionPolicy } from "./components/MotionPolicy";
 import { MotionToggle } from "./components/MotionToggle";
+import { ScrollProgress } from "./components/ScrollProgress";
+import { SectionDots } from "./components/SectionDots";
 import { ImmersiveProvider } from "./components/immersive/ImmersiveProvider";
-import { PerformanceGovernor } from "./components/immersive/PerformanceGovernor";
 import { links, seo, site } from "./lib/content";
 
-const inter = Inter({ subsets: ["latin"] });
+// Display type is Montserrat Bold, labels are DM Mono, body copy is plain Arial.
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: "700",
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-dm-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -98,8 +93,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body suppressHydrationWarning className={`${inter.className} relative overflow-x-hidden`} role="document" aria-label="Sagar Jain portfolio">
+    <html lang="en">
+      <body suppressHydrationWarning className={`${montserrat.variable} ${dmMono.variable} relative overflow-x-clip`} role="document" aria-label="Sagar Jain portfolio">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -107,33 +102,13 @@ export default function RootLayout({
           }}
         />
         <ImmersiveProvider>
-          <PerformanceGovernor />
-          <SmoothScroll />
-          <DynamicTitle />
-          <CustomCursor />
-          <MouseTrail />
-          <MagneticElements />
-          <ScrollVelocityBlur />
-
-          <HoverPreview />
-          <RippleEffect />
-          <ScrollStopBounce />
-          <EdgeGlow />
-          <SparkTrail />
-          <PageIntro />
-          <NeuralMeshBackgroundLazy />
-          <SectionDots />
-          <ScrollProgress />
-          <ScrollHint />
-          <MotionToggle />
-          <CursorGlow>
-            <div className="relative z-10" role="main">
-              <PerspectiveScroll>
-                <GlitchTransition />
-                {children}
-              </PerspectiveScroll>
-            </div>
-          </CursorGlow>
+          <MotionPolicy>
+            <DynamicTitle />
+            <SectionDots />
+            <ScrollProgress />
+            <MotionToggle />
+            <div className="relative z-10">{children}</div>
+          </MotionPolicy>
         </ImmersiveProvider>
       </body>
     </html>

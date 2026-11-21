@@ -6,15 +6,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { navLinks as links, site } from "../lib/content";
 import { RankMeter } from "./RankMeter";
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+/** First name over the rest, like the stacked lowercase wordmark. */
+function wordmarkLines(name: string): string[] {
+  const [first, ...rest] = name.toLowerCase().split(" ");
+  return rest.length > 0 ? [first, rest.join(" ")] : [first];
+}
 
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
+/** Words in the open menu take turns being solid and outlined, tilted a touch. */
+const MENU_STYLES = [
+  { color: "text-menu-1", outline: false, align: "justify-start", tilt: "-1.2deg" },
+  { color: "text-menu-2", outline: true, align: "justify-end", tilt: "0.8deg" },
+  { color: "text-menu-3", outline: false, align: "justify-start", tilt: "-0.6deg" },
+  { color: "text-menu-4", outline: true, align: "justify-end", tilt: "1deg" },
+];
+
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Close menu on resize to desktop
   useEffect(() => {
@@ -32,117 +39,92 @@ export default function Navbar() {
   }, [menuOpen]);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md border-b border-[#222] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] ${
-        scrolled || menuOpen ? "from-[#111]/95 to-[#050505]/95" : ""
-      }`}
-    >
-      <nav className="max-w-5xl mx-auto px-6 py-4 md:py-8 flex items-center justify-between">
-        <div className="flex items-center gap-3 md:gap-4 lg:gap-5">
-          <motion.a
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-text/15 bg-paper">
+      <nav className="mx-auto flex max-w-[110rem] items-center justify-between px-[var(--page-gutter)] py-2.5 md:py-3">
+        <div className="flex items-center gap-4 md:gap-6">
+          <a
             href="#"
-            whileHover={{ scale: 1.08 }}
-            className="text-lg md:text-xl lg:text-2xl font-semibold text-[#e8e8e8] tracking-tight hover:text-[#6ee7b7] transition-colors"
+            aria-label={site.name}
+            className="display flex min-h-11 flex-col justify-center text-[1.35rem] leading-[0.8] tracking-[-0.08em] text-text md:text-[1.6rem]"
           >
-            {site.name}
-          </motion.a>
-          <RankMeter />
+            {wordmarkLines(site.name).map((line) => (
+              <span key={line} aria-hidden="true" className="block">
+                {line}
+              </span>
+            ))}
+          </a>
+          <RankMeter className="rounded-md bg-ink-2 px-2.5 py-1.5" />
         </div>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-6 lg:gap-12">
-          {links.map((l, i) => (
-            <motion.li
-              key={l.label}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <motion.a
+        <ul className="hidden items-center gap-8 md:flex lg:gap-12">
+          {links.map((l) => (
+            <li key={l.label}>
+              <a
                 href={l.href}
-                whileHover={{ y: -2 }}
-                className="text-base lg:text-lg text-white hover:text-[#6ee7b7] transition-colors relative group font-medium"
+                className="relative flex min-h-11 items-center font-mono text-xs uppercase tracking-[0.12em] text-text transition-colors after:absolute after:bottom-2 after:left-0 after:h-0.5 after:w-0 after:bg-red after:transition-all hover:after:w-full lg:text-sm"
               >
-                <span className="relative z-10">{l.label}</span>
-                <motion.span
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6ee7b7] to-transparent group-hover:w-full transition-all"
-                  layoutId={`underline-${l.label}`}
-                />
-              </motion.a>
-            </motion.li>
+                {l.label}
+              </a>
+            </li>
           ))}
         </ul>
 
-        {/* Mobile hamburger */}
+        {/* Mobile hamburger: three bars, the middle one short and ending in a red dot. */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden relative w-8 h-8 flex items-center justify-center"
+          className="relative flex h-12 w-12 items-center justify-center md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
         >
-          <motion.span
-            className="absolute w-5 h-[1.5px] bg-[#e8e8e8] rounded-full"
-            animate={{
-              rotate: menuOpen ? 45 : 0,
-              y: menuOpen ? 0 : -4,
-            }}
-            transition={{ duration: 0.3 }}
+          <span
+            className="absolute h-[3px] w-[23px] rounded-[3px] bg-[#1b1c19] transition-transform duration-300"
+            style={{ transform: menuOpen ? "rotate(45deg)" : "translateY(-7px)" }}
           />
-          <motion.span
-            className="absolute w-5 h-[1.5px] bg-[#e8e8e8] rounded-full"
-            animate={{
-              opacity: menuOpen ? 0 : 1,
-              scaleX: menuOpen ? 0 : 1,
+          <span
+            className="absolute h-[3px] w-4 rounded-[3px] bg-[#1b1c19] transition-opacity duration-200"
+            style={{ opacity: menuOpen ? 0 : 1, transform: "translateX(-3.5px)" }}
+          >
+            <span className="absolute left-[19px] top-0 h-[3px] w-1 rounded-sm bg-[#c45035]" />
+          </span>
+          <span
+            className="absolute h-[3px] w-[14px] rounded-[3px] bg-[#1b1c19] transition-transform duration-300"
+            style={{
+              transform: menuOpen
+                ? "rotate(-45deg) scaleX(1.64)"
+                : "translate(4.5px, 7px)",
             }}
-            transition={{ duration: 0.2 }}
-          />
-          <motion.span
-            className="absolute w-5 h-[1.5px] bg-[#e8e8e8] rounded-full"
-            animate={{
-              rotate: menuOpen ? -45 : 0,
-              y: menuOpen ? 0 : 4,
-            }}
-            transition={{ duration: 0.3 }}
           />
         </button>
       </nav>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu overlay: big display words on ink. */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="md:hidden absolute top-full left-0 right-0 h-[100dvh] bg-gradient-to-b from-[#0a0a0a]/98 to-[#050505]/98 backdrop-blur-md z-40 border-t border-[#222]"
+            className="absolute left-0 right-0 top-full z-40 h-[100dvh] overflow-y-auto bg-ink-2 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
-            <nav className="flex flex-col items-center justify-center h-full gap-8">
-              {links.map((l, i) => (
-                <motion.a
-                  key={l.label}
-                  href={l.href}
-                  onClick={() => setMenuOpen(false)}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
-                  className="text-2xl font-semibold text-white hover:text-[#6ee7b7] transition-colors tracking-tight"
-                >
-                  <span className="relative z-10">{l.label}</span>
-                </motion.a>
-              ))}
-
-              {/* Decorative divider */}
-              <motion.div
-                className="flex items-center gap-3 mt-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#6ee7b7]/40" />
-                <div className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7] shadow-[0_0_8px_rgba(110,231,183,0.6)]" />
-                <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#6ee7b7]/40" />
-              </motion.div>
+            <nav className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[680px] flex-col justify-center gap-4 px-6 pb-24 pt-8">
+              {links.map((l, i) => {
+                const style = MENU_STYLES[i % MENU_STYLES.length];
+                return (
+                  <a
+                    key={l.label}
+                    href={l.href}
+                    onClick={() => setMenuOpen(false)}
+                    style={{ transform: `rotate(${style.tilt})` }}
+                    className={`display flex min-h-[5.5rem] items-center py-3 text-[clamp(2.75rem,14vw,5.25rem)] leading-[0.95] tracking-[-0.065em] ${style.color} ${style.align} ${
+                      style.outline ? "text-outline" : ""
+                    }`}
+                  >
+                    {l.label}
+                  </a>
+                );
+              })}
             </nav>
           </motion.div>
         )}

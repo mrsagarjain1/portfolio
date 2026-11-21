@@ -2,18 +2,15 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 
+import { AmbientBackground } from "./AmbientBackground";
 import { ImmersiveProvider } from "./immersive/ImmersiveProvider";
+import { RankMeter } from "./RankMeter";
 import { ScrollProgress } from "./ScrollProgress";
-import { RippleEffect } from "./RippleEffect";
-import { WaveSection } from "./WaveSection";
-import { WaveformBars } from "./WaveformBars";
-import { MorphingBlob } from "./MorphingBlob";
-import { GeometryConnector } from "./GeometryConnector";
 import {
   mockIntersectionObserver,
   mockMatchMedia,
@@ -21,34 +18,24 @@ import {
 } from "../../vitest.setup";
 
 /**
- * Accessibility component tests (task 16.2).
+ * Accessibility tests.
  *
- * These assert the structural accessibility invariants the immersive layer must
- * uphold — automated coverage only; full WCAG conformance still needs manual
- * assistive-technology testing and expert review.
- *
- *   8.1 Decorative elements are exposed to the a11y tree with no accessible
- *       name and no semantic role (aria-hidden), so screen readers stay silent.
- *   8.2 Decorative overlays never intercept pointer/keyboard events
- *       (pointer-events: none), so underlying content stays interactive.
- *   8.3 Every interactive control is reachable and operable by keyboard in a
- *       focus order that matches the visual reading (DOM) order.
- *   8.4 A visible focus indicator exists and is not suppressed by the layer.
- *   8.5 Purely decorative elements are removed from the keyboard tab sequence.
- *   8.6 The semantic document structure (headings, landmarks, links) is
- *       preserved independently of the immersive layer.
- *
- * _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
+ * These cover the structural invariants automatically: decorative parts stay
+ * silent and out of the way, controls work from the keyboard, the focus ring
+ * is visible, and the document structure is sound. They do not replace testing
+ * with a screen reader and an expert review.
  */
 
-// Stack embeds a GitHub contribution heatmap that fetches on mount; stub it so
-// the home-page render stays network-free and deterministic.
+// The contribution calendar fetches from GitHub. Stub it so the home-page
+// render stays network-free and deterministic.
 vi.mock("./GitHubHeatmap", () => ({
   GitHubHeatmap: () => <div data-testid="github-heatmap" />,
 }));
 
 // Imported after the mock is registered.
 import Home from "../page";
+
+const here = dirname(fileURLToPath(import.meta.url));
 
 function Providers({ children }: { children?: ReactNode }) {
   return <ImmersiveProvider>{children}</ImmersiveProvider>;
@@ -66,7 +53,7 @@ function renderHome() {
 function tabbablesIn(root: HTMLElement): HTMLElement[] {
   return Array.from(
     root.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input, select, textarea, [tabindex]',
+      "a[href], button:not([disabled]), input, select, textarea, [tabindex]",
     ),
   ).filter((el) => el.getAttribute("tabindex") !== "-1");
 }
@@ -75,84 +62,63 @@ beforeEach(() => {
   mockMatchMedia({ matches: false });
   mockIntersectionObserver();
   mockRequestAnimationFrame();
+  // jsdom has no canvas; the background only needs a context to exist.
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(
+    (() => null) as unknown as HTMLCanvasElement["getContext"],
+  );
 });
 
-describe("decorative isolation (Req 8.1)", () => {
-  it("hides decorative components from the accessibility tree with no role/name", () => {
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+describe("decorative parts are silent", () => {
+  it("hides the background, the progress bar and the rank meter from assistive technology", () => {
     render(
       <Providers>
         <ScrollProgress />
-        <RippleEffect />
-        <MorphingBlob />
-        <GeometryConnector />
-        <WaveformBars />
+        <AmbientBackground />
+        <RankMeter />
       </Providers>,
     );
 
-    // Nothing decorative surfaces a role or an accessible name...
+    // Nothing decorative exposes a role or an accessible name...
     expect(screen.queryByRole("img")).toBeNull();
     expect(screen.queryByRole("progressbar")).toBeNull();
     expect(screen.queryByRole("button")).toBeNull();
     expect(screen.queryByRole("link")).toBeNull();
 
-    // ...and every decorative root carries aria-hidden with no aria-label.
-    document
-      .querySelectorAll<HTMLElement>(
-        ".fixed, .wave-bar, canvas, svg",
-      )
-      .forEach((el) => {
-        // Each decorative element (or one of its ancestors) is aria-hidden.
-        const hidden = el.closest('[aria-hidden="true"]');
-        expect(hidden).not.toBeNull();
-        expect(el).not.toHaveAttribute("aria-label");
-      });
-  });
-
-  it("marks the WaveSection wave divider as decorative while preserving its child", () => {
-    const { container } = render(
-      <Providers>
-        <WaveSection>
-          <p>Section content</p>
-        </WaveSection>
-      </Providers>,
-    );
-
-    // The wrapped content is preserved and remains announced.
-    expect(screen.getByText("Section content")).toBeInTheDocument();
-
-    // The wave <svg> is purely decorative: hidden and non-interactive.
-    const svg = container.querySelector("svg");
-    expect(svg).not.toBeNull();
-    expect(svg).toHaveAttribute("aria-hidden", "true");
-    expect(svg).toHaveClass("pointer-events-none");
+    // ...and every decorative root sits inside an aria-hidden element.
+    const roots = document.querySelectorAll<HTMLElement>(".fixed, canvas, svg");
+    expect(roots.length).toBeGreaterThan(0);
+    roots.forEach((el) => {
+      expect(el.closest('[aria-hidden="true"]')).not.toBeNull();
+      expect(el).not.toHaveAttribute("aria-label");
+    });
   });
 });
 
-describe("overlays do not intercept events (Req 8.2)", () => {
-  it("renders full-viewport decorative overlays with pointer-events disabled", () => {
-    const { container } = render(
+describe("decorative layers do not intercept events", () => {
+  it("renders the full-screen background with pointer events off", () => {
+    render(
       <Providers>
-        <ScrollProgress />
-        <RippleEffect />
+        <AmbientBackground />
       </Providers>,
     );
 
-    // The ripple canvas covers the viewport but must let clicks pass through.
-    const canvas = container.querySelector("canvas");
-    expect(canvas).not.toBeNull();
+    const canvas = screen.getByTestId("ambient-background");
     expect(canvas).toHaveClass("pointer-events-none");
     expect(canvas).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("keeps underlying content operable beneath the decorative layer", async () => {
+  it("keeps real content clickable beneath the decorative layer", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
 
     render(
       <Providers>
-        {/* Decorative overlays mounted alongside real interactive content. */}
         <ScrollProgress />
-        <RippleEffect />
+        <AmbientBackground />
         <button type="button" onClick={onClick}>
           Get in touch
         </button>
@@ -168,36 +134,34 @@ describe("overlays do not intercept events (Req 8.2)", () => {
   });
 });
 
-describe("keyboard reachability and focus order (Req 8.3)", () => {
+describe("keyboard reachability and focus order", () => {
   it("exposes interactive controls and reaches them in reading (DOM) order", async () => {
     const user = userEvent.setup();
     const { container } = renderHome();
 
     const tabbables = tabbablesIn(container);
-    // The page has real navigation, email CTA, and social links.
-    expect(tabbables.length).toBeGreaterThanOrEqual(3);
+    // Navigation, buttons, contact and social links.
+    expect(tabbables.length).toBeGreaterThanOrEqual(10);
 
     // Tabbing forward from the top visits controls in DOM/reading order.
-    const sample = tabbables.slice(0, 5);
-    for (const expected of sample) {
+    for (const expected of tabbables.slice(0, 8)) {
       await user.tab();
       expect(document.activeElement).toBe(expected);
     }
   });
 
-  it("makes each representative control individually operable by keyboard", () => {
+  it("lets every control take focus", () => {
     const { container } = renderHome();
 
-    for (const el of tabbablesIn(container).slice(0, 5)) {
+    for (const el of tabbablesIn(container)) {
       el.focus();
       expect(el).toHaveFocus();
     }
   });
 });
 
-describe("visible focus indicator (Req 8.4)", () => {
-  it("defines a non-suppressed :focus-visible outline in the global stylesheet", () => {
-    const here = dirname(fileURLToPath(import.meta.url));
+describe("visible focus indicator", () => {
+  it("defines a :focus-visible outline in the global stylesheet", () => {
     const css = readFileSync(resolve(here, "../globals.css"), "utf8");
 
     // A focus-visible rule exists and paints a real (non-`none`) outline.
@@ -207,47 +171,74 @@ describe("visible focus indicator (Req 8.4)", () => {
   });
 });
 
-describe("decorative elements are not focusable (Req 8.5)", () => {
-  it("keeps every aria-hidden decorative subtree out of the tab sequence", () => {
+describe("decorative elements are not focusable", () => {
+  it("keeps every aria-hidden subtree out of the tab sequence", () => {
     const { container } = renderHome();
 
-    container
-      .querySelectorAll<HTMLElement>('[aria-hidden="true"]')
-      .forEach((hidden) => {
-        // The decorative root itself is not a natively-focusable control...
-        const focusableRoot = hidden.matches(
-          'a[href], button, input, select, textarea',
-        );
-        expect(focusableRoot).toBe(false);
+    const hiddenRoots = container.querySelectorAll<HTMLElement>('[aria-hidden="true"]');
+    expect(hiddenRoots.length).toBeGreaterThan(0);
+    hiddenRoots.forEach((hidden) => {
+      // The decorative root itself is not a focusable control...
+      expect(hidden.matches("a[href], button, input, select, textarea")).toBe(false);
 
-        // ...nor does it contain any focusable descendant that a keyboard could
-        // land on (which would also be an aria-hidden focus trap).
-        const focusableInside = hidden.querySelectorAll(
-          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
-        );
-        expect(focusableInside.length).toBe(0);
-      });
+      // ...and contains nothing a keyboard could land on.
+      const focusableInside = hidden.querySelectorAll(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      expect(focusableInside.length).toBe(0);
+    });
   });
 });
 
-describe("semantic document structure is preserved (Req 8.6)", () => {
-  it("retains landmarks, headings, and links independent of the immersive layer", () => {
+describe("document structure", () => {
+  it("has exactly one main landmark", () => {
+    renderHome();
+    expect(screen.getAllByRole("main")).toHaveLength(1);
+  });
+
+  it("does not add a second main landmark in the root layout", () => {
+    const layout = readFileSync(resolve(here, "../layout.tsx"), "utf8");
+    expect(layout).not.toMatch(/role=["']main["']/);
+  });
+
+  it("has one h1 and never skips a heading level", () => {
     renderHome();
 
-    // Landmark: the primary content region.
-    const main = screen.getByRole("main");
-    expect(main).toBeInTheDocument();
+    const levels = screen
+      .getAllByRole("heading")
+      .map((heading) => Number(heading.tagName.slice(1)));
+    expect(levels.filter((level) => level === 1)).toHaveLength(1);
+    expect(levels[0]).toBe(1);
+    levels.slice(1).forEach((level, i) => {
+      // Going deeper may only go one level at a time.
+      expect(level, `heading ${i + 2}`).toBeLessThanOrEqual(levels[i] + 1);
+    });
+  });
 
-    // Headings survive the reveal/scramble decorations.
-    expect(screen.getAllByRole("heading").length).toBeGreaterThanOrEqual(1);
+  it("has a heading for each section", () => {
+    const { container } = renderHome();
 
-    // Navigable links remain present and named.
-    const links = screen.getAllByRole("link");
-    expect(links.length).toBeGreaterThanOrEqual(1);
+    for (const section of container.querySelectorAll<HTMLElement>("section")) {
+      expect(
+        within(section).getAllByRole("heading").length,
+        `#${section.id}`,
+      ).toBeGreaterThanOrEqual(1);
+    }
+  });
 
-    // The Contact section's real controls are still exposed by role.
-    expect(
-      within(main).getAllByRole("link").length,
-    ).toBeGreaterThanOrEqual(1);
+  it("gives every link, button and image a name a screen reader can read", () => {
+    const { container } = renderHome();
+
+    for (const link of screen.getAllByRole("link")) {
+      expect(link, link.outerHTML).toHaveAccessibleName();
+    }
+    for (const button of screen.getAllByRole("button")) {
+      expect(button, button.outerHTML).toHaveAccessibleName();
+    }
+    const images = container.querySelectorAll("img");
+    expect(images.length).toBeGreaterThan(0);
+    images.forEach((img) => {
+      expect(img.getAttribute("alt")?.trim().length, img.outerHTML).toBeGreaterThan(0);
+    });
   });
 });

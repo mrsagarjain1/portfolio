@@ -40,7 +40,7 @@ export function SectionDots() {
 
   return (
     <motion.div
-      className="hidden md:flex fixed right-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-3"
+      className="hidden md:flex fixed right-3 top-1/2 -translate-y-1/2 z-50 flex-col gap-3"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : 20 }}
       transition={{ duration: 0.4 }}
@@ -52,15 +52,15 @@ export function SectionDots() {
           title={label}
           className="group flex items-center gap-2 justify-end"
         >
-          <span className="text-xs text-[#6ee7b7] tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <span className="font-mono text-[0.7rem] text-red bg-paper px-1.5 py-0.5 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             {label}
           </span>
           <motion.span
-            className="block rounded-full bg-[#6ee7b7] transition-all duration-300"
+            className="block rounded-full bg-red ring-1 ring-[#eee9e5]/70 transition-all duration-300"
             animate={{
               width: active === id ? 20 : 6,
               height: active === id ? 6 : 6,
-              opacity: active === id ? 1 : 0.3,
+              opacity: active === id ? 1 : 0.45,
             }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
           />

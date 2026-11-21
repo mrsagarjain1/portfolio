@@ -1,51 +1,23 @@
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Work from "./components/Work";
-import Story from "./components/Story";
-import Journey from "./components/Journey";
-import Stack from "./components/Stack";
+import About from "./components/About";
 import Contact from "./components/Contact";
-import { GeometryConnector } from "./components/GeometryConnector";
-import { MorphingBlob } from "./components/MorphingBlob";
-import { SectionTransition } from "./components/SectionTransition";
-import { ScrollDepth } from "./components/ScrollDepth";
-import { ParallaxSection } from "./components/ParallaxSection";
-import { WaveSection } from "./components/WaveSection";
+import Experience from "./components/Experience";
+import Hero from "./components/Hero";
+import Navbar from "./components/Navbar";
+import Projects from "./components/Projects";
 
-function SectionDivider() {
-  return <GeometryConnector />;
-}
-
+/**
+ * One page, five sections, in the order a visitor reads them:
+ * who I am, what I built, where I worked, how to reach me.
+ */
 export default function Home() {
   return (
-    <main className="bg-transparent min-h-screen" role="main" aria-label="Portfolio content">
+    <main className="min-h-screen bg-transparent" aria-label="Portfolio content">
       <Navbar />
       <Hero />
-      <MorphingBlob />
-      <SectionDivider />
-      {/* Work: entrance transition (category C) */}
-      <SectionTransition>
-        <Work />
-      </SectionTransition>
-      <SectionDivider />
-      {/* Story: heading reveal is applied inside Story via ImmersiveText */}
-      <Story />
-      <SectionDivider />
-      {/* Journey: career timeline, from router firmware to AI products */}
-      <Journey />
-      {/* Journey -> Stack boundary: animated wave divider complementing the connector */}
-      <WaveSection>
-        <SectionDivider />
-      </WaveSection>
-      {/* Stack: subtle scroll-driven depth tilt (category A) */}
-      <ScrollDepth>
-        <Stack />
-      </ScrollDepth>
-      <SectionDivider />
-      {/* Contact: gentle parallax lift (category A) */}
-      <ParallaxSection>
-        <Contact />
-      </ParallaxSection>
+      <About />
+      <Projects />
+      <Experience />
+      <Contact />
     </main>
   );
 }

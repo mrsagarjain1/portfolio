@@ -1,109 +1,96 @@
-"use client";
-
-import { ScrollAnimation } from "./ScrollAnimation";
-import { motion } from "framer-motion";
-import { ClipReveal } from "./ClipReveal";
-import { EncryptReveal } from "./EncryptReveal";
-import { ScrambleText } from "./ScrambleText";
-import { WaveformBars } from "./WaveformBars";
 import { contact, now, site } from "../lib/content";
+import { ScrollReveal } from "./ScrollReveal";
+import { SectionHeading } from "./SectionHeading";
+import { SocialIcon, type SocialName } from "./SocialIcon";
+import { TabButton } from "./TabButton";
 
-/** Icons for the social links, keyed by the label used in the content file. */
-const socialIcons: Record<string, React.ReactNode> = {
-  LinkedIn: (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-      <circle cx="4" cy="4" r="2"/>
-    </svg>
-  ),
-  GitHub: (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
-    </svg>
-  ),
-  X: (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-    </svg>
-  ),
-};
+/** First name over the rest, for the big wordmark in the footer. */
+function wordmarkLines(name: string): string[] {
+  const [first, ...rest] = name.toLowerCase().split(" ");
+  return rest.length > 0 ? [first, rest.join(" ")] : [first];
+}
+
+const keys: { name: SocialName; href: string; external: boolean }[] = [
+  ...contact.socials.map((s) => ({ name: s.label as SocialName, href: s.href, external: true })),
+  { name: "Email", href: `mailto:${site.email}`, external: false },
+];
 
 export default function Contact() {
   return (
-    <ScrollAnimation>
-      <motion.section 
+    <>
+      <section
         id={contact.id}
-        className="py-16 px-6 border-t border-[#1f1f1f]"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="bg-paper-grey px-[var(--page-gutter)] py-20 text-text sm:py-28"
       >
-      <div className="max-w-5xl mx-auto">
-        <div className="max-w-xl">
-          <span className="text-xs font-medium text-[#6ee7b7] tracking-widest uppercase">
-            <ScrambleText text={contact.eyebrow} />
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-semibold text-[#e8e8e8] tracking-tight mt-3 mb-4">
-            <ClipReveal><EncryptReveal text={contact.title} /></ClipReveal>
-          </h2>
-          <p className="text-sm text-white leading-relaxed mb-10">
-            {contact.lead}
-          </p>
+        <div className="mx-auto grid max-w-[110rem] items-end gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:pr-12">
+          <div>
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow={contact.eyebrow}
+                title={contact.title}
+                lead={contact.lead}
+              />
+            </ScrollReveal>
 
-          {/* Availability accent — decorative "signal alive" indicator */}
-          <div className="flex items-center gap-3 mb-10" aria-hidden="true">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7] animate-pulse" />
-            <span className="text-xs font-medium text-[#6ee7b7] tracking-wide">{now.status}</span>
-            <WaveformBars count={16} />
-          </div>
+            <ScrollReveal delay={0.05}>
+              <p className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-text sm:text-sm">
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#2f9e6e]" />
+                {now.status}
+              </p>
 
-          {/* Email CTA */}
-          <motion.a
-            href={`mailto:${site.email}`}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.99 }}
-            className="group flex items-center justify-between w-full p-5 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] hover:border-[#6ee7b7]/30 transition-colors mb-4"
-          >
-            <div>
-              <p className="text-xs text-white mb-1 font-medium uppercase tracking-wide">{contact.emailLabel}</p>
-              <p className="text-sm font-medium text-[#e8e8e8] group-hover:text-[#6ee7b7] transition-colors">{site.email}</p>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[#6ee7b7]">
-              <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </motion.a>
-
-          {/* Social links */}
-          <div className="flex gap-3">
-            {contact.socials.map((s, i) => (
-              <motion.a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[#222] bg-gradient-to-br from-[#111]/80 to-[#050505]/80 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-white hover:text-[#e8e8e8] hover:border-[#6ee7b7]/30 transition-colors text-sm"
+              <p className="mb-2 font-mono text-xs uppercase tracking-[0.14em] text-body">
+                {contact.emailLabel}
+              </p>
+              <a
+                href={`mailto:${site.email}`}
+                className="display inline-block break-all text-[clamp(1.4rem,3.4vw,3rem)] leading-tight tracking-[-0.045em] text-text underline decoration-2 underline-offset-[0.2em] transition-colors hover:text-red"
               >
-                <span className="group-hover:text-[#6ee7b7] transition-colors">{socialIcons[s.label]}</span>
-                <span className="hidden sm:block">{s.label}</span>
-              </motion.a>
-            ))}
-          </div>
-        </div>
+                {site.email}
+              </a>
 
-        {/* Footer */}
-        <div className="mt-24 pt-8 border-t border-[#1f1f1f] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-white">{contact.footerLeft}</p>
-          <p className="text-xs text-white italic">{contact.footerRight}</p>
+              <div className="mt-8">
+                <TabButton href={`mailto:${site.email}`} label="Send email" />
+              </div>
+            </ScrollReveal>
+          </div>
+
+          {/* Social links as physical keycaps. */}
+          <ScrollReveal delay={0.1}>
+            <ul className="flex flex-row gap-4 lg:flex-col lg:pb-3">
+              {keys.map((key) => (
+                <li key={key.name}>
+                  <a
+                    href={key.href}
+                    aria-label={key.name}
+                    target={key.external ? "_blank" : undefined}
+                    rel={key.external ? "noopener noreferrer" : undefined}
+                    className="social-key"
+                  >
+                    <SocialIcon name={key.name} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </ScrollReveal>
         </div>
-      </div>
-      </motion.section>
-    </ScrollAnimation>
+      </section>
+
+      <footer className="ink-grid frame-inset relative flex min-h-[26rem] flex-col justify-between overflow-hidden px-[var(--page-gutter)] pb-20 pt-16 text-[#efede7] on-dark">
+        <p
+          aria-hidden="true"
+          className="display relative z-10 mx-auto w-full max-w-[110rem] text-[clamp(4.5rem,17vw,20rem)] leading-[0.78] tracking-[-0.08em]"
+        >
+          {wordmarkLines(site.name).map((line, index) => (
+            <span key={line} className={`block ${index > 0 ? "pl-[0.3em]" : ""}`}>
+              {line}
+            </span>
+          ))}
+        </p>
+        <div className="relative z-10 mx-auto mt-14 flex w-full max-w-[110rem] flex-col items-start justify-between gap-3 font-mono text-xs uppercase tracking-[0.12em] text-[#b5b7ad] sm:flex-row sm:items-center">
+          <p>{contact.footerLeft}</p>
+          <p>{contact.footerRight}</p>
+        </div>
+      </footer>
+    </>
   );
 }

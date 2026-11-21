@@ -23,17 +23,15 @@ export function BrowserFrame({
   className = "",
 }: BrowserFrameProps) {
   return (
-    <div
-      className={`overflow-hidden rounded-xl border border-[#222] bg-[#0a0a0a] shadow-2xl shadow-black/40 ${className}`}
-    >
+    <div className={`overflow-hidden border border-text bg-[#171717] ${className}`}>
       <div
-        className="flex items-center gap-1.5 border-b border-[#1f1f1f] bg-[#0c0c0c] px-3 py-2"
+        className="flex items-center gap-1.5 border-b border-[#2a2b29] bg-[#171717] px-3 py-2"
         aria-hidden="true"
       >
-        <span className="h-2 w-2 rounded-full bg-[#3a3a3a]" />
-        <span className="h-2 w-2 rounded-full bg-[#3a3a3a]" />
-        <span className="h-2 w-2 rounded-full bg-[#3a3a3a]" />
-        <span className="ml-3 min-w-0 flex-1 truncate rounded-md bg-[#111] px-3 py-1 font-mono text-[10px] text-[#777]">
+        <span className="h-2 w-2 rounded-full bg-[#626262]" />
+        <span className="h-2 w-2 rounded-full bg-[#626262]" />
+        <span className="h-2 w-2 rounded-full bg-[#626262]" />
+        <span className="ml-3 min-w-0 flex-1 truncate bg-[#262725] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#a8aaa2]">
           {urlBar}
         </span>
       </div>

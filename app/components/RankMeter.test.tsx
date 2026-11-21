@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 
-import { ImmersiveProvider } from "./immersive/ImmersiveProvider";
 import { RankMeter } from "./RankMeter";
 import { RANKS } from "../lib/rank";
-import { mockMatchMedia, mockRequestAnimationFrame } from "../../vitest.setup";
+import { mockRequestAnimationFrame } from "../../vitest.setup";
 
 /** Redefine `window.scrollY` (a read-only getter in jsdom) for a test. */
 function setScrollY(value: number) {
@@ -31,15 +30,14 @@ function renderMeter() {
   // Scrollable height = 5000 - 1000 = 4000 px.
   setScrollDimensions(5000, 1000);
   setScrollY(0);
-  render(
-    <ImmersiveProvider>
-      <RankMeter />
-    </ImmersiveProvider>,
-  );
+  render(<RankMeter />);
   const meter = screen.getByTestId("rank-meter");
   const scrollTo = (y: number) => {
     setScrollY(y);
-    act(() => raf.flush());
+    act(() => {
+      window.dispatchEvent(new Event("scroll"));
+      raf.flush();
+    });
   };
   return { meter, scrollTo };
 }
@@ -54,10 +52,6 @@ function rankIndexIn(meter: HTMLElement): number {
   if (!hit) throw new Error(`no rank in "${meter.textContent}"`);
   return hit.i;
 }
-
-beforeEach(() => {
-  mockMatchMedia({ matches: false });
-});
 
 describe("RankMeter", () => {
   it("starts at Iron 2 at the top of the page", () => {

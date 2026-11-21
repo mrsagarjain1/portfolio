@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useMotionValueEvent } from "framer-motion";
+import { useState } from "react";
 
-import { useFrameClock } from "../hooks/useFrameClock";
-import { computeScrollProgress } from "../lib/immersive/scroll";
+import { useScrollProgress } from "../hooks/useScrollProgress";
 import { RANKS, rankAt, type RankReading } from "../lib/rank";
 
 const FIRST = RANKS[0];
@@ -47,27 +47,20 @@ function RankGlyph({ color, index }: { color: string; index: number }) {
  * Rank-up meter. A small badge in the header that climbs from Iron 2 to Immortal 1
  * as the visitor scrolls, with a thin bar for progress to the next rank.
  *
- * Purely decorative (`aria-hidden`, not focusable). It reads the scroll position
- * on the shared frame clock, like the top progress bar, and re-renders only when
- * the rank or the rating changes, so it costs nothing while the page is idle.
+ * Purely decorative (`aria-hidden`, not focusable). It follows the shared
+ * scroll-progress motion value and re-renders only when the rank or the rating
+ * changes, never on every scroll frame.
  */
 export function RankMeter({ className = "" }: { className?: string }) {
+  const progress = useScrollProgress();
   const [reading, setReading] = useState<RankReading>(() => rankAt(0));
-  const shown = useRef({ index: 0, rr: 0 });
 
-  const onFrame = useCallback(() => {
-    if (typeof window === "undefined") return;
-    const doc = document.documentElement;
-    const next = rankAt(
-      computeScrollProgress(window.scrollY, doc.scrollHeight, doc.clientHeight),
+  useMotionValueEvent(progress, "change", (value) => {
+    const next = rankAt(value * 100);
+    setReading((current) =>
+      current.index === next.index && current.rr === next.rr ? current : next,
     );
-    if (next.index !== shown.current.index || next.rr !== shown.current.rr) {
-      shown.current = { index: next.index, rr: next.rr };
-      setReading(next);
-    }
-  }, []);
-
-  useFrameClock(onFrame);
+  });
 
   return (
     <div
@@ -84,13 +77,12 @@ export function RankMeter({ className = "" }: { className?: string }) {
         >
           {reading.name}
         </div>
-        <div className="mt-1.5 h-[3px] w-full overflow-hidden rounded-full bg-[#1f1f1f]">
+        <div className="mt-1.5 h-[3px] w-full overflow-hidden rounded-full bg-[#3a3b38]">
           <div
-            className="h-full rounded-full"
+            className="h-full origin-left rounded-full"
             style={{
-              width: `${Math.round(reading.fraction * 100)}%`,
+              transform: `scaleX(${reading.fraction})`,
               backgroundColor: reading.color,
-              boxShadow: reading.isPeak ? `0 0 8px ${reading.color}` : "none",
             }}
           />
         </div>

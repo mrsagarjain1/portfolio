@@ -1,61 +1,91 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens: a warm "paper desk" look. Off-white graph paper for the light
+ * sections, near-black ink for the dark ones, one rare red accent. Headlines are
+ * heavy and tightly tracked (Montserrat Bold), body copy stays plain Arial, and
+ * small labels use DM Mono in capitals.
+ */
 @theme {
-  --color-bg: #0a0a0a;
-  --color-surface: #0c0c0c;
-  --color-border: #1f1f1f;
-  --color-border-hover: #2a2a2a;
-  --color-text: #e8e8e8;
-  --color-muted: #777777;
-  --color-accent: #6ee7b7;
-  --color-accent-dim: #059669;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --color-ink: #0d0f0e;
+  --color-ink-2: #111312;
+  --color-night: #050606;
+  --color-footer: #080a09;
+  --color-services: #0b0c0b;
+
+  --color-paper: #eee9e5;
+  --color-paper-warm: #e9e2d4;
+  --color-paper-grey: #d5d2cb;
+  --color-cream: #ece6d9;
+
+  --color-text: #111110;
+  --color-body: #504b46;
+  --color-muted: #716e69;
+  --color-rule: #a49b94;
+  --color-rule-soft: #b8aea6;
+
+  --color-btn: #222321;
+  --color-btn-hover: #30312e;
+  --color-key: #eeeae1;
+  --color-key-ink: #222524;
+
+  --color-red: #b94835;
+  --color-blue: #3457d5;
+  --color-focus: #527484;
+
+  --color-menu-1: #eee8db;
+  --color-menu-2: #b9cfd5;
+  --color-menu-3: #e8b29c;
+  --color-menu-4: #cbd4aa;
+}
+
+/* Font families come from next/font variables set in layout.tsx. */
+@theme inline {
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: var(--font-montserrat), Montserrat, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-dm-mono), "DM Mono", "Courier New", Courier, monospace;
+}
+
+:root {
+  --page-gutter: clamp(1rem, 3vw, 3.75rem);
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 html {
+  /* Anchor links glide to their section; wheel and touch scrolling stay native. */
   scroll-behavior: smooth;
-  background-color: #050508;
+  /* Keep a section's top clear of the fixed header after an anchor jump. */
+  scroll-padding-top: 5rem;
+  /* Shows in overscroll, so it matches the dark footer. */
+  background-color: #050606;
+  overflow-x: clip;
 }
 
 body {
-  background-color: #050508;
-  color: #e8e8e8;
+  background-color: #050606;
+  color: #111110;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/*
- * The native cursor is hidden only while the custom cursor is actually active
- * (CustomCursor sets `body { cursor: none }` inline when it renders and clears
- * it on teardown). Keeping this out of the base `body` rule guarantees a
- * visible pointer indication whenever the custom cursor is not rendered — on a
- * coarse pointer, under reduced motion, or when the effect is capped out on a
- * low-performance tier (Req 4.8).
- */
 
 section {
   position: relative;
 }
 
 ::selection {
-  background-color: #6ee7b760;
-  color: #e8e8e8;
+  background-color: #3457d5;
+  color: #fff;
 }
 
 /*
- * Visible keyboard focus indicator (Req 8.4).
- *
- * The immersive layer paints decorative overlays (vignette, film grain) and a
- * custom cursor at very high z-indexes, but all of them are `pointer-events:
- * none` and effectively transparent, so a solid, offset outline on the focused
- * control stays visible above them. Shown only for keyboard focus so pointer
- * interaction is unaffected, and never suppressed by the immersive layer.
+ * Visible keyboard focus indicator. A solid, offset outline in the accent
+ * colour, shown only for keyboard focus so pointer use is unaffected.
  */
 :focus-visible {
-  outline: 2px solid #6ee7b7;
-  outline-offset: 3px;
-  border-radius: 3px;
+  outline: 2px solid #b94835;
+  outline-offset: 4px;
 }
 
 /* Avoid a lingering ring on mouse/touch activation while keeping it for keyboard. */
@@ -63,203 +93,385 @@ section {
   outline: none;
 }
 
+/* Focus ring that reads on the dark sections. */
+.on-dark :focus-visible {
+  outline-color: #c7c9bf;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #050508;
+  background: #050606;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1f1f1f;
-  border-radius: 3px;
+  background: #3a3b38;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a2a2a;
+  background: #55564f;
 }
 
-/* Motion reduction */
+/* ------------------------------------------------------------------------ */
+/* Paper textures                                                            */
+/* ------------------------------------------------------------------------ */
+
+/* Graph paper: warm off-white with a faint 2.75rem grid. */
+.paper-grid {
+  background-color: #eee9e5;
+  background-image:
+    linear-gradient(#37312b29 0.0625rem, transparent 0.0625rem),
+    linear-gradient(90deg, #37312b29 0.0625rem, transparent 0.0625rem);
+  background-size: 2.75rem 2.75rem;
+}
+
+.paper-grid-soft {
+  background-color: #eee9e5;
+  background-image:
+    linear-gradient(#1012110e 0.0625rem, transparent 0.0625rem),
+    linear-gradient(90deg, #1012110e 0.0625rem, transparent 0.0625rem);
+  background-size: 2.75rem 2.75rem;
+}
+
+/* Dark grid for the ink sections. */
+.ink-grid {
+  background-color: #080a09;
+  background-image:
+    linear-gradient(#ece6d90b 0.0625rem, transparent 0.0625rem),
+    linear-gradient(90deg, #ece6d90b 0.0625rem, transparent 0.0625rem);
+  background-size: 2.8rem 2.8rem;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Headline type and entrance                                                */
+/* ------------------------------------------------------------------------ */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/*
+ * Masked rise. Each headline line sits in a clipped window and slides up into
+ * view. Pure CSS: it starts on first paint with no script, runs once, and only
+ * animates transform, so it never triggers layout.
+ */
+@keyframes lineRise {
+  from {
+    transform: translate3d(0, 112%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.mask-line > .mask-inner {
+  display: block;
+  animation: lineRise 0.9s var(--ease-premium) both;
+  animation-delay: var(--d, 0s);
+}
+
+/* The same fade-up used for supporting copy. */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal-up {
+  animation: revealUp 0.7s var(--ease-premium) both;
+  animation-delay: var(--d, 0s);
+}
+
+/* Stickers drop onto the desk once, then stay put. */
+@keyframes stickerDock {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0) rotate(calc(var(--tilt, 0deg) * 2.2));
+  }
+  to {
+    opacity: 1;
+    transform: rotate(var(--tilt, 0deg));
+  }
+}
+
+.sticker {
+  animation: stickerDock 0.85s var(--ease-premium) both;
+  animation-delay: var(--d, 0s);
+  transform: rotate(var(--tilt, 0deg));
+  filter: drop-shadow(0 0.75rem 0.65rem rgba(44, 32, 25, 0.22));
+}
+
+/* Scroll cue arrow nudges down once on load instead of bouncing forever. */
+@keyframes cueNudge {
+  0% {
+    transform: translateY(-0.15rem);
+  }
+  50% {
+    transform: translateY(0.3rem);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.cue-arrow {
+  display: inline-block;
+  color: #b94835;
+  animation: cueNudge 1.2s ease-in-out 2.2s 2 both;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Components                                                                */
+/* ------------------------------------------------------------------------ */
+
+/*
+ * Split "tab" button: two rounded keys joined by a thin bar. On hover or focus
+ * each label rolls up and the duplicate underneath rolls in.
+ */
+.tab-btn {
+  position: relative;
+  display: inline-flex;
+  gap: 4px;
+  isolation: isolate;
+  min-height: 2.75rem;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tab-btn::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 1.5rem;
+  background: #222321;
+  transform: translateY(-50%);
+  transition: background 0.3s;
+}
+
+.tab-part {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 1.1rem;
+  background: #222321;
+  border-radius: 9px;
+  transition: background 0.3s;
+}
+
+.word-window {
+  display: block;
+  height: 1.2em;
+  overflow: hidden;
+}
+
+.word-roll {
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.22, 0.75, 0.2, 1);
+}
+
+.word-roll > span {
+  display: block;
+  height: 1.2em;
+  white-space: nowrap;
+}
+
+.tab-part:nth-child(2) .word-roll {
+  transition-delay: 45ms;
+}
+
+.tab-btn:focus-visible .word-roll {
+  transform: translateY(-50%);
+}
+
+@media (hover: hover) {
+  .tab-btn:hover .word-roll {
+    transform: translateY(-50%);
+  }
+
+  .tab-btn:hover .tab-part,
+  .tab-btn:hover::before {
+    background: #30312e;
+  }
+}
+
+/* Light variant, for the dark sections. */
+.tab-btn-light {
+  color: #111110;
+}
+
+.tab-btn-light::before,
+.tab-btn-light .tab-part {
+  background: #eee9e5;
+}
+
+@media (hover: hover) {
+  .tab-btn-light:hover .tab-part,
+  .tab-btn-light:hover::before {
+    background: #fff;
+  }
+}
+
+/* Physical keycap, for the social icon links. */
+.social-key {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  color: #222524;
+  background: #eeeae1;
+  border: 1px solid #222524;
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px #ffffffb0,
+    0 4px #222524,
+    0 6px 10px #22252418;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    box-shadow 0.25s,
+    translate 0.1s;
+}
+
+.social-key svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .social-key:hover {
+    color: #f0ede5;
+    background: #222524;
+    box-shadow:
+      inset 0 1px #ffffff30,
+      0 3px #22252440;
+  }
+
+  .social-key:hover svg {
+    transform: translateY(-2px);
+  }
+}
+
+.social-key:active {
+  translate: 0 3px;
+  box-shadow:
+    inset 0 1px #ffffff30,
+    0 1px #222524;
+}
+
+/* Crop-mark corners around a screenshot, top-left and bottom-right. */
+.crop-frame {
+  position: relative;
+}
+
+.crop-frame::before,
+.crop-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: clamp(1.5rem, 4vw, 3.25rem);
+  height: clamp(1.25rem, 3vw, 2.5rem);
+  border: 0 solid #111110;
+  pointer-events: none;
+}
+
+.crop-frame::before {
+  top: -0.4rem;
+  left: -0.4rem;
+  border-width: 0.125rem 0 0 0.125rem;
+}
+
+.crop-frame::after {
+  right: -0.4rem;
+  bottom: -0.4rem;
+  border-width: 0 0.125rem 0.125rem 0;
+}
+
+/* A big service-style name that lights up on hover. */
+.name-row {
+  color: #dfddd4;
+  transition: color 0.4s;
+}
+
+.name-row:hover,
+.name-row:focus-within {
+  color: #ffffff;
+}
+
+/* Inset frame inside the dark footer. */
+.frame-inset::before {
+  content: "";
+  position: absolute;
+  inset: clamp(1rem, 1.4vw, 1.5rem);
+  border: 0.0625rem solid #efede721;
+  pointer-events: none;
+}
+
+/* Outlined text for alternate mobile-menu words. */
+.text-outline {
+  -webkit-text-stroke: 1px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-outline:hover,
+.text-outline:focus-visible {
+  -webkit-text-fill-color: currentColor;
+}
+
+/* Forced-colors (high contrast) modes drop background images, so show real text. */
+@media (forced-colors: active) {
+  .text-outline {
+    -webkit-text-stroke: 0;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* Motion reduction: no entrance, no smooth anchor scrolling. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
 
-/* Atmospheric vignette */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9998;
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.45) 100%);
-}
-
-/* Film grain overlay */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 128px 128px;
-  mix-blend-mode: overlay;
-}
-
-/* Glass panel utility */
-.glass-panel {
-  @apply border border-[#1f1f1f] bg-[#0c0c0c]/70 backdrop-blur-xl;
-}
-
-/* Liquid glass button — glossy highlight tracking cursor */
-.glass-btn {
-  position: relative;
-  overflow: hidden;
-}
-.glass-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(110,231,183,0.15) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-.glass-btn:hover::after {
-  opacity: 1;
-}
-
-/* Text gradient flow */
-@keyframes gradientFlow {
-  0%, 100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
-}
-.text-gradient-flow {
-  background: linear-gradient(90deg, #6ee7b7, #34d399, #6ee7b7);
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 4s ease infinite;
-}
-
-/*
- * "Scroll to explore" hint. Shown only where it cannot land on the hero buttons:
- * not on phones, and not on short windows. Display is set here, not with a
- * utility class, so the two conditions stay in one place.
- */
-.scroll-hint {
-  display: none;
-}
-@media (min-width: 640px) and (min-height: 860px) {
-  .scroll-hint {
-    display: flex;
+  .reveal-up,
+  .sticker,
+  .mask-line > .mask-inner {
+    animation: none;
   }
-}
 
-/* Scroll velocity blur */
-@media (prefers-reduced-motion: no-preference) {
-  .scrolling-fast section {
-    filter: blur(1px);
-    transition: filter 0.4s ease;
+  .sticker {
+    opacity: 1;
   }
-  section {
-    transition: filter 0.4s ease;
+
+  .cue-arrow {
+    animation: none;
   }
-}
-
-/* Geometry connector dots */
-@keyframes connectorPulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50%      { opacity: 0.7; transform: scale(1.4); }
-}
-.connector-dot {
-  animation: connectorPulse 3s ease-in-out infinite;
-}
-
-/* Breathing page rhythm */
-@keyframes breathe {
-  0%, 100% { opacity: 0.5; }
-  50%      { opacity: 0.56; }
-}
-.breathing-bg {
-  animation: breathe 6s ease-in-out infinite;
-}
-
-/* Edge-light on scroll */
-.scrolling-down .edge-glow-top::after,
-.scrolling-up .edge-glow-bottom::after {
-  content: "";
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 60px;
-  pointer-events: none;
-  z-index: 100;
-  transition: opacity 0.3s;
-}
-.scrolling-down .edge-glow-top::after {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(110,231,183,0.06), transparent);
-}
-.scrolling-up .edge-glow-bottom::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(110,231,183,0.06), transparent);
-}
-
-/* Cursor spark trail — dot animation */
-@keyframes sparkFade {
-  0%   { opacity: 0.8; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0) translateY(-8px); }
-}
-.spark-particle {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #6ee7b7;
-  animation: sparkFade 0.6s ease-out forwards;
-}
-
-/* Hover word emphasis */
-.emphasis-text .em-keyword {
-  transition: color 0.3s, text-shadow 0.3s;
-}
-.emphasis-text:hover .em-keyword {
-  color: #6ee7b7;
-  text-shadow: 0 0 8px rgba(110,231,183,0.3);
-}
-
-/* Waveform bars */
-@keyframes waveform {
-  0%, 100% { height: 4px; }
-  50%      { height: 16px; }
-}
-.wave-bar {
-  width: 2px;
-  background: rgba(110,231,183,0.25);
-  border-radius: 1px;
-  animation: waveform var(--dur, 1s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-}
-
-/* Scroll-stop micro-bounce */
-@media (prefers-reduced-motion: no-preference) {
-  .scroll-stopped section > div > div:first-child {
-    animation: settleBounce 0.4s ease-out;
-  }
-}
-@keyframes settleBounce {
-  0%   { transform: translateY(-3px); }
-  60%  { transform: translateY(1px); }
-  100% { transform: translateY(0); }
 }

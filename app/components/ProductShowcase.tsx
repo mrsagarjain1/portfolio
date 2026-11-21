@@ -1,92 +1,62 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 import { showcase } from "../lib/content";
 import { BrowserFrame } from "./BrowserFrame";
-import { MotionPolicy } from "./MotionPolicy";
 
-/** Per-phone placement in the fan: width, tilt and how far it sits below the centre phone. */
-const FAN = [
-  { width: "30%", rotate: -6, lift: 14, overlap: "0" },
-  { width: "38%", rotate: 0, lift: 0, overlap: "-7%" },
-  { width: "30%", rotate: 6, lift: 14, overlap: "-7%" },
-] as const;
+/**
+ * `sizes` hints, measured from the layout in Projects.tsx. The showcase column is
+ * 3/5 of the content width (about 55vw) until the 110rem container stops growing
+ * at 1872px, where it is 1032px wide. Each phone is a fifth of the column minus
+ * its frame. A hint smaller than the real slot makes the browser fetch an image
+ * smaller than the slot, which blurs a screenshot, so re-measure if the grid changes.
+ */
+const WEB_SIZES = "(min-width: 1872px) 1032px, (min-width: 1024px) 56vw, 100vw";
+const PHONE_SIZES = "(min-width: 1872px) 199px, (min-width: 1024px) 11vw, (min-width: 640px) 18vw, 120px";
 
-function PhoneFan() {
+/**
+ * The product on screen: the web app in a browser window, with two phone screens
+ * overlapping its corner on wider screens and sitting below it on phones.
+ * Static markup and CSS only.
+ */
+export function ProductShowcase() {
+  const { web, phones, caption } = showcase;
+
   return (
-    <div className="mx-auto flex w-full max-w-[420px] items-end justify-center">
-      {showcase.phones.slice(0, FAN.length).map((phone, i) => {
-        const place = FAN[i];
-        return (
-          <motion.div
-            key={phone.src}
-            className={`relative hover:z-20 ${i === 1 ? "z-10" : "z-[1]"}`}
-            style={{
-              width: place.width,
-              marginLeft: place.overlap,
-              rotate: place.rotate,
-              y: place.lift,
-              transformOrigin: "50% 100%",
-            }}
-            initial={{ opacity: 0, y: place.lift + 24 }}
-            whileInView={{ opacity: 1, y: place.lift }}
-            whileHover={{ y: place.lift - 8, scale: 1.04 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.1 + i * 0.1, ease: "easeOut" }}
-          >
-            <div className="rounded-[18px] border border-[#2a2a2a] bg-black p-[3px] shadow-xl shadow-black/50">
+    <figure>
+      <div className="relative">
+        <BrowserFrame
+          src={web.src}
+          alt={web.alt}
+          width={web.width}
+          height={web.height}
+          urlBar={web.urlBar}
+          sizes={WEB_SIZES}
+        />
+
+        <div className="mx-auto mt-5 flex w-[62%] max-w-[260px] items-end justify-center sm:absolute sm:-bottom-8 sm:right-3 sm:mx-0 sm:mt-0 sm:w-[40%] sm:max-w-none">
+          {phones.map((phone, i) => (
+            <div
+              key={phone.src}
+              className={`w-1/2 rounded-[16px] border border-[#626262] bg-[#171717] p-[3px] shadow-xl shadow-black/30 transition-transform duration-300 hover:-translate-y-1 ${
+                i === 0 ? "z-[1] -mr-3 translate-y-3 -rotate-6" : "z-10"
+              }`}
+            >
               <Image
                 src={phone.src}
                 alt={phone.alt}
-                width={540}
-                height={1170}
-                sizes="(min-width: 1024px) 160px, 30vw"
-                className="h-auto w-full rounded-[15px]"
+                width={664}
+                height={1440}
+                sizes={PHONE_SIZES}
+                className="h-auto w-full rounded-[13px]"
               />
             </div>
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
-
-/** The product on screen: the web app in a browser window next to three phone screens. */
-export function ProductShowcase() {
-  const { web, phonesCaption } = showcase;
-
-  return (
-    <MotionPolicy>
-      <div className="mb-6 grid items-center gap-6 lg:grid-cols-5 lg:gap-8">
-        <motion.figure
-          className="lg:col-span-3"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <BrowserFrame
-            src={web.src}
-            alt={web.alt}
-            width={web.width}
-            height={web.height}
-            urlBar={web.urlBar}
-            sizes="(min-width: 1024px) 600px, 100vw"
-          />
-          <figcaption className="mt-2 text-xs leading-relaxed text-[#aaa]">
-            {web.caption}
-          </figcaption>
-        </motion.figure>
-
-        <figure className="lg:col-span-2" data-testid="phone-fan">
-          <PhoneFan />
-          <figcaption className="mt-4 text-center text-xs leading-relaxed text-[#aaa]">
-            {phonesCaption}
-          </figcaption>
-        </figure>
+          ))}
+        </div>
       </div>
-    </MotionPolicy>
+
+      <figcaption className="mt-3 font-mono text-xs uppercase leading-relaxed tracking-[0.04em] text-muted sm:mt-12">
+        {caption}
+      </figcaption>
+    </figure>
   );
 }

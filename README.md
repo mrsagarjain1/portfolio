@@ -20,7 +20,7 @@
 | Section | Anchor | What it shows |
 | :-- | :-- | :-- |
 | **Hero** | `#hero` | Headline, the headline numbers, the two roles held today and a live clock in India |
-| **Work** | `#work` | valocoach.ai on web and phone, where it runs, a dated stats snapshot, and NeuroWRT |
+| **Work** | `#work` | valocoach.ai on web and phone, where it runs, what it does, and NeuroWRT |
 | **Story** | `#story` | Five milestones from Iron 2 to the platform vision |
 | **Journey** | `#journey` | Career timeline, from router firmware to AI products |
 | **Stack** | `#stack` | About, tech stack, credentials and GitHub activity |
@@ -59,7 +59,7 @@ Everything visitors read lives in one file, [`app/lib/content.ts`](app/lib/conte
 > The share card used for link previews is generated at build time from `app/lib/content.ts` (see [`app/opengraph-image.tsx`](app/opengraph-image.tsx) and [`app/twitter-image.tsx`](app/twitter-image.tsx)), so the numbers on it always match the site.
 
 > [!IMPORTANT]
-> The web screenshot and the stats snapshot in the Work section are dated (`snapshotDate`). They are real numbers read from the public stats page. When you replace the screenshot, refresh the snapshot rows in `coachSnapshot` and the date together.
+> The web screenshot in the Work section is a dated capture of the public stats page (`snapshotDate`). When you replace the screenshot, update the date with it.
 
 ## 🚀 Run it
 
@@ -86,7 +86,7 @@ Then open <http://localhost:3000>.
 - Honors the system reduced-motion setting. The **Motion on / off** switch in the corner overrides it for the page.
 - Decorative layers are hidden from assistive technology, never take focus and never block clicks.
 - Heavy effects switch off on touch devices, in hidden tabs and when the device cannot keep up.
-- Every image has a description, and the stats snapshot is real text, not a picture.
+- Every image has a description.
 
 ## 🗂️ Project layout
 

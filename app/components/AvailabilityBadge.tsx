@@ -35,13 +35,12 @@ export function AvailabilityBadge({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-full border border-[#6ee7b7]/20 bg-gradient-to-br from-[#111]/80 to-[#050505]/80 px-3 py-1.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] backdrop-blur-md ${className}`}
+      className={`inline-flex items-center gap-2 border border-text/25 bg-[#f6f2ea] px-3 py-1.5 ${className}`}
     >
       <span className="relative flex h-2 w-2" aria-hidden="true">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34d399] opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-[#34d399]" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2f9e6e]" />
       </span>
-      <span className="text-xs text-white">
+      <span className="font-mono text-xs uppercase tracking-[0.08em] text-text">
         {now.status}
         {time ? ` · IST ${time}` : ""}
       </span>
