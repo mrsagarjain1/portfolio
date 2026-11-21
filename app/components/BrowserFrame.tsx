@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 interface BrowserFrameProps {
   src: string;
@@ -9,6 +10,8 @@ interface BrowserFrameProps {
   urlBar: string;
   /** Responsive `sizes` hint so the browser downloads the right image width. */
   sizes: string;
+  /** Something laid over the picture, filling it (for example the draw-in covers). */
+  overlay?: ReactNode;
   className?: string;
 }
 
@@ -20,6 +23,7 @@ export function BrowserFrame({
   height,
   urlBar,
   sizes,
+  overlay,
   className = "",
 }: BrowserFrameProps) {
   return (
@@ -35,14 +39,17 @@ export function BrowserFrame({
           {urlBar}
         </span>
       </div>
-      <Image
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        sizes={sizes}
-        className="h-auto w-full"
-      />
+      <div className="relative">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes={sizes}
+          className="h-auto w-full"
+        />
+        {overlay}
+      </div>
     </div>
   );
 }

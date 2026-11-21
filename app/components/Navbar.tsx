@@ -6,12 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { navLinks as links, site } from "../lib/content";
 import { RankMeter } from "./RankMeter";
 
-/** First name over the rest, like the stacked lowercase wordmark. */
-function wordmarkLines(name: string): string[] {
-  const [first, ...rest] = name.toLowerCase().split(" ");
-  return rest.length > 0 ? [first, rest.join(" ")] : [first];
-}
-
 /** Words in the open menu take turns being solid and outlined, tilted a touch. */
 const MENU_STYLES = [
   { color: "text-menu-1", outline: false, align: "justify-start", tilt: "-1.2deg" },
@@ -40,18 +34,15 @@ export default function Navbar() {
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-text/15 bg-paper">
-      <nav className="mx-auto flex max-w-[110rem] items-center justify-between px-[var(--page-gutter)] py-2.5 md:py-3">
+      {/* Sections put the gutter outside a 110rem column; this adds it back so the nav lines up with them. */}
+      <nav className="mx-auto flex max-w-[calc(110rem+2*var(--page-gutter))] items-center justify-between px-[var(--page-gutter)] py-2.5 md:py-3">
         <div className="flex items-center gap-4 md:gap-6">
           <a
             href="#"
             aria-label={site.name}
-            className="display flex min-h-11 flex-col justify-center text-[1.35rem] leading-[0.8] tracking-[-0.08em] text-text md:text-[1.6rem]"
+            className="display flex min-h-11 items-center whitespace-nowrap text-[1.35rem] leading-none tracking-[-0.07em] text-text md:text-[1.6rem]"
           >
-            {wordmarkLines(site.name).map((line) => (
-              <span key={line} aria-hidden="true" className="block">
-                {line}
-              </span>
-            ))}
+            <span aria-hidden="true">{site.name}</span>
           </a>
           <RankMeter className="rounded-md bg-ink-2 px-2.5 py-1.5" />
         </div>

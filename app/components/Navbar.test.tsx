@@ -38,6 +38,17 @@ describe("Navbar", () => {
     expect(home).toHaveAttribute("href", "#");
   });
 
+  it("writes the name on one line, as one piece of text", () => {
+    render(<Navbar />);
+
+    const home = screen.getByRole("link", { name: site.name });
+    // Two stacked words would be two elements with no space between them ("SagarJain"),
+    // and the name keeps its capitals: "Sagar Jain".
+    expect(home).toHaveTextContent(site.name);
+    expect(home.textContent).toBe(site.name);
+    expect(home.children).toHaveLength(1);
+  });
+
   it("links to every section in the content file", () => {
     render(<Navbar />);
 

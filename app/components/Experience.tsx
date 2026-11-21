@@ -1,6 +1,7 @@
 import { credentials, experience, type ExperienceEntry } from "../lib/content";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
+import { FocusTag, FocusTarget } from "./SkillFocus";
 
 /**
  * One role. The role and company are set as a big name that dims when idle and
@@ -49,8 +50,12 @@ function EntryCard({ entry }: { entry: ExperienceEntry }) {
       {entry.tags.length > 0 && (
         <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1">
           {entry.tags.map((tag) => (
-            <li key={tag} className="font-mono text-xs uppercase tracking-[0.08em] text-[#a3a79b]">
-              {tag}
+            <li key={tag}>
+              <FocusTag
+                tag={tag}
+                className="font-mono text-xs uppercase tracking-[0.08em] text-[#a3a79b]"
+                litClassName="text-[#e8b29c]"
+              />
             </li>
           ))}
         </ul>
@@ -91,7 +96,7 @@ function Credentials() {
   );
 }
 
-/** Career timeline, oldest first, with certifications and education beside it. */
+/** Career timeline, newest first, with certifications and education beside it. */
 export default function Experience() {
   const { entries } = experience;
 
@@ -113,8 +118,10 @@ export default function Experience() {
         <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
           <ol>
             {entries.map((entry, i) => (
-              <li
+              <FocusTarget
+                as="li"
                 key={entry.id}
+                tags={entry.tags}
                 className="name-row relative grid gap-x-6 border-t border-[#eee9e5]/15 py-9 sm:grid-cols-[4rem_minmax(0,1fr)]"
               >
                 {/* Index number: decorative, so it stays out of the accessibility tree. */}
@@ -127,7 +134,7 @@ export default function Experience() {
                 <ScrollReveal>
                   <EntryCard entry={entry} />
                 </ScrollReveal>
-              </li>
+              </FocusTarget>
             ))}
           </ol>
 

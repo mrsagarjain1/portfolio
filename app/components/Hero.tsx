@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { about, contact, hero, metrics, now, site } from "../lib/content";
 import { AvailabilityBadge } from "./AvailabilityBadge";
+import { Drift } from "./Drift";
 import { SocialIcon, type SocialName } from "./SocialIcon";
 import { TabButton } from "./TabButton";
 
@@ -15,15 +16,26 @@ const iconLinks: { name: SocialName; href: string }[] = [
   { name: "Email", href: `mailto:${site.email}` },
 ];
 
-/** Paper stickers that float round the headline on wide screens: real numbers from the content file. */
+/**
+ * Paper stickers that float round the headline on wide screens: real numbers from the content file.
+ * `rise` is how far each one lifts above the page while the visitor scrolls away (see Drift).
+ */
 const stickers = [
-  { value: metrics.users, label: "Users", className: "lg:left-[6%] lg:top-[19%]", tilt: "-7deg", d: 0.6 },
+  {
+    value: metrics.users,
+    label: "Users",
+    className: "lg:left-[var(--page-edge)] lg:top-[19%]",
+    tilt: "-7deg",
+    d: 0.6,
+    rise: 80,
+  },
   {
     value: metrics.impressions,
     label: "Monthly impressions",
-    className: "lg:right-[5%] lg:top-[22%]",
+    className: "lg:right-[var(--page-edge)] lg:top-[22%]",
     tilt: "6deg",
     d: 0.72,
+    rise: 50,
   },
 ];
 
@@ -47,34 +59,41 @@ export default function Hero() {
       />
 
       {/* Photo sticker: a corner of the page on wide screens, above the headline on small ones. */}
-      <div
-        className="sticker order-first mx-auto mb-5 w-28 sm:mb-6 sm:w-44 lg:absolute lg:bottom-[9%] lg:left-[5%] lg:order-none lg:mb-0 lg:w-[clamp(11rem,17vw,17rem)]"
-        style={delay(0.35, "-5deg")}
+      <Drift
+        rise={120}
+        className="order-first mx-auto mb-5 w-28 sm:mb-6 sm:w-44 lg:absolute lg:bottom-[9%] lg:left-[var(--page-edge)] lg:order-none lg:mb-0 lg:w-[clamp(11rem,17vw,17rem)]"
       >
-        <div className="relative aspect-[4/5] w-full overflow-hidden border-[0.5rem] border-b-[1.6rem] border-[#f6f2ea] bg-[#f6f2ea]">
-          <Image
-            src={hero.photo.src}
-            alt={hero.photo.alt}
-            fill
-            sizes="(max-width: 640px) 144px, (max-width: 1024px) 176px, 272px"
-            className="object-cover object-top"
-            priority
-          />
+        <div className="sticker" style={delay(0.35, "-5deg")}>
+          <div className="relative aspect-[4/5] w-full overflow-hidden border-[0.5rem] border-b-[1.6rem] border-[#f6f2ea] bg-[#f6f2ea]">
+            <Image
+              src={hero.photo.src}
+              alt={hero.photo.alt}
+              fill
+              sizes="(max-width: 640px) 144px, (max-width: 1024px) 176px, 272px"
+              className="object-cover object-top"
+              priority
+            />
+          </div>
         </div>
-      </div>
+      </Drift>
 
       {stickers.map((sticker) => (
-        <div
+        <Drift
           key={sticker.label}
-          aria-hidden="true"
-          className={`sticker absolute hidden bg-[#f6f2ea] px-5 py-4 text-center lg:block ${sticker.className}`}
-          style={delay(sticker.d, sticker.tilt)}
+          rise={sticker.rise}
+          className={`absolute hidden lg:block ${sticker.className}`}
         >
-          <p className="display text-3xl tracking-[-0.05em] text-text xl:text-4xl">{sticker.value}</p>
-          <p className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-body">
-            {sticker.label}
-          </p>
-        </div>
+          <div
+            aria-hidden="true"
+            className="sticker bg-[#f6f2ea] px-5 py-4 text-center"
+            style={delay(sticker.d, sticker.tilt)}
+          >
+            <p className="display text-3xl tracking-[-0.05em] text-text xl:text-4xl">{sticker.value}</p>
+            <p className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-body">
+              {sticker.label}
+            </p>
+          </div>
+        </Drift>
       ))}
 
       <div className="relative z-10 mx-auto flex w-full max-w-[110rem] flex-col items-center text-center">

@@ -103,6 +103,7 @@ describe("content: links and images", () => {
       showcase.web.src,
       ...showcase.phones.map((p) => p.src),
       ...projects.items.flatMap((p) => (p.image ? [p.image.src] : [])),
+      ...projects.items.flatMap((p) => (p.detailImage ? [p.detailImage.src] : [])),
     ];
     for (const src of sources) {
       expect(existsSync(resolve(publicDir, src.replace(/^\//, ""))), src).toBe(true);
@@ -115,6 +116,7 @@ describe("content: links and images", () => {
       showcase.web.alt,
       ...showcase.phones.map((p) => p.alt),
       ...projects.items.flatMap((p) => (p.image ? [p.image.alt] : [])),
+      ...projects.items.flatMap((p) => (p.detailImage ? [p.detailImage.alt] : [])),
     ];
     expect(alts.length).toBeGreaterThanOrEqual(4);
     for (const alt of alts) expect(alt.trim().length).toBeGreaterThan(0);
@@ -129,6 +131,13 @@ describe("content: projects", () => {
     const ids = items.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(sectionIds).not.toContain(id);
+  });
+
+  it("gives every project a picture of the same shape, so the cards in a row line up", () => {
+    // A taller or shorter picture pushes its title out of line with the card beside it.
+    // A project with no picture counts as its own shape, so mixing the two fails too.
+    const shapes = items.map((p) => (p.image ? (p.image.width / p.image.height).toFixed(2) : "none"));
+    expect(new Set(shapes).size, shapes.join(", ")).toBe(1);
   });
 
   it("lists the newest project first", () => {
@@ -154,10 +163,10 @@ describe("content: projects", () => {
 describe("content: experience", () => {
   const { entries } = experience;
 
-  it("lists roles in chronological order", () => {
+  it("lists the newest role first", () => {
     const starts = entries.map((e) => Number(e.years.slice(0, 4)));
     for (const start of starts) expect(start).toBeGreaterThan(2000);
-    expect(starts).toEqual([...starts].sort((a, b) => a - b));
+    expect(starts).toEqual([...starts].sort((a, b) => b - a));
   });
 
   it("marks exactly the open-ended roles as current", () => {
@@ -194,12 +203,59 @@ describe("content: credentials", () => {
   });
 });
 
+describe("content: about", () => {
+  it("has the rank phrase, written exactly, in one paragraph", () => {
+    const hits = about.paragraphs.filter((paragraph) => paragraph.includes(about.rankPhrase));
+    expect(hits).toHaveLength(1);
+  });
+});
+
+describe("content: draw-in covers", () => {
+  const pictures = projects.items
+    .flatMap((p) => [p.image, p.detailImage])
+    .flatMap((picture) => (picture?.reveal ? [{ src: picture.src, reveal: picture.reveal }] : []));
+
+  it("is set up for every diagram", () => {
+    expect(pictures.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("keeps every cover inside its picture", () => {
+    for (const { src, reveal } of pictures) {
+      for (const r of reveal) {
+        expect(r.x, src).toBeGreaterThanOrEqual(0);
+        expect(r.y, src).toBeGreaterThanOrEqual(0);
+        expect(r.w, src).toBeGreaterThan(0);
+        expect(r.h, src).toBeGreaterThan(0);
+        expect(r.x + r.w, src).toBeLessThanOrEqual(100.001);
+        expect(r.y + r.h, src).toBeLessThanOrEqual(100.001);
+      }
+    }
+  });
+
+  it("covers the whole picture, so nothing shows before its turn", () => {
+    for (const { src, reveal } of pictures) {
+      for (let px = 0; px <= 100; px += 2.5) {
+        for (let py = 0; py <= 100; py += 2.5) {
+          const covered = reveal.some(
+            (r) => px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h,
+          );
+          expect(covered, `${src} at ${px}%, ${py}%`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("numbers the beats from 0 with none missing", () => {
+    for (const { src, reveal } of pictures) {
+      const beats = Array.from(new Set(reveal.map((r) => r.at))).sort((a, b) => a - b);
+      expect(beats, src).toEqual(beats.map((_, i) => i));
+    }
+  });
+});
+
 describe("content: contact", () => {
   it("links the social profiles from the links list", () => {
     expect(contact.socials.map((s) => s.href)).toEqual([links.linkedin, links.github, links.x]);
   });
 
-  it("puts the owner's name in the footer", () => {
-    expect(contact.footerLeft).toContain(site.name);
-  });
 });

@@ -10,7 +10,6 @@
   --color-ink: #0d0f0e;
   --color-ink-2: #111312;
   --color-night: #050606;
-  --color-footer: #080a09;
   --color-services: #0b0c0b;
 
   --color-paper: #eee9e5;
@@ -48,6 +47,12 @@
 
 :root {
   --page-gutter: clamp(1rem, 3vw, 3.75rem);
+  /*
+   * Where the content edge sits, measured from the edge of a full-width box: the gutter,
+   * plus half of any width the 110rem column leaves over on wide screens. Use it as `left`
+   * or `right` on absolutely placed items so they line up with the nav and the sections.
+   */
+  --page-edge: calc(var(--page-gutter) + max(0px, (100% - 2 * var(--page-gutter) - 110rem) / 2));
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -57,8 +62,8 @@ html {
   scroll-behavior: smooth;
   /* Keep a section's top clear of the fixed header after an anchor jump. */
   scroll-padding-top: 5rem;
-  /* Shows in overscroll, so it matches the dark footer. */
-  background-color: #050606;
+  /* Shows in overscroll, so it matches where the page ends: the contact section. */
+  background-color: var(--color-paper-grey);
   overflow-x: clip;
 }
 
@@ -134,15 +139,6 @@ section {
     linear-gradient(#1012110e 0.0625rem, transparent 0.0625rem),
     linear-gradient(90deg, #1012110e 0.0625rem, transparent 0.0625rem);
   background-size: 2.75rem 2.75rem;
-}
-
-/* Dark grid for the ink sections. */
-.ink-grid {
-  background-color: #080a09;
-  background-image:
-    linear-gradient(#ece6d90b 0.0625rem, transparent 0.0625rem),
-    linear-gradient(90deg, #ece6d90b 0.0625rem, transparent 0.0625rem);
-  background-size: 2.8rem 2.8rem;
 }
 
 /* ------------------------------------------------------------------------ */
@@ -420,15 +416,6 @@ section {
 .name-row:hover,
 .name-row:focus-within {
   color: #ffffff;
-}
-
-/* Inset frame inside the dark footer. */
-.frame-inset::before {
-  content: "";
-  position: absolute;
-  inset: clamp(1rem, 1.4vw, 1.5rem);
-  border: 0.0625rem solid #efede721;
-  pointer-events: none;
 }
 
 /* Outlined text for alternate mobile-menu words. */

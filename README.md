@@ -53,7 +53,10 @@ Everything visitors read lives in one file, [`app/lib/content.ts`](app/lib/conte
 | About text, tech stack, credentials | `about`, `stack`, `credentials` |
 | App, GitHub and social links | `links` |
 | Search and share-card text | `seo` |
-| A product screenshot | drop the file in [`public/work`](public/work), then list it in `showcase` (or `neurowrt.image`) |
+| A product screenshot | drop the file in [`public/work`](public/work), then list it in `showcase` (or as the `image` of an entry in `projects.items`) |
+| Which projects and roles a skill chip lights up | `skillTags`. A chip with no entry stays plain text |
+| The underlined phrase in About | `about.rankPhrase`. It must match the About text word for word |
+| How a diagram draws in | `reveal` on that project's `image`: covers that together hide the whole picture. Leave it out for a screenshot |
 
 > [!NOTE]
 > The share card used for link previews is generated at build time from `app/lib/content.ts` (see [`app/opengraph-image.tsx`](app/opengraph-image.tsx) and [`app/twitter-image.tsx`](app/twitter-image.tsx)), so the numbers on it always match the site.

@@ -112,8 +112,12 @@ describe("Projects", () => {
         const card = container.querySelector<HTMLElement>(`article#${project.id}`) as HTMLElement;
         const images = card.querySelectorAll("img");
         if (project.image) {
-          expect(images).toHaveLength(1);
+          // The main picture, plus the second one on the card that has it.
+          expect(images).toHaveLength(project.detailImage ? 2 : 1);
           expect(within(card).getByAltText(project.image.alt)).toBeInTheDocument();
+          if (project.detailImage) {
+            expect(within(card).getByAltText(project.detailImage.alt)).toBeInTheDocument();
+          }
         } else {
           expect(images).toHaveLength(0);
         }

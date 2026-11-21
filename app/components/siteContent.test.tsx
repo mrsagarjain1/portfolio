@@ -129,6 +129,40 @@ describe("hero", () => {
   });
 });
 
+describe("about", () => {
+  it("opens with its heading alone, with no small label repeating it", () => {
+    const { container } = renderHome();
+    const section = container.querySelector<HTMLElement>(`#${about.id}`) as HTMLElement;
+    const heading = within(section).getByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent(about.title);
+
+    // The heading is built from one span per word, so ignore everything inside it.
+    const word = about.title.split(" ")[0].toLowerCase();
+    const repeats = Array.from(section.querySelectorAll("*")).filter(
+      (el) => !heading.contains(el) && el.textContent?.trim().toLowerCase() === word,
+    );
+    expect(repeats).toHaveLength(0);
+  });
+});
+
+describe("about: rank phrase", () => {
+  it("underlines the phrase and keeps the paragraph readable as plain text", () => {
+    const { container } = renderHome();
+    const section = container.querySelector<HTMLElement>(`#${about.id}`) as HTMLElement;
+    const paragraph = about.paragraphs.find((p) => p.includes(about.rankPhrase)) as string;
+
+    const element = Array.from(section.querySelectorAll("p")).find(
+      (p) => p.textContent === paragraph,
+    ) as HTMLElement;
+    expect(element).toBeDefined();
+    expect(within(element).getByTestId("rank-highlight-line")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(within(element).getByText(about.rankPhrase)).toBeInTheDocument();
+  });
+});
+
 describe("contact", () => {
   it("offers the email address and each social profile by name", () => {
     const { container } = renderHome();

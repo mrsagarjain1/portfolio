@@ -14,18 +14,20 @@ export interface RankStep {
   name: string;
   /** Accent colour for the badge, readable on the dark page. */
   color: string;
+  /** A deeper shade of the same hue, for marks drawn on the light page (the progress bar, the About underline). */
+  bar: string;
 }
 
 /** The ladder, lowest first. The last entry is the peak. */
 export const RANKS: readonly RankStep[] = [
-  { name: "Iron 2", color: "#9ca3af" },
-  { name: "Bronze 2", color: "#c08a5a" },
-  { name: "Silver 2", color: "#cbd5e1" },
-  { name: "Gold 2", color: "#e6c35c" },
-  { name: "Platinum 2", color: "#4fb8c4" },
-  { name: "Diamond 2", color: "#b794f6" },
-  { name: "Ascendant 2", color: "#34d399" },
-  { name: "Immortal 1", color: "#f0587a" },
+  { name: "Iron 2", color: "#9ca3af", bar: "#6b7280" },
+  { name: "Bronze 2", color: "#c08a5a", bar: "#a0622d" },
+  { name: "Silver 2", color: "#cbd5e1", bar: "#7f8da1" },
+  { name: "Gold 2", color: "#e6c35c", bar: "#b8901a" },
+  { name: "Platinum 2", color: "#4fb8c4", bar: "#1f8794" },
+  { name: "Diamond 2", color: "#b794f6", bar: "#7c4fd6" },
+  { name: "Ascendant 2", color: "#34d399", bar: "#0f9a69" },
+  { name: "Immortal 1", color: "#f0587a", bar: "#d1264e" },
 ];
 
 /**
@@ -40,6 +42,7 @@ export interface RankReading {
   index: number;
   name: string;
   color: string;
+  bar: string;
   /** Rank rating inside the current rank, 0 to 99. Always 0 at the peak. */
   rr: number;
   /** Progress towards the next rank, 0 to 1. Always 1 at the peak. */
@@ -68,5 +71,5 @@ export function rankAt(progress: number): RankReading {
   const rr = isPeak ? 0 : Math.min(99, Math.floor(fraction * 100));
   const step = RANKS[index];
 
-  return { index, name: step.name, color: step.color, rr, fraction, isPeak };
+  return { index, name: step.name, color: step.color, bar: step.bar, rr, fraction, isPeak };
 }

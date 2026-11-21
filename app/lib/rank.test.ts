@@ -40,6 +40,16 @@ describe("rankAt", () => {
     expect(rankAt(Number.NEGATIVE_INFINITY).index).toBe(0);
   });
 
+  it("gives every rank a deeper shade of its colour for marks on the light page", () => {
+    for (const rank of RANKS) {
+      expect(rank.color, rank.name).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(rank.bar, rank.name).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(rank.bar, rank.name).not.toBe(rank.color);
+    }
+    expect(rankAt(0).bar).toBe(RANKS[0].bar);
+    expect(rankAt(100).bar).toBe(RANKS[RANKS.length - 1].bar);
+  });
+
   // Feature: site-refresh, Property: rank is total and bounded
   it("always returns an in-range rank, rating and fraction", () => {
     fc.assert(

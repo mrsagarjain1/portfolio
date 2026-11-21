@@ -88,6 +88,45 @@ describe("RankMeter", () => {
     expect(meter).toHaveTextContent("Iron 2");
   });
 
+  it("shows no rank-up mark at the top of the page", () => {
+    const { meter } = renderMeter();
+    expect(meter).toHaveAttribute("data-rank-ups", "0");
+    expect(screen.queryByTestId("rank-up-ring")).toBeNull();
+    expect(screen.queryByTestId("rank-up-tag")).toBeNull();
+  });
+
+  it("marks each climb with a ring and a tag, and only a climb", () => {
+    const { meter, scrollTo } = renderMeter();
+
+    // Bronze 2 starts a seventh of the way to the peak: about 514 px of a 4000 px scroll.
+    scrollTo(600);
+    expect(meter).toHaveTextContent("Bronze 2");
+    expect(meter).toHaveAttribute("data-rank-ups", "1");
+    expect(screen.getByTestId("rank-up-ring")).toBeInTheDocument();
+    expect(screen.getByTestId("rank-up-tag")).toHaveTextContent("Rank up");
+
+    // Moving inside the same rank is not a climb.
+    scrollTo(700);
+    expect(meter).toHaveAttribute("data-rank-ups", "1");
+
+    // Silver 2.
+    scrollTo(1100);
+    expect(meter).toHaveAttribute("data-rank-ups", "2");
+
+    // Dropping back is not a climb either, and climbing again is.
+    scrollTo(0);
+    expect(meter).toHaveTextContent("Iron 2");
+    expect(meter).toHaveAttribute("data-rank-ups", "2");
+    scrollTo(600);
+    expect(meter).toHaveAttribute("data-rank-ups", "3");
+  });
+
+  it("counts every rank on the way to the bottom", () => {
+    const { meter, scrollTo } = renderMeter();
+    for (let y = 0; y <= 4000; y += 250) scrollTo(y);
+    expect(meter).toHaveAttribute("data-rank-ups", String(RANKS.length - 1));
+  });
+
   it("is decorative: hidden from assistive technology and not focusable", () => {
     const { meter } = renderMeter();
     expect(meter).toHaveAttribute("aria-hidden", "true");

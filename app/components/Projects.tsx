@@ -4,6 +4,7 @@ import { ProductShowcase } from "./ProductShowcase";
 import { ProjectCard } from "./ProjectCard";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
+import { FocusTag, FocusTarget } from "./SkillFocus";
 import { TabButton } from "./TabButton";
 
 /** valocoach.ai: the product with real users, shown first and largest. */
@@ -11,7 +12,7 @@ function FeaturedProject() {
   const { featured } = projects;
 
   return (
-    <article className="pt-8">
+    <FocusTarget as="article" id="valocoach" tags={featured.tags} className="pt-8">
       <div className="grid items-center gap-12 lg:grid-cols-5 lg:gap-14">
         <div className="lg:col-span-2">
           <p className="font-mono text-xs uppercase tracking-[0.16em] text-red">
@@ -38,11 +39,11 @@ function FeaturedProject() {
 
           <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1">
             {featured.tags.map((tag) => (
-              <li
-                key={tag}
-                className="font-mono text-xs uppercase tracking-[0.08em] text-muted"
-              >
-                {tag}
+              <li key={tag}>
+                <FocusTag
+                  tag={tag}
+                  className="font-mono text-xs uppercase tracking-[0.08em] text-muted"
+                />
               </li>
             ))}
           </ul>
@@ -60,7 +61,7 @@ function FeaturedProject() {
           </div>
         </div>
       </div>
-    </article>
+    </FocusTarget>
   );
 }
 
