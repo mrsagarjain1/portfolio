@@ -61,9 +61,6 @@ Everything visitors read lives in one file, [`app/lib/content.ts`](app/lib/conte
 > [!NOTE]
 > The share card used for link previews is generated at build time from `app/lib/content.ts` (see [`app/opengraph-image.tsx`](app/opengraph-image.tsx) and [`app/twitter-image.tsx`](app/twitter-image.tsx)), so the numbers on it always match the site.
 
-> [!IMPORTANT]
-> The web screenshot in the Work section is a dated capture of the public stats page (`snapshotDate`). When you replace the screenshot, update the date with it.
-
 ## 🚀 Run it
 
 You need Node.js 20.9 or newer (a Next.js 16 requirement).

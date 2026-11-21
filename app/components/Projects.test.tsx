@@ -71,7 +71,13 @@ describe("Projects", () => {
       for (const phone of showcase.phones) {
         expect(view.getByAltText(phone.alt)).toBeInTheDocument();
       }
-      expect(view.getByText(showcase.caption)).toBeInTheDocument();
+    });
+
+    it("puts no caption under the screenshots", () => {
+      const { featured } = renderProjects();
+
+      expect(featured.querySelector("figcaption")).toBeNull();
+      expect(within(featured).queryByText(/capture of the public stats page/i)).toBeNull();
     });
   });
 

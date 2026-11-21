@@ -243,9 +243,6 @@ export interface Project {
   detailImage?: ProjectImage;
 }
 
-/** Date the public stats page was captured for the web screenshot. */
-export const snapshotDate = "20 Nov 2026";
-
 /** Product visuals for the featured project. Add an image by dropping the file in public/work and listing it here. */
 export const showcase = {
   web: {
@@ -265,7 +262,6 @@ export const showcase = {
       alt: "ValoCoach mobile app, home screen with a player lookup box, a region picker and a premium Advanced Match Intelligence card.",
     },
   ] as ShowcaseImage[],
-  caption: `Web app and mobile app. The web screenshot is a capture of the public stats page from ${snapshotDate}.`,
 };
 
 // Draw-in covers for the diagrams, in the order each one is drawn. They overlap by half a percent so

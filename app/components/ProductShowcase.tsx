@@ -17,12 +17,15 @@ const PHONE_SIZES = "(min-width: 1872px) 199px, (min-width: 1024px) 11vw, (min-w
  * The product on screen: the web app in a browser window, with two phone screens
  * overlapping its corner on wider screens and sitting below it on phones.
  * Static markup and CSS only.
+ *
+ * The bottom padding keeps the phones, which hang below the window on wider screens,
+ * inside the figure, so the crop mark on the figure's corner clears them.
  */
 export function ProductShowcase() {
-  const { web, phones, caption } = showcase;
+  const { web, phones } = showcase;
 
   return (
-    <figure>
+    <figure className="pb-4 sm:pb-16">
       <div className="relative">
         <BrowserFrame
           src={web.src}
@@ -53,10 +56,6 @@ export function ProductShowcase() {
           ))}
         </div>
       </div>
-
-      <figcaption className="mt-3 font-mono text-xs uppercase leading-relaxed tracking-[0.04em] text-muted sm:mt-12">
-        {caption}
-      </figcaption>
     </figure>
   );
 }
